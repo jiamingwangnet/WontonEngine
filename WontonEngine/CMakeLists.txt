@@ -2,11 +2,27 @@
 # project specific logic here.
 #
 
-# Add source to this project's executable.
-add_executable (WontonEngine  )
+file(GLOB exec_src CONFIGURE_DEPENDS
+        "*.cpp"
+        "glad/src/glad.c"
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET WontonEngine PROPERTY CXX_STANDARD 20)
-endif()
+)
+
+file(GLOB exec_head CONFIGURE_DEPENDS
+        "include/*.h"
+        "glad/include/glad/glad.h"
+)
+
+# Add source to this project's executable.
+add_library (WontonEngine STATIC ${exec_src} ${exec_head})
+
+target_include_directories(WontonEngine PRIVATE "${SDL_INCLUDE_PATH}")
+target_include_directories(WontonEngine PRIVATE "${GLM_INCLUDE_PATH}")
+target_include_directories(WontonEngine PRIVATE glad/include)
+
+target_link_libraries(WontonEngine "${SDL_LIB_PATH}")
+
+set_property(TARGET WontonEngine PROPERTY CXX_STANDARD 17)
+
 
 # TODO: Add tests and install targets if needed.

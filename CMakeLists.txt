@@ -3,6 +3,16 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
+# CACHE variables
+set(SDL_LIB_PATH "" CACHE STRING "Path to the SDL library file (.lib).")
+set(SDL_INCLUDE_PATH "" CACHE STRING "Path to the SDL include directory.")
+set(GLM_INCLUDE_PATH "" CACHE STRING "Path to the GLM include directory.")
+
+message("----------PATHS----------")
+message("SDL STATIC LIBRARY: ${SDL_LIB_PATH}")
+message("SDL INCLUDE       : ${SDL_INCLUDE_PATH}")
+message("GLM INCLUDE       : ${GLM_INCLUDE_PATH}")
+
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
