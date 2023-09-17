@@ -23,3 +23,4 @@ project ("WontonEngine")
 
 # Include sub-projects.
 add_subdirectory ("WontonEngine")
+add_subdirectory ("EngineTest")
