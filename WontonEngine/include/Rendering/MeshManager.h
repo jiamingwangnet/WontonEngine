@@ -2,7 +2,7 @@
 
 namespace won
 {
-	class Game
+	class MeshManager
 	{
 
 	};

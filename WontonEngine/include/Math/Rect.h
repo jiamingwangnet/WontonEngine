@@ -2,7 +2,7 @@
 
 namespace won
 {
-	class Game
+	struct Rect
 	{
 
 	};

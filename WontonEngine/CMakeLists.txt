@@ -10,7 +10,12 @@ file(GLOB exec_src CONFIGURE_DEPENDS
 
 file(GLOB exec_head CONFIGURE_DEPENDS
         "include/*.h"
+        "include/Components/*.h"
+        "include/Rendering/*.h"
+        "include/Math/*.h"
         "glad/include/glad/glad.h"
+        "${SDL_INCLUDE_PATH}"
+        "${GLM_INCLUDE_PATH}"
 )
 
 # Add source to this project's executable.
