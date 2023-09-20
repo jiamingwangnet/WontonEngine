@@ -6,7 +6,8 @@ namespace won
 	{
 		class ScreenRenderer
 		{
-
+		public:
+			void Render();
 		};
 	}
 }
