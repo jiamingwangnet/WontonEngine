@@ -14,7 +14,7 @@ namespace won
 		Entity(Game& game);
 
 		template<class Cmp>
-		Component* GetComponent() const;
+		Cmp* GetComponent() const;
 
 		template<class Cmp, class... Args>
 		Cmp* AddComponent(Args&&... args);
