@@ -54,32 +54,32 @@ namespace won
         Key_CARET = '^',
         Key_UNDERSCORE = '_',
         Key_BACKQUOTE = '`',
-        Key_A = 'A',
-        Key_B = 'B',
-        Key_C = 'C',
-        Key_D = 'D',
-        Key_E = 'E',
-        Key_F = 'F',
-        Key_G = 'G',
-        Key_H = 'H',
-        Key_I = 'I',
-        Key_J = 'J',
-        Key_K = 'K',
-        Key_L = 'L',
-        Key_M = 'M',
-        Key_N = 'N',
-        Key_O = 'O',
-        Key_P = 'P',
-        Key_Q = 'Q',
-        Key_R = 'R',
-        Key_S = 'S',
-        Key_T = 'T',
-        Key_U = 'U',
-        Key_V = 'V',
-        Key_W = 'W',
-        Key_X = 'X',
-        Key_Y = 'Y',
-        Key_Z = 'Z',
+        Key_A = 'a',
+        Key_B = 'b',
+        Key_C = 'c',
+        Key_D = 'd',
+        Key_E = 'e',
+        Key_F = 'f',
+        Key_G = 'g',
+        Key_H = 'h',
+        Key_I = 'i',
+        Key_J = 'j',
+        Key_K = 'k',
+        Key_L = 'l',
+        Key_M = 'm',
+        Key_N = 'n',
+        Key_O = 'o',
+        Key_P = 'p',
+        Key_Q = 'q',
+        Key_R = 'r',
+        Key_S = 's',
+        Key_T = 't',
+        Key_U = 'u',
+        Key_V = 'v',
+        Key_W = 'w',
+        Key_X = 'x',
+        Key_Y = 'y',
+        Key_Z = 'z',
 
         Key_F1 = SDLK_F1,
         Key_F2 = SDLK_F2,
@@ -107,6 +107,19 @@ namespace won
 		Button_Right
 	};
 
+    class Game;
+
+    namespace priv
+    {
+        class InputUpd
+        {
+        public:
+            static void InputPoll();
+
+            friend class Game;
+        };
+    }
+
 	class Input
 	{
 	public:
@@ -119,8 +132,18 @@ namespace won
 		static bool GetMouseDown(MouseButton button);
 		static bool GetMouseUp(MouseButton button);
 		static Vector2 GetMouseMovement();
+
+        static bool HasQuit();
+    private:
+        static void Poll();
+
 	private:
 		static std::unordered_map<KeyCode, std::pair<bool, bool>> keymap;
 		static std::unordered_map<MouseButton, std::pair<bool, bool>> mousemap;
+        static Vector2 mousePosition;
+
+        static bool hasQuit;
+
+        friend class priv::InputUpd;
 	};
 }

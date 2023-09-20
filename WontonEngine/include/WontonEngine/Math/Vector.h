@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext.hpp>
 #include <initializer_list>
+#include <stdexcept>
 
 namespace won
 {
@@ -46,6 +47,33 @@ namespace won
 		private:
 			glm::vec<L, T, glm::packed_highp> vector;
 		};
+
+		template<glm::length_t L, class T>
+		inline Vector<L, T>::Vector(std::initializer_list<T> values)
+		{
+			if (values.size() > (std::size_t)L || values.size() < (std::size_t)L)
+				throw std::exception{ "ERROR: Incorrect number of values for Vector" };
+
+			for (glm::length_t i = 0; i < L; i++)
+			{
+				vector[i] = *(values.begin() + i);
+			}
+		}
+
+		template<glm::length_t L, class T>
+		inline Vector<L, T>::Vector(glm::vec<L, T, glm::packed_highp> vector)
+			: vector{vector}
+		{}
+		template<glm::length_t L, class T>
+		inline T& Vector<L, T>::operator[](std::size_t index)
+		{
+			return vector[index];
+		}
+		template<glm::length_t L, class T>
+		inline const T& Vector<L, T>::operator[](std::size_t index) const
+		{
+			return vector[index];
+		}
 	}
 
 	using Vector1 = priv::Vector<1, float>;

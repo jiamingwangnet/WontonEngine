@@ -37,6 +37,7 @@ namespace won
 			std::string name;
 			Color clear;
 			bool vsync;
+			WinFlags flags;
 
 			SDL_Window* window;
 		};

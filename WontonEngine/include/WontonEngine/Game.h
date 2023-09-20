@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Rendering/ScreenRenderer.h"
 #include "Entity.h"
+#include <thread>
 
 namespace won
 {
@@ -27,8 +28,15 @@ namespace won
 		void EntityUpdate(Entity& entity);
 		void EntityRender(Entity& entity);
 
+		void Render(); // for the render thread
+
 	private:
 		priv::Window window;
 		priv::ScreenRenderer renderer;
+
+		preload_func preload;
+		std::vector<Scene*> scenes;
+
+		std::thread renderThread;
 	};
 }

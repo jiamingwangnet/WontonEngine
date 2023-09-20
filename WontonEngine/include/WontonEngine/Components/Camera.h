@@ -27,6 +27,12 @@ namespace won
 
 		private:
 			ProjectionType projType;
+
+			float near;
+			float far;
+			float fov;
+			float aspect;
+			Rect viewRect;
 		};
 	}
 }
