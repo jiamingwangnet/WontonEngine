@@ -16,6 +16,7 @@ namespace won
 		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true);
 
 		void Start();
+		void SetActiveCamera(Entity* camera);
 
 		template<class Creator>
 		Entity* CreateEntity();
