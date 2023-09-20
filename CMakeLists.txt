@@ -7,11 +7,13 @@ cmake_minimum_required (VERSION 3.8)
 set(SDL_LIB_PATH "" CACHE STRING "Path to the SDL library file (.lib).")
 set(SDL_INCLUDE_PATH "" CACHE STRING "Path to the SDL include directory.")
 set(GLM_INCLUDE_PATH "" CACHE STRING "Path to the GLM include directory.")
+set(ENGINE_BIN_PATH "" CACHE STRING "Path to the engine output binaries.")
 
 message("----------PATHS----------")
 message("SDL STATIC LIBRARY: ${SDL_LIB_PATH}")
 message("SDL INCLUDE       : ${SDL_INCLUDE_PATH}")
 message("GLM INCLUDE       : ${GLM_INCLUDE_PATH}")
+message("ENGINE BIN PATH   : ${ENGINE_BIN_PATH}")
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
