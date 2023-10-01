@@ -20,6 +20,7 @@ bool won::Input::HasQuit()
 void won::Input::Poll()
 {
 	SDL_Event event;
+	lastMousePosition = mousePosition;
 
 	while (SDL_PollEvent(&event))
 	{
@@ -32,7 +33,6 @@ void won::Input::Poll()
 		}
 		case SDL_EVENT_MOUSE_MOTION:
 		{
-			lastMousePosition = mousePosition;
 			mousePosition[0] = event.motion.x;
 			mousePosition[1] = event.motion.y;
 			break;
