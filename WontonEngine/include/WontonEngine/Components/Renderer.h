@@ -15,7 +15,6 @@ namespace won
 
 			void Init() override {};
 			void Update() override {};
-			void Render() override {};
 
 			Mesh GetMesh() const;
 			Material GetMaterial() const;

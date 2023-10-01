@@ -33,7 +33,6 @@ namespace won
 	private:
 		void EntityInit(Entity& entity);
 		void EntityUpdate(Entity& entity);
-		void EntityRender(Entity& entity);
 
 		void Render(); // for the render thread
 

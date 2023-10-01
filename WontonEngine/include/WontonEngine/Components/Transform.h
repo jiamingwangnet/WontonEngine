@@ -15,7 +15,6 @@ namespace won
 
 			void Init() override {};
 			void Update() override {};
-			void Render() override {};
 
 			void Translate(Vector3 translation);
 			void Scale(Vector3 scale);

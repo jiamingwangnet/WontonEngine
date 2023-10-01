@@ -104,14 +104,6 @@ void won::Game::EntityUpdate(Entity& entity)
 	}
 }
 
-void won::Game::EntityRender(Entity& entity)
-{
-	for (Component* cmp : entity.GetComponents())
-	{
-		cmp->Render();
-	}
-}
-
 void won::Game::Render()
 {
 	preloadLock.lock();
@@ -127,16 +119,7 @@ void won::Game::Render()
 	{
 		if (Input::HasQuit()) break;
 
-		entityMutex.lock();
-
-		for (std::unique_ptr<Entity>& entity : entities)
-		{
-			EntityRender(*entity);
-		}
-
-		renderer.Render(entities, *this);
-
-		entityMutex.unlock();
+		renderer.Render(entities, *this);		
 
 		window.SwapBuffer();
 

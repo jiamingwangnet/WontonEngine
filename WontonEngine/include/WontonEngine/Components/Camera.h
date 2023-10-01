@@ -22,7 +22,6 @@ namespace won
 
 			void Init() override {};
 			void Update() override {};
-			void Render() override {};
 
 			ProjectionType GetProjectionType() const;
 
