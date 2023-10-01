@@ -141,6 +141,7 @@ namespace won
 		static std::unordered_map<KeyCode, std::pair<bool, bool>> keymap;
 		static std::unordered_map<MouseButton, std::pair<bool, bool>> mousemap;
         static Vector2 mousePosition;
+        static Vector2 lastMousePosition;
 
         static bool hasQuit;
 

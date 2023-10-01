@@ -20,6 +20,10 @@ namespace won
 			Camera(Entity& entity, float near, float far, float fov, float aspect);
 			Camera(Entity& entity, float near, float far, Rect viewRect);
 
+			void Init() override {};
+			void Update() override {};
+			void Render() override {};
+
 			ProjectionType GetProjectionType() const;
 
 			Matrix4x4 CalculateLookAt();

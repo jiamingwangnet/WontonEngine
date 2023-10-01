@@ -29,6 +29,7 @@ namespace won
 			void SetVsync(bool vsync);
 
 			void Init();
+			void InitContext();
 			void SwapBuffer();
 
 		private:

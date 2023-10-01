@@ -6,6 +6,8 @@
 #include "Rendering/ScreenRenderer.h"
 #include "Entity.h"
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 namespace won
 {
@@ -21,7 +23,12 @@ namespace won
 
 		template<class Creator>
 		Entity* CreateEntity();
-		void LoadScene(int index);
+		void LoadScene(int index);  // sets the next scene to load
+
+		int GetWidth() const;
+		int GetHeight() const;
+
+		static std::thread::id GetMainThreadId();
 
 	private:
 		void EntityInit(Entity& entity);
@@ -30,6 +37,7 @@ namespace won
 
 		void Render(); // for the render thread
 
+		void HandleSceneLoading(); // gets the next scene to load and loads it
 	private:
 		priv::Window window;
 		priv::ScreenRenderer renderer;
@@ -37,6 +45,25 @@ namespace won
 		preload_func preload;
 		std::vector<Scene*> scenes;
 
+		std::mutex entityMutex;
+		std::vector<std::unique_ptr<Entity>> entities;
+
+		std::mutex preloadLock; // make sure the game doesn't start updating till preloading is done
+		std::condition_variable condv;
+
 		std::thread renderThread;
+
+		int nextSceneToLoad = 0; // default to -1 if there is no scene
+
+		static std::thread::id mainThreadId;
 	};
+	template<class Creator>
+	inline Entity* Game::CreateEntity()
+	{
+		entities.push_back(std::make_unique<Entity>(*this));
+		Creator cr;
+		cr.Create(*entities.back());
+
+		return entities.back().get();
+	}
 }

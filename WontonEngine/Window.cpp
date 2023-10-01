@@ -1,5 +1,10 @@
 #include "include/WontonEngine/Window.h"
 #include <glad/glad.h>
+#include "include/WontonEngine/Error.h"
+#include <iostream>
+#include <cassert>
+#include <thread>
+#include "include/WontonEngine/Game.h"
 
 won::priv::Window::Window(int width, int height, const std::string& name, WinFlags flags, Color clear, bool vsync)
 	: width{width}, height{height}, name{name}, clear{clear}, vsync{vsync}, window{nullptr}, flags{flags}
@@ -54,17 +59,22 @@ void won::priv::Window::Init()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	window = SDL_CreateWindow(name.c_str(), width, height, windowFlags);
-	if (window == nullptr) throw std::exception{ "ERROR: Could not create a window." };
+	if (window == nullptr) Error::ThrowError("Could not create a window.", std::cout, __LINE__, __FILE__);
+}
+
+void won::priv::Window::InitContext()
+{
+	assert(std::this_thread::get_id() != Game::GetMainThreadId());
 
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
-	if (glContext == nullptr) throw std::exception{ "ERROR: Could not create an OpenGL context." };
+	if (glContext == nullptr) Error::ThrowError("Could not create an OpenGL context.", std::cout, __LINE__, __FILE__);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-		throw std::exception{ "ERROR: Could not load OpenGL functions." };
+		Error::ThrowError("Could not load OpenGL functions.", std::cout, __LINE__, __FILE__);
 
 	glClearColor(clear.r / 255.0f, clear.g / 255.0f, clear.b / 255.0f, clear.a / 255.0f);
 
-	if (vsync) SDL_GL_SetSwapInterval(0);
+	SDL_GL_SetSwapInterval((int)vsync);
 
 	// alpha blending
 	glEnable(GL_BLEND);

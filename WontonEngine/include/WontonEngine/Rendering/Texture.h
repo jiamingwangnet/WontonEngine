@@ -53,6 +53,13 @@ namespace won
 			TextureFilter magFilter = TextureFilter::Linear,
 			TextureFilter minFilter = TextureFilter::MipmapNearest);
 
+		static Texture CreateTexture(const std::string& name, unsigned char* data, int width, int height,
+			bool mipmap = true,
+			TextureWrap wrapMethod =
+			TextureWrap::Repeat,
+			TextureFilter magFilter = TextureFilter::Linear,
+			TextureFilter minFilter = TextureFilter::MipmapNearest);
+
 		static Texture GetTexture(const std::string& name);
 
 	private:

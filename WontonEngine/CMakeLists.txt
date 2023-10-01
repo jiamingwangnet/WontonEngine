@@ -4,6 +4,7 @@
 
 file(GLOB exec_src CONFIGURE_DEPENDS
         "*.cpp"
+        "stb/stb_image.cpp"
         "glad/src/glad.c"
 
 )
@@ -14,6 +15,7 @@ file(GLOB exec_head CONFIGURE_DEPENDS
         "include/WontonEngine/Rendering/*.h"
         "include/WontonEngine/Math/*.h"
         "glad/include/glad/glad.h"
+        "stb/include/stb/stb_image.h"
         "${SDL_INCLUDE_PATH}"
         "${GLM_INCLUDE_PATH}"
 )
@@ -24,6 +26,7 @@ add_library (WontonEngine STATIC ${exec_src} ${exec_head})
 target_include_directories(WontonEngine PRIVATE "${SDL_INCLUDE_PATH}")
 target_include_directories(WontonEngine PRIVATE "${GLM_INCLUDE_PATH}")
 target_include_directories(WontonEngine PRIVATE glad/include)
+target_include_directories(WontonEngine PRIVATE stb/include)
 
 target_link_libraries(WontonEngine "${SDL_LIB_PATH}")
 

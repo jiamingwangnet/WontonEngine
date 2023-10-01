@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "../AssetManagerBase.h"
 #include <string>
+#include <cstdint>
 
 namespace won
 {
@@ -26,11 +27,19 @@ namespace won
 
 			// Check if texture is bound
 			// sets the uniform to the texture's unit number
-			void SetTexture(const std::string& name, Texture value);
+			void SetTexture(const std::string& name, Texture value) const;
 
-			void Activate();
+		private:
+			void Activate() const;
+			void Deactivate() const;
+
+			uint32_t GetUniformLoc(const std::string& name) const;
+
 		private:
 			unsigned int progId;
+
+			friend class MaterialBase;
+			friend class ScreenRenderer;
 		};
 	}
 

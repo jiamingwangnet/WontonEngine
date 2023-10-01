@@ -46,6 +46,7 @@ namespace won
 			const UniformDataList& GetSettings() const;
 
 			void Activate() const;
+			void Deactivate() const;
 		private:
 			Shader shader;
 			UniformDataList info;
@@ -57,6 +58,8 @@ namespace won
 	template<class T>
 	struct UniformData : public priv::UniformDataBase
 	{
+		UniformData(UniformType type, const std::string& name, T value);
+
 		T value;
 
 		// static function to generate a UniformData class
@@ -72,4 +75,17 @@ namespace won
 	private:
 		static priv::AssetManagerBase<priv::MaterialBase, Material> assetManager;
 	};
+
+	template<class T>
+	inline UniformData<T>::UniformData(UniformType type, const std::string& name, T value)
+		: priv::UniformDataBase{type, name}, value{value}
+	{}
+
+	template<class T>
+	inline std::unique_ptr<priv::UniformDataBase> UniformData<T>::GenData(const std::string& name, UniformType type, T value)
+	{
+		std::unique_ptr<priv::UniformDataBase> data = std::make_unique<UniformData<T>>(type, name, value);
+		
+		return data;
+	}
 }

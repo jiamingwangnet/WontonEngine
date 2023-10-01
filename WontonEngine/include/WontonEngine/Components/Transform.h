@@ -11,7 +11,7 @@ namespace won
 		class Transform : public Component
 		{
 		public:
-			Transform(Entity& entity);
+			Transform(Entity& entity, Vector3 position, Vector3 scale, Vector3 rotation);
 
 			void Init() override {};
 			void Update() override {};
@@ -19,7 +19,7 @@ namespace won
 
 			void Translate(Vector3 translation);
 			void Scale(Vector3 scale);
-			void Rotate(Vector3 rotation);
+			void Rotate(Vector3 rotation); // degrees
 
 			void SetPosition(Vector3 position);
 			void SetScale(Vector3 scale);
@@ -27,13 +27,22 @@ namespace won
 
 			const Vector3& GetPosition() const;
 			const Vector3& GetScale() const;
-			const Vector3& GetRotation() const;
+			const Vector3& GetRotation() const; // returns in radians
+
+			Vector3 Up() const;
+			Vector3 Forward() const;
+			Vector3 Right() const;
 
 			Matrix4x4 CalculateMatrix() const;
 
+		public:
+			static const Vector3 UP;
+			static const Vector3 FORWARD;
+			static const Vector3 RIGHT;
+
 		private:
 			Vector3 scale;
-			Vector3 translation;
+			Vector3 position;
 			Vector3 rotation;
 		};
 	}

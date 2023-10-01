@@ -13,7 +13,7 @@ namespace won
 		virtual void Update() = 0;
 		virtual void Render() = 0;
 
-	private:
+	protected:
 		Entity& entity;
 	};
 }

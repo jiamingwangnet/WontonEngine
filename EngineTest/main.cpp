@@ -1,14 +1,18 @@
 #include <WontonEngine/Game.h>
 #include "include/Preload.h"
+#include <WontonEngine/Rendering/Material.h>
 #include <WontonEngine/Scene.h>
 #include <vector>
+#include "include/MainScene.h"
 
 int main()
 {
-	std::vector<won::Scene*> scenes;
+	MainScene mainScene;
 
-	won::Game game{ 800, 600, "Engine Test", (won::WinFlags)0, won::Color{10, 10, 10, 10}, preload, scenes };
+	std::vector<won::Scene*> scenes{&mainScene};
 
+	won::Game game{ 800, 600, "Engine Test", (won::WinFlags)0, won::Color{30, 30, 30, 255}, preload, scenes };
+	
 	game.Start();
 
 	return 0;
