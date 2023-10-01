@@ -52,6 +52,7 @@ void won::Game::Start()
 		// update time
 
 		priv::TimeUpd::IncUpdFrames();
+		priv::TimeUpd::UpdateDelta();
 	}
 
 	renderThread.join();
