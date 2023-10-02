@@ -3,7 +3,6 @@
 #include <vector>
 #include "../Vertex.h"
 #include "ScreenRenderer.h"
-#include <glad/glad.h>
 #include <string>
 #include "../AssetManagerBase.h"
 
@@ -22,11 +21,11 @@ namespace won
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
-			GLuint vbo = 0;
-			GLuint vao = 0;
-			GLuint ebo = 0;
+			unsigned int vbo = 0;
+			unsigned int vao = 0;
+			unsigned int ebo = 0;
 
-			GLsizei nIndices;
+			int nIndices;
 
 			friend class ScreenRenderer;
 		};
