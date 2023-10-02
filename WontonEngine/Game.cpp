@@ -4,6 +4,7 @@
 #include "include/WontonEngine/Time.h"
 #include "include/WontonEngine/Entity.h"
 #include <iostream>
+#include "include/WontonEngine/UpdateLimiter.h"
 
 std::thread::id won::Game::mainThreadId = std::this_thread::get_id();
 
@@ -37,6 +38,8 @@ void won::Game::Start()
 
 		priv::InputUpd::InputPoll();
 
+		priv::UpdateLimiter::Begin();
+
 		if (Input::HasQuit()) break;
 
 		// update entities
@@ -53,6 +56,10 @@ void won::Game::Start()
 
 		priv::TimeUpd::IncUpdFrames();
 		priv::TimeUpd::UpdateDelta();
+
+		std::cout << priv::UpdateLimiter::UpdatesPerSecond() << std::endl;
+
+		priv::UpdateLimiter::End(120.0f);
 	}
 
 	renderThread.join();
