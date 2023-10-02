@@ -6,6 +6,7 @@
 #include <WontonEngine/Entity.h>
 #include <WontonEngine/Math/Random.h>
 #include "MyCamera.h"
+#include "KMBox.h"
 
 class MainScene : public won::Scene
 {
@@ -14,7 +15,17 @@ public:
 	{
 		for (int i = 0; i < 500; i++)
 		{
-			won::Entity* box = game.CreateEntity<won::Defaults::Box>();
+			won::Entity* box;
+
+			if (won::Random::RandomRange<int>(0, 1) == 1)
+			{
+				box = game.CreateEntity<KMBox>();
+			}
+			else
+			{
+				box = game.CreateEntity<won::Defaults::Box>();
+			}
+
 			won::cmp::Transform* transform = box->GetComponent<won::cmp::Transform>();
 			transform->Scale(won::Vector3{ won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f) });
 			transform->Rotate(won::Vector3{ won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f) });
