@@ -25,7 +25,7 @@ namespace won
 			Vector<L, T> operator*(const Vector<L, T>& vec) const; // component by component multiplication. NOT DOT PRODUCT
 			Vector<L, T> operator/(const Vector<L, T>& vec) const;
 
-			Vector<L, T>& operator*(const T& scalar) const;
+			Vector<L, T> operator*(const T& scalar) const;
 
 			Vector<L, T>& operator+=(const Vector<L, T>& vec);
 			Vector<L, T>& operator-=(const Vector<L, T>& vec);
@@ -103,7 +103,7 @@ namespace won
 		}
 
 		template<glm::length_t L, class T>
-		inline Vector<L, T>& Vector<L, T>::operator*(const T& scalar) const
+		inline Vector<L, T> Vector<L, T>::operator*(const T& scalar) const
 		{
 			return Vector<L, T>(vector * scalar);
 		}
