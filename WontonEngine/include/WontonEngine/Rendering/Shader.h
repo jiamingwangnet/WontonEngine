@@ -4,6 +4,7 @@
 #include "../Math/Matrix.h"
 #include "Texture.h"
 #include "../AssetManagerBase.h"
+#include "../Color.h"
 #include <string>
 #include <cstdint>
 
@@ -28,6 +29,9 @@ namespace won
 			// Check if texture is bound
 			// sets the uniform to the texture's unit number
 			void SetTexture(const std::string& name, Texture value) const;
+
+			// normalize color value and convert to vec4
+			void SetColor(const std::string& name, Color color) const;
 
 		private:
 			void Activate() const;

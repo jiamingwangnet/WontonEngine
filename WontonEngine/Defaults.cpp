@@ -79,13 +79,13 @@ uniform mat4 won_ProjectionMatrix;
 uniform mat4 won_ViewMatrix;
 uniform mat4 won_ModelMatrix;
 
-uniform vec3 bodyColor;
+uniform vec4 bodyColor;
 
 void main()
 {
 	gl_Position = won_ProjectionMatrix * won_ViewMatrix * won_ModelMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
-	vertBodyColor = vec4(bodyColor.rgb, 1.0);
+	vertBodyColor = bodyColor;
 }
 )V0G0N";
 
@@ -139,7 +139,7 @@ void won::Defaults::LoadMaterial()
 {
 	UniformDataList datalist;
 
-	datalist.push_back(UniformData<Vector3>::GenData("bodyColor", UniformType::Vec3, { 1.0f, 1.0f, 1.0f }));
+	datalist.push_back(UniformData<Color>::GenData("bodyColor", UniformType::Color, { 255, 255, 255, 255 }));
 	datalist.push_back(UniformData<Texture>::GenData("bgTexture", UniformType::Texture, TextureManager::GetTexture(UNDEFINED_TEXTURE_NAME)));
 
 	MaterialManager::CreateMaterial(DEFAULT_MATERIAL_NAME, ShaderManager::GetShader(DEFAULT_SHADER_NAME), std::move(datalist));

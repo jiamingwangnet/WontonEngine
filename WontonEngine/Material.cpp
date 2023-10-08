@@ -81,6 +81,12 @@ void won::priv::MaterialBase::Activate() const
 			shader->SetTexture(finalData->name, finalData->value);
 			break;
 		}
+		case UniformType::Color:
+		{
+			UniformData<Color>* finalData = static_cast<UniformData<Color>*>(data.get());
+			shader->SetColor(finalData->name, finalData->value);
+			break;
+		}
 		}
 	}
 }

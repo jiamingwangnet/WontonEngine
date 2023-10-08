@@ -19,7 +19,8 @@ namespace won
 		Mat2,
 		Mat3,
 		Mat4,
-		Texture
+		Texture,
+		Color
 	};
 
 	namespace priv

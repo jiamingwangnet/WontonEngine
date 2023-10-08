@@ -12,7 +12,7 @@ void preload(won::Game& game)
 	won::TextureManager::CreateTexture("km", "./Assets/km.jpg");
 
 	won::UniformDataList datalist;
-	datalist.push_back(won::UniformData<won::Vector3>::GenData("bodyColor", won::UniformType::Vec3, { 1.0f, 237.0f/255.0f, 186.0f/255.0f }));
+	datalist.push_back(won::UniformData<won::Color>::GenData("bodyColor", won::UniformType::Color, { 255, 237, 186, 255 }));
 	datalist.push_back(won::UniformData<won::Texture>::GenData("bgTexture", won::UniformType::Texture, won::TextureManager::GetTexture("km")));
 
 	won::MaterialManager::CreateMaterial("km", won::ShaderManager::GetShader(won::Defaults::DEFAULT_SHADER_NAME), std::move(datalist));

@@ -72,6 +72,11 @@ void won::priv::ShaderBase::SetTexture(const std::string& name, Texture value) c
 	glUniform1i(GetUniformLoc(name), value->GetUnit());
 }
 
+void won::priv::ShaderBase::SetColor(const std::string& name, Color color) const
+{
+	SetVec4(name, won::Vector4{ (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f });
+}
+
 void won::priv::ShaderBase::Activate() const
 {
 	assert(std::this_thread::get_id() != Game::GetMainThreadId());
