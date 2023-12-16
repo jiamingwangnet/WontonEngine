@@ -35,5 +35,10 @@ public:
 		won::Entity* camera = game.CreateEntity<MyCamera>();
 
 		game.SetActiveCamera(camera);
+
+		won::Entity* testBox = game.CreateEntity<KMBox>();
+		won::cmp::Transform* testBoxTra = testBox->GetComponent<won::cmp::Transform>();
+
+		testBoxTra->Scale(won::Vector3{ 2.0f, 2.0f, 2.0f });
 	}
 };
