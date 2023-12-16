@@ -8,6 +8,9 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <cassert>
+
+#define CHECK_IF_RENDER_THREAD assert(std::this_thread::get_id() != Game::GetMainThreadId());
 
 namespace won
 {

@@ -24,7 +24,7 @@ unsigned int won::priv::TextureBase::GetUnit() const
 
 void won::priv::TextureBase::BindTexture()
 {
-	assert(std::this_thread::get_id() != Game::GetMainThreadId()); // check if its on the render thread
+	CHECK_IF_RENDER_THREAD // check if its on the render thread
 
 	unit = unitCounter++;
 	glActiveTexture(GL_TEXTURE0 + unit);
@@ -33,7 +33,7 @@ void won::priv::TextureBase::BindTexture()
 
 void won::priv::TextureBase::UnbindTexture()
 {
-	assert(std::this_thread::get_id() != Game::GetMainThreadId());
+	CHECK_IF_RENDER_THREAD
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	unitCounter--;
@@ -57,7 +57,7 @@ won::Texture won::TextureManager::CreateTexture(const std::string& name, const s
 
 won::Texture won::TextureManager::CreateTexture(const std::string& name, unsigned char* data, int width, int height, bool mipmap, TextureWrap wrapMethod, TextureFilter magFilter, TextureFilter minFilter)
 {
-	assert(std::this_thread::get_id() != Game::GetMainThreadId());
+	CHECK_IF_RENDER_THREAD
 
 	// generate texture
 	unsigned int texture;

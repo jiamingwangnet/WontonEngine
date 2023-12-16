@@ -64,7 +64,7 @@ void won::priv::Window::Init()
 
 void won::priv::Window::InitContext()
 {
-	assert(std::this_thread::get_id() != Game::GetMainThreadId());
+	CHECK_IF_RENDER_THREAD
 
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
 	if (glContext == nullptr) Error::ThrowError("Could not create an OpenGL context.", std::cout, __LINE__, __FILE__);
