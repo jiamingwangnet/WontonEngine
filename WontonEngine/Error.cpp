@@ -12,5 +12,5 @@ void won::Error::ThrowError(const std::string& message, std::ostream& output, in
 	std::string finalMsg = finalMsgstream.str();
 	output << finalMsg << std::endl;
 
-	throw std::exception{ finalMsg.c_str() };
+	throw std::runtime_error{ finalMsg.c_str() };
 }
