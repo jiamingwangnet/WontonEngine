@@ -65,7 +65,7 @@ const std::vector<unsigned int> won::Defaults::box_indices
 	20, 23, 22
 };
 
-const std::string won::Defaults::vertexShader = R"V0G0N(
+const std::string won::Defaults::vertexShader = R"SHADER(
 #version 330 core
 
 layout (location = 0) in vec3 position;
@@ -87,9 +87,9 @@ void main()
 	texCoord = uv;
 	vertBodyColor = bodyColor;
 }
-)V0G0N";
+)SHADER";
 
-const std::string won::Defaults::fragmentShader = R"V0G0N(
+const std::string won::Defaults::fragmentShader = R"SHADER(
 #version 330 core
 
 out vec4 FragColor;
@@ -103,7 +103,7 @@ void main()
 {
 	FragColor = texture(bgTexture, texCoord) * vec4(vertBodyColor.rgb, 1.0);
 }
-)V0G0N";
+)SHADER";
 
 void won::Defaults::Load(AssetType type)
 {
