@@ -65,6 +65,20 @@ const std::vector<unsigned int> won::Defaults::box_indices
 	20, 23, 22
 };
 
+const std::vector<won::Vertex> won::Defaults::plane_vertices
+{
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
+	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+};
+
+const std::vector<unsigned int> won::Defaults::plane_indices
+{
+	2, 0, 1,
+	0, 2, 3
+};
+
 const std::string won::Defaults::vertexShader = R"SHADER(
 #version 330 core
 
@@ -112,6 +126,7 @@ void won::Defaults::Load(AssetType type)
 	case AssetType::All:
 		LoadShader();
 		LoadBoxMesh();
+		LoadPlaneMesh();
 		LoadUndefinedTexture();
 		LoadMaterial();
 		break;
@@ -123,6 +138,9 @@ void won::Defaults::Load(AssetType type)
 		break;
 	case AssetType::BoxMesh:
 		LoadBoxMesh();
+		break;
+	case AssetType::PlaneMesh:
+		LoadPlaneMesh();
 		break;
 	case AssetType::UndefinedTexture:
 		LoadUndefinedTexture();
@@ -150,6 +168,11 @@ void won::Defaults::LoadBoxMesh()
 	MeshManager::CreateMesh(BOX_MESH_NAME, box_vertices, box_indices);
 }
 
+void won::Defaults::LoadPlaneMesh()
+{
+	MeshManager::CreateMesh(PLANE_MESH_NAME, plane_vertices, plane_indices);
+}
+
 void won::Defaults::LoadUndefinedTexture()
 {
 	unsigned char data[3] = { 255, 255, 255 };
@@ -160,4 +183,10 @@ void won::Defaults::Box::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 1.0f, 1.0f, 1.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
 	entity.AddComponent<cmp::Renderer>(MaterialManager::GetMaterial(DEFAULT_MATERIAL_NAME), MeshManager::GetMesh(BOX_MESH_NAME));
+}
+
+void won::Defaults::Plane::Create(Entity& entity) const
+{
+	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 1.0f, 1.0f, 1.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
+	entity.AddComponent<cmp::Renderer>(MaterialManager::GetMaterial(DEFAULT_MATERIAL_NAME), MeshManager::GetMesh(PLANE_MESH_NAME));
 }

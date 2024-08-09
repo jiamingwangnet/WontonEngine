@@ -16,12 +16,14 @@ namespace won
 			DefaultShader,
 			DefaultMaterial,
 			BoxMesh,
+			PlaneMesh,
 			UndefinedTexture
 		};
 	
 		static constexpr char* DEFAULT_SHADER_NAME = "WON_DefaultShader";
 		static constexpr char* DEFAULT_MATERIAL_NAME = "WON_DefaultMaterial";
 		static constexpr char* BOX_MESH_NAME = "WON_BoxMesh";
+		static constexpr char* PLANE_MESH_NAME = "WON_PlaneMesh";
 		static constexpr char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
 
 	public:
@@ -31,6 +33,7 @@ namespace won
 		static void LoadShader();
 		static void LoadMaterial();
 		static void LoadBoxMesh();
+		static void LoadPlaneMesh();
 		static void LoadUndefinedTexture();
 
 	public:
@@ -41,9 +44,18 @@ namespace won
 			void Create(Entity& entity) const override;
 		};
 
+		class Plane : public EntityCreator
+		{
+		private:
+			friend class Game;
+			void Create(Entity& entity) const override;
+		};
+
 	private:
 		static const std::vector<Vertex> box_vertices;
 		static const std::vector<unsigned int> box_indices;
+		static const std::vector<Vertex> plane_vertices;
+		static const std::vector<unsigned int> plane_indices;
 		static const std::string vertexShader;
 		static const std::string fragmentShader;
 	};
