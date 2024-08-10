@@ -16,4 +16,10 @@ void preload(won::Game& game)
 	datalist.push_back(won::UniformData<won::Texture>::GenData("bgTexture", won::UniformType::Texture, won::TextureManager::GetTexture("km")));
 
 	won::MaterialManager::CreateMaterial("km", won::ShaderManager::GetShader(won::Defaults::DEFAULT_SHADER_NAME), std::move(datalist));
+
+	won::UniformDataList datalist2;
+	datalist2.push_back(won::UniformData<won::Color>::GenData("bodyColor", won::UniformType::Color, { 10, 198, 50 }));
+	datalist2.push_back(won::UniformData<won::Texture>::GenData("bgTexture", won::UniformType::Texture, won::TextureManager::GetTexture(won::Defaults::UNDEFINED_TEXTURE_NAME)));
+
+	won::MaterialManager::CreateMaterial("Green", won::ShaderManager::GetShader(won::Defaults::DEFAULT_SHADER_NAME), std::move(datalist2));
 }

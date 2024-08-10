@@ -7,12 +7,15 @@
 #include <WontonEngine/Math/Random.h>
 #include "MyCamera.h"
 #include "KMBox.h"
+#include "Floor.h"
 
 class MainScene : public won::Scene
 {
 public:
 	void Init(won::Game& game) override
 	{
+		won::Entity* floor = game.CreateEntity<Floor>();
+
 		for (int i = 0; i < 500; i++)
 		{
 			won::Entity* box;
