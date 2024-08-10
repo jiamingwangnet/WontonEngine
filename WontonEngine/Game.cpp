@@ -59,7 +59,7 @@ void won::Game::Start()
 
 		std::cout << priv::UpdateLimiter::UpdatesPerSecond() << std::endl;
 
-		priv::UpdateLimiter::End(120.0f);
+		priv::UpdateLimiter::End(100.0f);
 	}
 
 	renderThread.join();
@@ -126,7 +126,9 @@ void won::Game::Render()
 	{
 		if (Input::HasQuit()) break;
 
+		entityMutex.lock();
 		renderer.Render(entities, *this);		
+		entityMutex.unlock();
 
 		window.SwapBuffer();
 
