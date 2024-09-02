@@ -33,39 +33,35 @@ void won::priv::ScreenRenderer::Render(const std::vector<std::unique_ptr<Entity>
 			GLint size;
 			GLenum type;
 			
-			const GLsizei bufSize = 32;
+			const GLsizei bufSize = 128;
 			GLchar name[bufSize];
 			GLsizei length;
 
 			glGetActiveUniform(shader->progId, (GLuint)i, bufSize, &length, &size, &type, name);
 
-			if (strcmp((const char*)name, WON_PROJECTIONMATRIX) == 0)
+			switch (CRC32_STR(name, length + 1))
 			{
+			case HASH_WON_PROJECTIONMATRIX:
 				shader->SetMat4(name, camera->CalculateProjection());
-			}
-			else if (strcmp((const char*)name, WON_VIEWMATRIX) == 0)
-			{
+				break;
+			case HASH_WON_VIEWMATRIX:
 				shader->SetMat4(name, camera->CalculateLookAt());
-			}
-			else if (strcmp((const char*)name, WON_MODELMATRIX) == 0)
-			{
+				break;
+			case HASH_WON_MODELMATRIX:
 				shader->SetMat4(name, transformation);
-			}
-			else if (strcmp((const char*)name, WON_FRAMES) == 0)
-			{
+				break;
+			case HASH_WON_FRAMES:
 				shader->SetInt(name, Time::GetRenderFrames());
-			}
-			else if (strcmp((const char*)name, WON_TIME) == 0)
-			{
+				break;
+			case HASH_WON_TIME:
 				shader->SetInt(name, (int)Time::GetTime());
-			}
-			else if (strcmp((const char*)name, WON_WINDOWWIDTH) == 0)
-			{
+				break;
+			case HASH_WON_WINDOWWIDTH:
 				shader->SetInt(name, game.GetWidth());
-			}
-			else if (strcmp((const char*)name, WON_WINDOWHEIGHT) == 0)
-			{
+				break;
+			case HASH_WON_WINDOWHEIGHT:
 				shader->SetInt(name, game.GetHeight());
+				break;
 			}
 		}
 
