@@ -39,6 +39,7 @@ void won::priv::ScreenRenderer::Render(const std::vector<std::unique_ptr<Entity>
 
 			glGetActiveUniform(shader->progId, (GLuint)i, bufSize, &length, &size, &type, name);
 
+			// precalculate values during update phase??
 			switch (CRC32_STR(name, length + 1))
 			{
 			case HASH_WON_PROJECTIONMATRIX:
