@@ -28,15 +28,14 @@ void won::priv::ScreenRenderer::Render(const std::vector<std::unique_ptr<Entity>
 		GLint count;
 		glGetProgramiv(shader->progId, GL_ACTIVE_UNIFORMS, &count);
 
-		for (GLint i = 0; i < count; i++)
-		{
-			GLint size;
-			GLenum type;
-			
-			const GLsizei bufSize = 128;
-			GLchar name[bufSize];
-			GLsizei length;
+		constexpr GLsizei bufSize = 128;
+		GLint size;
+		GLenum type;
+		GLsizei length;
+		GLchar name[bufSize];
 
+		for (GLint i = 0; i < count; i++)
+		{			
 			glGetActiveUniform(shader->progId, (GLuint)i, bufSize, &length, &size, &type, name);
 
 			// precalculate values during update phase??
