@@ -6,7 +6,7 @@
 #include "include/WontonEngine/Game.h"
 
 unsigned int won::priv::TextureBase::unitCounter = 0;
-won::priv::AssetManagerBase<won::priv::TextureBase, won::Texture> won::TextureManager::assetManager;
+won::priv::IAssetManager<won::priv::TextureBase, won::Texture> won::TextureManager::assetManager;
 
 won::priv::TextureBase::TextureBase(unsigned int id)
 	: id{id}

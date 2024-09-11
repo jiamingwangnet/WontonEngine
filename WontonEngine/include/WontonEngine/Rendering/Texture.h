@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "../AssetManagerBase.h"
+#include "../IAssetManager.h"
 
 namespace won
 {
@@ -63,6 +63,6 @@ namespace won
 		static Texture GetTexture(const std::string& name);
 
 	private:
-		static priv::AssetManagerBase<priv::TextureBase, Texture> assetManager;
+		static priv::IAssetManager<priv::TextureBase, Texture> assetManager;
 	};
 }

@@ -3,7 +3,7 @@
 #include "../Math/Vector.h"
 #include "../Math/Matrix.h"
 #include "Texture.h"
-#include "../AssetManagerBase.h"
+#include "../IAssetManager.h"
 #include "../Color.h"
 #include <string>
 #include <cstdint>
@@ -57,6 +57,6 @@ namespace won
 		static Shader GetShader(const std::string& name);
 
 	private:
-		static priv::AssetManagerBase<priv::ShaderBase, Shader> assetManager;
+		static priv::IAssetManager<priv::ShaderBase, Shader> assetManager;
 	};
 }

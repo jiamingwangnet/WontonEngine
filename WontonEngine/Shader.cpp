@@ -7,7 +7,7 @@
 // TODO: change to a file stream
 #include <iostream>
 
-won::priv::AssetManagerBase<won::priv::ShaderBase, won::Shader> won::ShaderManager::assetManager;
+won::priv::IAssetManager<won::priv::ShaderBase, won::Shader> won::ShaderManager::assetManager;
 
 won::priv::ShaderBase::ShaderBase(unsigned int programId)
 	: progId{programId}

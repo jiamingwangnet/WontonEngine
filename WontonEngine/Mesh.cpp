@@ -6,7 +6,7 @@
 #include <thread>
 #include "include/WontonEngine/Game.h"
 
-won::priv::AssetManagerBase<won::priv::MeshBase, won::Mesh> won::MeshManager::assetManager;
+won::priv::IAssetManager<won::priv::MeshBase, won::Mesh> won::MeshManager::assetManager;
 
 won::priv::MeshBase::MeshBase(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices)
 	: vertices{std::move(vertices)}, indices{std::move(indices)}, nIndices{(GLsizei)this->indices.size()}

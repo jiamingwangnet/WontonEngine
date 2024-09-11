@@ -4,7 +4,7 @@
 #include "../Vertex.h"
 #include "ScreenRenderer.h"
 #include <string>
-#include "../AssetManagerBase.h"
+#include "../IAssetManager.h"
 
 namespace won
 {
@@ -43,6 +43,6 @@ namespace won
 		static Mesh GetMesh(const std::string& name);
 
 	private:
-		static priv::AssetManagerBase<priv::MeshBase, Mesh> assetManager;
+		static priv::IAssetManager<priv::MeshBase, Mesh> assetManager;
 	};
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Shader.h"
-#include "../AssetManagerBase.h"
+#include "../IAssetManager.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -25,14 +25,14 @@ namespace won
 
 	namespace priv
 	{
-		struct UniformDataBase;
+		struct IUniformData;
 	}
 
-	using UniformDataList = std::vector<std::unique_ptr<priv::UniformDataBase>>;
+	using UniformDataList = std::vector<std::unique_ptr<priv::IUniformData>>;
 
 	namespace priv
 	{
-		struct UniformDataBase
+		struct IUniformData
 		{
 			UniformType type;
 			std::string name;
@@ -57,14 +57,14 @@ namespace won
 	using Material = priv::MaterialBase*;
 
 	template<class T>
-	struct UniformData : public priv::UniformDataBase
+	struct UniformData : public priv::IUniformData
 	{
 		UniformData(UniformType type, const std::string& name, T value);
 
 		T value;
 
 		// static function to generate a UniformData class
-		static std::unique_ptr<priv::UniformDataBase> GenData(const std::string& name, UniformType type, T value);
+		static std::unique_ptr<priv::IUniformData> GenData(const std::string& name, UniformType type, T value);
 	};
 
 	class MaterialManager
@@ -74,18 +74,18 @@ namespace won
 		static Material GetMaterial(const std::string& name);
 
 	private:
-		static priv::AssetManagerBase<priv::MaterialBase, Material> assetManager;
+		static priv::IAssetManager<priv::MaterialBase, Material> assetManager;
 	};
 
 	template<class T>
 	inline UniformData<T>::UniformData(UniformType type, const std::string& name, T value)
-		: priv::UniformDataBase{type, name}, value{value}
+		: priv::IUniformData{type, name}, value{value}
 	{}
 
 	template<class T>
-	inline std::unique_ptr<priv::UniformDataBase> UniformData<T>::GenData(const std::string& name, UniformType type, T value)
+	inline std::unique_ptr<priv::IUniformData> UniformData<T>::GenData(const std::string& name, UniformType type, T value)
 	{
-		std::unique_ptr<priv::UniformDataBase> data = std::make_unique<UniformData<T>>(type, name, value);
+		std::unique_ptr<priv::IUniformData> data = std::make_unique<UniformData<T>>(type, name, value);
 		
 		return data;
 	}

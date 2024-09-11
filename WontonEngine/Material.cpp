@@ -2,7 +2,7 @@
 #include "include/WontonEngine/Math/Matrix.h"
 #include "include/WontonEngine/Math/Vector.h"
 
-won::priv::AssetManagerBase<won::priv::MaterialBase, won::Material> won::MaterialManager::assetManager;
+won::priv::IAssetManager<won::priv::MaterialBase, won::Material> won::MaterialManager::assetManager;
 
 won::priv::MaterialBase::MaterialBase(Shader shader, UniformDataList&& data)
 	: shader{shader}, info{std::move(data)}
@@ -22,7 +22,7 @@ void won::priv::MaterialBase::Activate() const
 {
 	shader->Activate();
 
-	for (const std::unique_ptr<priv::UniformDataBase>& data : info)
+	for (const std::unique_ptr<priv::IUniformData>& data : info)
 	{
 		switch (data->type)
 		{
@@ -96,7 +96,7 @@ void won::priv::MaterialBase::Deactivate() const
 	shader->Deactivate();
 
 	// unbind textures
-	for (const std::unique_ptr<priv::UniformDataBase>& data : info)
+	for (const std::unique_ptr<priv::IUniformData>& data : info)
 	{
 		if (data->type == UniformType::Texture)
 		{
