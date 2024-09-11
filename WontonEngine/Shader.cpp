@@ -15,56 +15,46 @@ won::priv::ShaderBase::ShaderBase(unsigned int programId)
 
 void won::priv::ShaderBase::SetInt(const std::string & name, int value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniform1i(GetUniformLoc(name), value);
 }
 
 void won::priv::ShaderBase::SetFloat(const std::string& name, float value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniform1f(GetUniformLoc(name), value);
 }
 
 void won::priv::ShaderBase::SetVec2(const std::string& name, Vector2 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniform2f(GetUniformLoc(name), value[0], value[1]);
 }
 
 void won::priv::ShaderBase::SetVec3(const std::string& name, Vector3 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniform3f(GetUniformLoc(name), value[0], value[1], value[2]);
 }
 
 void won::priv::ShaderBase::SetVec4(const std::string& name, Vector4 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniform4f(GetUniformLoc(name), value[0], value[1], value[2], value[3]);
 }
 
 void won::priv::ShaderBase::SetMat2(const std::string& name, Matrix2x2 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniformMatrix2fv(GetUniformLoc(name), 1, GL_FALSE, &value[0][0]);
 }
 
 void won::priv::ShaderBase::SetMat3(const std::string& name, Matrix3x3 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniformMatrix3fv(GetUniformLoc(name), 1, GL_FALSE, &value[0][0]);
 }
 
 void won::priv::ShaderBase::SetMat4(const std::string& name, Matrix4x4 value) const
 {
-	CHECK_IF_RENDER_THREAD
 	glUniformMatrix4fv(GetUniformLoc(name), 1, GL_FALSE, &value[0][0]);
 }
 
 void won::priv::ShaderBase::SetTexture(const std::string& name, Texture value) const
 {
-	CHECK_IF_RENDER_THREAD
-
 	if (value->GetUnit() == (unsigned int)-1)
 		Error::ThrowError("Texture is not bound.", std::cout, __LINE__, __FILE__);
 
@@ -78,8 +68,6 @@ void won::priv::ShaderBase::SetColor(const std::string& name, Color color) const
 
 void won::priv::ShaderBase::Activate() const
 {
-	CHECK_IF_RENDER_THREAD
-
 	glUseProgram(progId);
 	//glEnableVertexAttribArray(0);
 	//glEnableVertexAttribArray(1);
@@ -88,8 +76,6 @@ void won::priv::ShaderBase::Activate() const
 
 void won::priv::ShaderBase::Deactivate() const
 {
-	CHECK_IF_RENDER_THREAD
-
 	glUseProgram(0);
 	//glDisableVertexAttribArray(0);
 	//glDisableVertexAttribArray(1);
@@ -98,8 +84,6 @@ void won::priv::ShaderBase::Deactivate() const
 
 uint32_t won::priv::ShaderBase::GetUniformLoc(const std::string& name) const
 {
-	CHECK_IF_RENDER_THREAD
-
 	GLint loc = glGetUniformLocation(progId, name.c_str());
 	if (loc == GL_INVALID_INDEX)
 		Error::ThrowError((std::string)"Uniform" + name + " not found in shader.", std::cout, __LINE__, __FILE__);
@@ -108,8 +92,6 @@ uint32_t won::priv::ShaderBase::GetUniformLoc(const std::string& name) const
 
 won::Shader won::ShaderManager::CreateShader(const std::string& name, const std::string& vertexShader, const std::string& fragmentShader)
 {
-	CHECK_IF_RENDER_THREAD
-
 	const char* vertSource = vertexShader.c_str();
 	const char* fragSource = fragmentShader.c_str();
 

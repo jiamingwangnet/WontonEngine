@@ -6,10 +6,8 @@
 #include <iostream>
 #include "include/WontonEngine/UpdateLimiter.h"
 
-std::thread::id won::Game::mainThreadId = std::this_thread::get_id();
-
-won::Game::Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync)
-	: window{width, height, name, flags, clear, vsync}, preload{preload}, scenes{scenes}
+won::Game::Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync, float targetFramerate, float targetUpdateRate)
+	: window{width, height, name, flags, clear, vsync}, preload{preload}, scenes{scenes}, targetFramerate{targetFramerate}, targetUpdateRate{ targetUpdateRate }
 {
 
 }
@@ -26,43 +24,55 @@ void won::Game::Start()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	window.Init();
-	renderThread = std::thread{ &Game::Render, this };
+	window.InitContext();
 
-	// wait until preloading is done
-	std::unique_lock lock{ preloadLock };
-	condv.wait(lock);
+	preload(*this);
 
 	while (true)
 	{
 		HandleSceneLoading();
 
-		priv::InputUpd::InputPoll();
-
 		priv::UpdateLimiter::Begin();
 
 		if (Input::HasQuit()) break;
 
-		// update entities
-		entityMutex.lock();
+		// render step delta between frames
+		priv::TimeUpd::UpdateRDelta();
 
-		for (std::unique_ptr<Entity>& entity : entities)
+		accumulator += priv::TimeUpd::RDeltaTime();
+
+		// fuzzy timing
+		while (accumulator > 1.0f/(targetUpdateRate + 1.0f))
 		{
-			EntityUpdate(*entity);
+			priv::InputUpd::InputPoll();
+
+			// update entities
+
+			for (std::unique_ptr<Entity>& entity : entities)
+			{
+				EntityUpdate(*entity);
+			}
+
+			// update time
+			priv::TimeUpd::IncUpdFrames();
+			priv::TimeUpd::UpdateDelta(); // delta between logic steps
+
+			priv::UpdateLimiter::CalcUpdatesPerSecond();
+
+			accumulator -= 1.0f / (targetUpdateRate - 1.0f);
+			if (accumulator < 0) accumulator = 0;
 		}
+		renderer.Render(entities, *this);
 
-		entityMutex.unlock();
+		window.SwapBuffer();
 
-		// update time
+		priv::TimeUpd::IncRdrFrames();
+		priv::UpdateLimiter::CalcRendersPerSecond();
 
-		priv::TimeUpd::IncUpdFrames();
-		priv::TimeUpd::UpdateDelta();
+		std::cout << "Renders/s: " << priv::UpdateLimiter::GetRendersPerSecond() << " Updates/s: " << priv::UpdateLimiter::GetUpdatesPerSecond() << '\n';
 
-		std::cout << priv::UpdateLimiter::UpdatesPerSecond() << std::endl;
-
-		priv::UpdateLimiter::End(100.0f);
+		priv::UpdateLimiter::End(targetFramerate);
 	}
-
-	renderThread.join();
 }
 
 void won::Game::SetActiveCamera(Entity* camera)
@@ -90,11 +100,6 @@ int won::Game::GetHeight() const
 	return window.GetHeight();
 }
 
-std::thread::id won::Game::GetMainThreadId()
-{
-	return Game::mainThreadId;
-}
-
 void won::Game::EntityInit(Entity& entity)
 {
 	for (Component* cmp : entity.GetComponents())
@@ -113,26 +118,13 @@ void won::Game::EntityUpdate(Entity& entity)
 
 void won::Game::Render()
 {
-	preloadLock.lock();
-
-	window.InitContext();
-	preload(*this);
-
-	preloadLock.unlock();
-
-	condv.notify_one();
+	
 
 	while (true)
 	{
 		if (Input::HasQuit()) break;
 
-		entityMutex.lock();
-		renderer.Render(entities, *this);		
-		entityMutex.unlock();
-
-		window.SwapBuffer();
-
-		priv::TimeUpd::IncRdrFrames();
+		
 	}
 }
 
@@ -142,9 +134,7 @@ void won::Game::HandleSceneLoading()
 
 	Scene* scene = scenes[nextSceneToLoad];
 
-	entityMutex.lock();
 	entities.clear();
-	entityMutex.unlock();
 
 	scene->Init(*this);
 

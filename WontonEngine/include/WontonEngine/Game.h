@@ -10,8 +10,6 @@
 #include <condition_variable>
 #include <cassert>
 
-#define CHECK_IF_RENDER_THREAD assert(std::this_thread::get_id() != Game::GetMainThreadId());
-
 namespace won
 {
 	class Game
@@ -19,7 +17,7 @@ namespace won
 	public:
 		using preload_func = std::function<void(Game&)>;
 	public:
-		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true);
+		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true, float targetFramerate = 60.0f, float targetUpdateRate = 60.0f);
 
 		void Start();
 		void SetActiveCamera(Entity* camera);
@@ -30,8 +28,6 @@ namespace won
 
 		int GetWidth() const;
 		int GetHeight() const;
-
-		static std::thread::id GetMainThreadId();
 
 	private:
 		void EntityInit(Entity& entity);
@@ -47,18 +43,15 @@ namespace won
 		preload_func preload;
 		std::vector<Scene*> scenes;
 
-		std::mutex entityMutex;
 		std::vector<std::unique_ptr<Entity>> entities;
 
-		std::mutex preloadLock; // make sure the game doesn't start updating till preloading is done
-		std::condition_variable condv;
-
-		std::thread renderThread;
-
 		int nextSceneToLoad = 0; // default to -1 if there is no scene
+		float targetFramerate;
+		float targetUpdateRate;
 
-		static std::thread::id mainThreadId;
+		float accumulator = 0.0;
 	};
+
 	template<class Creator>
 	inline Entity* Game::CreateEntity()
 	{

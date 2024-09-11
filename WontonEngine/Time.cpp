@@ -4,7 +4,9 @@
 int won::Time::rdrFrames = 0;
 int won::Time::updFrames = 0;
 float won::Time::deltaTime = .0f;
+float won::Time::rdeltaTime = .0f;
 uint64_t won::Time::lastFrameTime = 0;
+uint64_t won::Time::rlastFrameTime = 0;
 
 float won::Time::DeltaTime()
 {
@@ -33,4 +35,18 @@ void won::priv::TimeUpd::UpdateDelta()
 	Time::lastFrameTime = currentTime;
 
 	Time::deltaTime = (float)deltaMillisec / 1000.0f;
+}
+
+void won::priv::TimeUpd::UpdateRDelta()
+{
+	uint64_t currentTime = SDL_GetTicks();
+	uint64_t deltaMillisec = currentTime - Time::rlastFrameTime;
+	Time::rlastFrameTime = currentTime;
+
+	Time::rdeltaTime = (float)deltaMillisec / 1000.0f;
+}
+
+float won::priv::TimeUpd::RDeltaTime()
+{
+	return Time::rdeltaTime;
 }

@@ -24,8 +24,6 @@ unsigned int won::priv::TextureBase::GetUnit() const
 
 void won::priv::TextureBase::BindTexture()
 {
-	CHECK_IF_RENDER_THREAD // check if its on the render thread
-
 	unit = unitCounter++;
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, id);
@@ -33,8 +31,6 @@ void won::priv::TextureBase::BindTexture()
 
 void won::priv::TextureBase::UnbindTexture()
 {
-	CHECK_IF_RENDER_THREAD
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 	unitCounter--;
 	unit = (unsigned int)-1;
@@ -57,8 +53,6 @@ won::Texture won::TextureManager::CreateTexture(const std::string& name, const s
 
 won::Texture won::TextureManager::CreateTexture(const std::string& name, unsigned char* data, int width, int height, bool mipmap, TextureWrap wrapMethod, TextureFilter magFilter, TextureFilter minFilter)
 {
-	CHECK_IF_RENDER_THREAD
-
 	// generate texture
 	unsigned int texture;
 

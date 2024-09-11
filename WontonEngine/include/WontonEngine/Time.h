@@ -26,8 +26,10 @@ namespace won
 		static int rdrFrames;
 
 		static uint64_t lastFrameTime;
+		static uint64_t rlastFrameTime;
 
 		static float deltaTime;
+		static float rdeltaTime;
 	};
 
 	namespace priv
@@ -41,6 +43,9 @@ namespace won
 			static void IncRdrFrames() { Time::rdrFrames++; }
 
 			static void UpdateDelta();
+			static void UpdateRDelta();
+
+			static float RDeltaTime();
 		};
 	}
 }

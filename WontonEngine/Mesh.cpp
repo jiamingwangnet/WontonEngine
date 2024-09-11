@@ -18,8 +18,6 @@ won::priv::MeshBase::MeshBase(const std::vector<Vertex>& vertices, const std::ve
 
 void won::priv::MeshBase::GenerateMesh()
 {
-	CHECK_IF_RENDER_THREAD
-
 	// TODO: use glBufferSubData to avoid regenerating buffers
 	if (vao != 0 || vbo != 0 || ebo != 0) // delete old buffer after modification
 	{
