@@ -16,7 +16,7 @@ public:
 	{
 		won::Entity floor = game.CreateEntity<Floor>();
 
-		for (int i = 0; i < 1200; i++)
+		for (int i = 0; i < 5000; i++)
 		{
 			won::Entity box;
 

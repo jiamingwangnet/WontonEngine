@@ -23,7 +23,7 @@ namespace won
 			Camera() = default;
 
 			static void Init(Camera& self) {};
-			static void Update(Camera& self) {};
+			static void Update(Camera& self);
 
 			ProjectionType GetProjectionType() const;
 
@@ -38,6 +38,7 @@ namespace won
 			float fov;
 			float aspect;
 			Rect viewRect;
+			Matrix4x4 lookat{1.0f};
 		};
 	}
 }
