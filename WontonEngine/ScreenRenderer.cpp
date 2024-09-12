@@ -38,7 +38,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		GLenum type;
 		GLsizei length;
 		GLchar name[bufSize];
-
+		
 		for (GLint i = 0; i < count; i++)
 		{			
 			glGetActiveUniform(shader->progId, (GLuint)i, bufSize, &length, &size, &type, name);

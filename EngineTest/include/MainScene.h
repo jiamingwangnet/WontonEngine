@@ -20,14 +20,16 @@ public:
 		{
 			won::Entity box;
 
-			if (won::Random::RandomRange<int>(0, 1) == 1)
+			/*if (won::Random::RandomRange<int>(0, 1) == 1)
 			{
 				box = game.CreateEntity<KMBox>();
 			}
 			else
 			{
 				box = game.CreateEntity<won::Defaults::Box>();
-			}
+			}*/
+
+			box = game.CreateEntity<KMBox>();
 
 			won::cmp::Transform* transform = box.GetComponent<won::cmp::Transform>();
 			transform->Scale(won::Vector3{ won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f) });
