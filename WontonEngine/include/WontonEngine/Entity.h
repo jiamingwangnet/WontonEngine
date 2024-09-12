@@ -1,17 +1,22 @@
 #pragma once
 
-#include "Component.h"
 #include <vector>
 #include <memory>
+#include <utility>
+#include "ECManager.h"
+#include "ComponentManager.h"
+#include "Constants.h"
 
 namespace won
 {
 	class Game;
+	class Component;
 
 	class Entity
 	{
 	public:
-		Entity(Game& game);
+		Entity();
+		Entity(const EntId& id);
 
 		template<class Cmp>
 		Cmp* GetComponent() const;
@@ -21,32 +26,21 @@ namespace won
 
 		std::vector<Component*> GetComponents() const;
 
-		Game& GetGame() const;
-
+		EntId GetId() const;
 	private:
-		Game& game;
-		std::vector<std::unique_ptr<Component>> components;
+		EntId id;
 	};
 
 	template<class Cmp>
 	inline Cmp* Entity::GetComponent() const
 	{
-		for (const std::unique_ptr<Component>& cmp : components)
-		{
-			if (typeid(Cmp) == typeid(*cmp))
-			{
-				return static_cast<Cmp*>(cmp.get());
-			}
-		}
-		return nullptr;
+		return &priv::ECManager::GetComponentManager().GetComponent<Cmp>(id);
 	}
 
 	template<class Cmp, class ...Args>
 	inline Cmp* Entity::AddComponent(Args&& ...args)
 	{
-		components.push_back(std::make_unique<Cmp>(*this, std::forward<Args>(args)...));
-		components.back()->Init();
-
-		return static_cast<Cmp*>(components.back().get());
+		priv::ECManager::GetComponentManager().AddComponent<Cmp>(id, std::forward<Args>(args)...);
+		return &priv::ECManager::GetComponentManager().GetComponent<Cmp>(id);
 	}
 }

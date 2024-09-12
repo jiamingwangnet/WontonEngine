@@ -11,11 +11,13 @@ public:
 		: won::Component{entity}, amount{ amount }
 	{}
 
-	void Init() override {};
-	void Update() override
+	Spin() = default;
+
+	static void Init(Spin& self) {};
+	static void Update(Spin& self)
 	{
-		won::cmp::Transform* transf = entity.GetComponent<won::cmp::Transform>();
-		transf->Rotate(won::Vector3{ 1.0f, 1.0f, 1.0f } * amount * won::Time::DeltaTime());
+		won::cmp::Transform* transf = self.entity.GetComponent<won::cmp::Transform>();
+		transf->Rotate(won::Vector3{ 1.0f, 1.0f, 1.0f } * self.amount * won::Time::DeltaTime());
 	}
 
 private:

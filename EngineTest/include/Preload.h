@@ -4,9 +4,14 @@
 #include <WontonEngine/Defaults.h>
 #include <WontonEngine/Rendering/Texture.h>
 #include <WontonEngine/Rendering/Material.h>
+#include "Spin.h"
+#include "CameraController.h"
 
 void preload(won::Game& game)
 {
+	game.RegisterComponent<Spin>();
+	game.RegisterComponent<CameraController>();
+
 	won::Defaults::Load(won::Defaults::AssetType::All);
 
 	won::TextureManager::CreateTexture("km", "./Assets/km.jpg");

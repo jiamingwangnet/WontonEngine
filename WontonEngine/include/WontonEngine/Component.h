@@ -1,18 +1,16 @@
 #pragma once
 
+#include "Entity.h"
+
 namespace won
 {
-	class Entity;
-
 	class Component
 	{
 	public:
-		Component(Entity& entity);
-
-		virtual void Init() = 0;
-		virtual void Update() = 0;
+		Component(Entity entity);
+		Component() = default;
 
 	protected:
-		Entity& entity;
+		Entity entity;
 	};
 }

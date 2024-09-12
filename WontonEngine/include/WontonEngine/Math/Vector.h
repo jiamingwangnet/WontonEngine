@@ -19,6 +19,7 @@ namespace won
 		public:
 			Vector(std::initializer_list<T> values); // do checking if there are enough values
 			Vector(glm::vec<L, T, glm::packed_highp> vector); // conversion from glm::vec
+			Vector() = default;
 
 			Vector<L, T> operator+(const Vector<L, T>& vec) const;
 			Vector<L, T> operator-(const Vector<L, T>& vec) const;

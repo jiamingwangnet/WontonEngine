@@ -15,46 +15,48 @@ public:
 		: won::Component{entity}
 	{}
 
-	void Init() override
+	CameraController() = default;
+
+	static void Init(CameraController& self)
 	{
 
 	}
 
-	void Update() override
+	static void Update(CameraController& self)
 	{
-		won::cmp::Transform* transform = entity.GetComponent<won::cmp::Transform>();
+		won::cmp::Transform* transform = self.entity.GetComponent<won::cmp::Transform>();
 
 		if (won::Input::GetKey(won::KeyCode::Key_W))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Forward() * speed * won::Time::DeltaTime());
+			transform->SetPosition(transform->GetPosition() + transform->Forward() * self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_S))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Forward() * -speed * won::Time::DeltaTime());
+			transform->SetPosition(transform->GetPosition() + transform->Forward() * -self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_A))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Right() * -speed * won::Time::DeltaTime());
+			transform->SetPosition(transform->GetPosition() + transform->Right() * -self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_D))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Right() * speed * won::Time::DeltaTime());
+			transform->SetPosition(transform->GetPosition() + transform->Right() * self.speed * won::Time::DeltaTime());
 		}
 
 		if (won::Input::GetMouse(won::MouseButton::Button_Right))
 		{
 			won::Vector2 movement = won::Input::GetMouseMovement();
 
-			movement *= sens;
+			movement *= self.sens;
 			movement.y() *= -1.0f;
 
-			yRot += movement.x();
-			xRot += movement.y();
+			self.yRot += movement.x();
+			self.xRot += movement.y();
 
-			xRot = xRot > 89.0f ? 89.0f : xRot;
-			xRot = xRot < -89.0f ? -89.0f : xRot;
+			self.xRot = self.xRot > 89.0f ? 89.0f : self.xRot;
+			self.xRot = self.xRot < -89.0f ? -89.0f : self.xRot;
 
-			transform->SetRotation({ xRot, yRot, 0.0f });
+			transform->SetRotation({ self.xRot, self.yRot, 0.0f });
 		}
 	}
 

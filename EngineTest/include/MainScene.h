@@ -14,11 +14,11 @@ class MainScene : public won::Scene
 public:
 	void Init(won::Game& game) override
 	{
-		won::Entity* floor = game.CreateEntity<Floor>();
+		won::Entity floor = game.CreateEntity<Floor>();
 
 		for (int i = 0; i < 500; i++)
 		{
-			won::Entity* box;
+			won::Entity box;
 
 			if (won::Random::RandomRange<int>(0, 1) == 1)
 			{
@@ -29,18 +29,18 @@ public:
 				box = game.CreateEntity<won::Defaults::Box>();
 			}
 
-			won::cmp::Transform* transform = box->GetComponent<won::cmp::Transform>();
+			won::cmp::Transform* transform = box.GetComponent<won::cmp::Transform>();
 			transform->Scale(won::Vector3{ won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f) });
 			transform->Rotate(won::Vector3{ won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f) });
 			transform->SetPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
 		}
 
-		won::Entity* camera = game.CreateEntity<MyCamera>();
+		won::Entity camera = game.CreateEntity<MyCamera>();
 
 		game.SetActiveCamera(camera);
 
-		won::Entity* testBox = game.CreateEntity<KMBox>();
-		won::cmp::Transform* testBoxTra = testBox->GetComponent<won::cmp::Transform>();
+		won::Entity testBox = game.CreateEntity<KMBox>();
+		won::cmp::Transform* testBoxTra = testBox.GetComponent<won::cmp::Transform>();
 
 		testBoxTra->Scale(won::Vector3{ 2.0f, 2.0f, 2.0f });
 	}

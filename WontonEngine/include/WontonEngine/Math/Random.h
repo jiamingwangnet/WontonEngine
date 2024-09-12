@@ -8,7 +8,7 @@ namespace won
 	{
 	public:
 		template<class T>
-		static T RandomRange(T min, T max) = 0;
+		static T RandomRange(T min, T max) { return (T)-1; }
 
 		template<>
 		static int RandomRange<int>(int min, int max);

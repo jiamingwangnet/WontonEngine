@@ -13,8 +13,10 @@ namespace won
 		public:
 			Transform(Entity& entity, Vector3 position, Vector3 scale, Vector3 rotation);
 
-			void Init() override {};
-			void Update() override {};
+			Transform() = default;
+
+			static void Init(Transform& self) {};
+			static void Update(Transform& self) {};
 
 			void Translate(Vector3 translation);
 			void Scale(Vector3 scale);

@@ -20,8 +20,10 @@ namespace won
 			Camera(Entity& entity, float near, float far, float fov, float aspect);
 			Camera(Entity& entity, float near, float far, Rect viewRect);
 
-			void Init() override {};
-			void Update() override {};
+			Camera() = default;
+
+			static void Init(Camera& self) {};
+			static void Update(Camera& self) {};
 
 			ProjectionType GetProjectionType() const;
 

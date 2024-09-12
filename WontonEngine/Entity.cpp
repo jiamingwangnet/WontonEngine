@@ -1,21 +1,22 @@
 #include "include/WontonEngine/Entity.h"
+#include "include/WontonEngine/Component.h"
+#include "include/WontonEngine/Game.h"
 
-won::Entity::Entity(Game& game)
-	: game{game}
+won::Entity::Entity()
+	: id{(unsigned int)-1}
 {}
+
+won::Entity::Entity(const EntId& id)
+	: id{id}
+{
+}
 
 std::vector<won::Component*> won::Entity::GetComponents() const
 {
-	std::vector<won::Component*> ptrs;
-	for (const std::unique_ptr<Component>& cmp : components)
-	{
-		ptrs.push_back(cmp.get());
-	}
-
-	return ptrs;
+	return std::vector<won::Component*>{};
 }
 
-won::Game& won::Entity::GetGame() const
+won::EntId won::Entity::GetId() const
 {
-	return game;
+	return id;
 }

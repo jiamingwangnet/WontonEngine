@@ -13,8 +13,10 @@ namespace won
 		public:
 			Renderer(Entity& entity, Material material, Mesh mesh);
 
-			void Init() override {};
-			void Update() override {};
+			Renderer() = default;
+
+			static void Init(Renderer& self) {};
+			static void Update(Renderer& self) {};
 
 			Mesh GetMesh() const;
 			Material GetMaterial() const;
