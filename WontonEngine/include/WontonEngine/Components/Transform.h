@@ -3,6 +3,8 @@
 #include "../Component.h"
 #include "../Math/Vector.h"
 #include "../Math/Matrix.h"
+#include "../Rendering/Renderable.h"
+#include "../Rendering/ScreenRenderer.h"
 
 namespace won
 {
@@ -11,20 +13,20 @@ namespace won
 		class Transform : public Component
 		{
 		public:
-			Transform(Entity& entity, Vector3 position, Vector3 scale, Vector3 rotation);
+			Transform(Entity entity, Game* game, Vector3 position, Vector3 scale, Vector3 rotation);
 
 			Transform() = default;
 
 			static void Init(Transform& self) {};
 			static void Update(Transform& self) {};
 
-			void Translate(Vector3 translation);
-			void Scale(Vector3 scale);
-			void Rotate(Vector3 rotation); // degrees
+			Transform& Translate(Vector3 translation);
+			Transform& Scale(Vector3 scale);
+			Transform& Rotate(Vector3 rotation); // degrees
 
-			void SetPosition(Vector3 position);
-			void SetScale(Vector3 scale);
-			void SetRotation(Vector3 eulerAngles);
+			Transform& SetPosition(Vector3 position);
+			Transform& SetScale(Vector3 scale);
+			Transform& SetRotation(Vector3 eulerAngles);
 
 			const Vector3& GetPosition() const;
 			const Vector3& GetScale() const;
@@ -36,15 +38,16 @@ namespace won
 
 			Matrix4x4 CalculateMatrix() const;
 
+			// TODO: add wrapper class for glm::quat
+			static Matrix4x4 CalculateMatrix(Vector3 scale, Vector3 position, glm::quat rotation);
+
 		public:
 			static const Vector3 UP;
 			static const Vector3 FORWARD;
 			static const Vector3 RIGHT;
 
 		private:
-			Vector3 scale;
-			Vector3 position;
-			Vector3 rotation;
+			priv::ScreenRenderer* renderer;
 		};
 	}
 }

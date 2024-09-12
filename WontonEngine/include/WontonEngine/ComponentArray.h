@@ -5,6 +5,7 @@
 #include <functional>
 #include <unordered_map>
 #include "Constants.h"
+#include "ECManager.h"
 
 namespace won
 {
@@ -67,7 +68,7 @@ namespace won
 		template<class ...Args>
 		inline void ComponentArray<T>::Insert(EntId entity, Args && ...args)
 		{
-			components[size] = T{ (Entity)entity, std::forward<Args>(args)... };
+			components[size] = T{ (Entity)entity, ECManager::GetComponentManager().GetActiveGame(), std::forward<Args>(args)... };
 			entityToIndexMap[entity] = size;
 			indexToEntityMap[size] = entity;
 			newComponents.push_back(size);

@@ -3,6 +3,8 @@
 #include "../Component.h"
 #include "../Rendering/Material.h"
 #include "../Rendering/Mesh.h"
+#include "../Rendering/Renderable.h"
+#include "../Rendering/ScreenRenderer.h"
 
 namespace won
 {
@@ -11,7 +13,7 @@ namespace won
 		class Renderer : public Component
 		{
 		public:
-			Renderer(Entity& entity, Material material, Mesh mesh);
+			Renderer(Entity entity, Game* game, Material material, Mesh mesh);
 
 			Renderer() = default;
 
@@ -24,8 +26,7 @@ namespace won
 			void ActivateMaterial();
 
 		private:
-			Material material;
-			Mesh mesh;
+			priv::ScreenRenderer* renderer;
 		};
 	}
 }

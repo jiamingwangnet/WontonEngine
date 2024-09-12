@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "../Vertex.h"
-#include "ScreenRenderer.h"
 #include <string>
 #include "../IAssetManager.h"
 
@@ -10,6 +9,8 @@ namespace won
 {
 	namespace priv
 	{
+		class ScreenRenderer;
+
 		class MeshBase
 		{
 		public:

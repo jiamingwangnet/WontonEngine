@@ -8,6 +8,8 @@ namespace won
 	{
 		class ComponentManager;
 		class EntityManager;
+		template<class T>
+		class ComponentArray;
 
 		// middle-man
 		class ECManager
@@ -17,6 +19,10 @@ namespace won
 			static EntityManager& GetEntityManager();
 
 			friend class Entity;
+			friend class ComponentManager;
+			friend class EntityManager;
+			template<class T>
+			friend class ComponentArray;
 		};
 	}
 }

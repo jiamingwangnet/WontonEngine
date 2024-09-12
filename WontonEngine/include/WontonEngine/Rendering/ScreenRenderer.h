@@ -3,6 +3,9 @@
 #include "../Components/Camera.h"
 #include "../Entity.h"
 #include "../Math/Crypto.h"
+#include "Renderable.h"
+#include <unordered_map>
+#include <array>
 
 namespace won
 {
@@ -27,11 +30,23 @@ namespace won
 		class ScreenRenderer
 		{
 		public:
-			void Render(const std::vector<std::unique_ptr<Entity>>& entities, const Game& game);
+			ScreenRenderer();
+			ScreenRenderer(const ScreenRenderer&) = delete;
+
+			void Render(const Game& game);
 			void SetActiveCamera(cmp::Camera* camera);
 
+			void CreateRenderable(Entity entity);
+			Renderable* RetrieveRenderable(Entity entity);
+			bool HasRenderable(Entity entity);
+			void EntityDestroyed(Entity entity);
 		private:
 			cmp::Camera* camera = nullptr;
+
+			std::unique_ptr<std::array<Renderable, MAX_ENTITIES>> renderables;
+			std::unordered_map<EntId, std::size_t> entityToIndex{};
+			std::unordered_map<std::size_t, EntId> indexToEntity{};
+			std::size_t rdsize = 0;
 		};
 	}
 }

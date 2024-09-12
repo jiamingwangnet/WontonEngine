@@ -12,7 +12,7 @@ won::priv::EntityManager won::Game::entityManager{ won::Game::compManager };
 won::Game::Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync, float targetFramerate, float targetUpdateRate)
 	: window{width, height, name, flags, clear, vsync}, preload{preload}, scenes{scenes}, targetFramerate{targetFramerate}, targetUpdateRate{ targetUpdateRate }
 {
-
+	compManager.SetActiveGame(this);
 }
 
 void won::Game::Start()
@@ -66,7 +66,7 @@ void won::Game::Start()
 			accumulator -= 1.0f / (targetUpdateRate - 1.0f);
 			if (accumulator < 0) accumulator = 0;
 		}
-		//renderer.Render(entities, *this);
+		renderer.Render(*this);
 
 		window.SwapBuffer();
 
@@ -102,6 +102,17 @@ int won::Game::GetWidth() const
 int won::Game::GetHeight() const
 {
 	return window.GetHeight();
+}
+
+void won::Game::DestroyEntity(Entity entity)
+{
+	Game::entityManager.DestroyEntity(entity);
+	renderer.EntityDestroyed(entity);
+}
+
+won::priv::ScreenRenderer& won::Game::GetRenderer()
+{
+	return renderer;
 }
 
 void won::Game::HandleSceneLoading()

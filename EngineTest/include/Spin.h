@@ -7,8 +7,8 @@
 class Spin : public won::Component
 {
 public:
-	Spin(won::Entity& entity, float amount)
-		: won::Component{entity}, amount{ amount }
+	Spin(won::Entity entity, won::Game* game, float amount)
+		: won::Component{entity, game}, amount{ amount }
 	{}
 
 	Spin() = default;

@@ -9,6 +9,7 @@
 namespace won
 {
 	class Entity;
+	class Game;
 
 	namespace priv
 	{
@@ -35,12 +36,17 @@ namespace won
 
 			void EntityDestroyed(Entity entity);
 
+			void SetActiveGame(Game* game);
+			Game* GetActiveGame() const;
+
 		private:
 			// type hash, component array
 			std::unordered_map<std::size_t, std::shared_ptr<IComponentArray>> components;
 
 			unsigned int ncomponents = 0;
 			std::unordered_map<std::size_t, unsigned int> componentToId;
+
+			Game* game = nullptr;
 		};
 
 		template<class T>

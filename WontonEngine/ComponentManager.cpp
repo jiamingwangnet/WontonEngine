@@ -1,5 +1,6 @@
 #include "include/WontonEngine/ComponentManager.h"
 #include "include/WontonEngine/Entity.h"
+#include "include/WontonEngine/Game.h"
 
 void won::priv::ComponentManager::InitComponents()
 {
@@ -26,4 +27,14 @@ void won::priv::ComponentManager::EntityDestroyed(Entity entity)
 	{
 		cmp.second->EntityDestroyed(entity);
 	}
+}
+
+void won::priv::ComponentManager::SetActiveGame(Game* game)
+{
+	this->game = game;
+}
+
+won::Game* won::priv::ComponentManager::GetActiveGame() const
+{
+	return game;
 }

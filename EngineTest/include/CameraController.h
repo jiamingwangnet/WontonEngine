@@ -11,8 +11,8 @@
 class CameraController : public won::Component
 {
 public:
-	CameraController(won::Entity& entity)
-		: won::Component{entity}
+	CameraController(won::Entity entity, won::Game* game)
+		: won::Component{entity, game}
 	{}
 
 	CameraController() = default;
@@ -50,7 +50,7 @@ public:
 			movement *= self.sens;
 			movement.y() *= -1.0f;
 
-			self.yRot += movement.x();
+			self.yRot -= movement.x();
 			self.xRot += movement.y();
 
 			self.xRot = self.xRot > 89.0f ? 89.0f : self.xRot;

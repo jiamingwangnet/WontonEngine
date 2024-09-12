@@ -17,8 +17,8 @@ namespace won
 				Perspective
 			};
 		public:
-			Camera(Entity& entity, float near, float far, float fov, float aspect);
-			Camera(Entity& entity, float near, float far, Rect viewRect);
+			Camera(Entity entity, Game* game, float near, float far, float fov, float aspect);
+			Camera(Entity entity, Game* game, float near, float far, Rect viewRect);
 
 			Camera() = default;
 

@@ -17,6 +17,9 @@ namespace won
 		using preload_func = std::function<void(Game&)>;
 	public:
 		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true, float targetFramerate = 60.0f, float targetUpdateRate = 60.0f);
+		Game() = delete;
+		Game(const Game&) = delete;
+		Game& operator=(const Game&) = delete;
 
 		void Start();
 		void SetActiveCamera(Entity camera);
@@ -30,6 +33,10 @@ namespace won
 
 		template<class T>
 		void RegisterComponent();
+		
+		void DestroyEntity(Entity entity);
+
+		priv::ScreenRenderer& GetRenderer();
 	private:
 		void HandleSceneLoading(); // gets the next scene to load and loads it
 
