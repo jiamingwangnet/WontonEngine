@@ -19,7 +19,7 @@ void won::cmp::Camera::Update(Camera& self)
 
 	if (transform != nullptr)
 	{
-		position = transform->GetPosition();
+		position = transform->GetLocalPosition();
 		forwards = transform->Forward();
 	}
 

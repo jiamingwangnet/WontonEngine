@@ -24,13 +24,13 @@ namespace won
 			Transform& Scale(Vector3 scale);
 			Transform& Rotate(Vector3 rotation); // degrees
 
-			Transform& SetPosition(Vector3 position);
-			Transform& SetScale(Vector3 scale);
-			Transform& SetRotation(Vector3 eulerAngles);
+			Transform& SetLocalPosition(Vector3 position);
+			Transform& SetLocalScale(Vector3 scale);
+			Transform& SetLocalRotation(Vector3 eulerAngles);
 
-			const Vector3& GetPosition() const;
-			const Vector3& GetScale() const;
-			const Vector3& GetRotation() const; // returns in radians
+			const Vector3 GetLocalPosition() const;
+			const Vector3 GetLocalScale() const;
+			const Vector3 GetLocalRotation() const; // returns in radians
 
 			Transform& SetParent(Transform* transform);
 

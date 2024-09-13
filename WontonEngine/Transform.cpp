@@ -37,35 +37,35 @@ won::cmp::Transform& won::cmp::Transform::Rotate(Vector3 rotation)
 	return *this;
 }
 
-won::cmp::Transform& won::cmp::Transform::SetPosition(Vector3 position)
+won::cmp::Transform& won::cmp::Transform::SetLocalPosition(Vector3 position)
 {
 	renderer->RetrieveRenderable(entity)->position = position;
 	return *this;
 }
 
-won::cmp::Transform& won::cmp::Transform::SetScale(Vector3 scale)
+won::cmp::Transform& won::cmp::Transform::SetLocalScale(Vector3 scale)
 {
 	renderer->RetrieveRenderable(entity)->scale = scale;
 	return *this;
 }
 
-won::cmp::Transform& won::cmp::Transform::SetRotation(Vector3 eulerAngles)
+won::cmp::Transform& won::cmp::Transform::SetLocalRotation(Vector3 eulerAngles)
 {
 	renderer->RetrieveRenderable(entity)->rotation = glm::quat{ glm::radians((glm::vec3)eulerAngles) };
 	return *this;
 }
 
-const won::Vector3& won::cmp::Transform::GetPosition() const
+const won::Vector3 won::cmp::Transform::GetLocalPosition() const
 {
 	return renderer->RetrieveRenderable(entity)->position;
 }
 
-const won::Vector3& won::cmp::Transform::GetScale() const
+const won::Vector3 won::cmp::Transform::GetLocalScale() const
 {
 	return renderer->RetrieveRenderable(entity)->scale;
 }
 
-const won::Vector3& won::cmp::Transform::GetRotation() const
+const won::Vector3 won::cmp::Transform::GetLocalRotation() const
 {
 	return glm::eulerAngles(renderer->RetrieveRenderable(entity)->rotation);
 }

@@ -28,19 +28,19 @@ public:
 
 		if (won::Input::GetKey(won::KeyCode::Key_W))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Forward() * self.speed * won::Time::DeltaTime());
+			transform->SetLocalPosition(transform->GetLocalPosition() + transform->Forward() * self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_S))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Forward() * -self.speed * won::Time::DeltaTime());
+			transform->SetLocalPosition(transform->GetLocalPosition() + transform->Forward() * -self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_A))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Right() * -self.speed * won::Time::DeltaTime());
+			transform->SetLocalPosition(transform->GetLocalPosition() + transform->Right() * -self.speed * won::Time::DeltaTime());
 		}
 		if (won::Input::GetKey(won::KeyCode::Key_D))
 		{
-			transform->SetPosition(transform->GetPosition() + transform->Right() * self.speed * won::Time::DeltaTime());
+			transform->SetLocalPosition(transform->GetLocalPosition() + transform->Right() * self.speed * won::Time::DeltaTime());
 		}
 
 		if (won::Input::GetMouse(won::MouseButton::Button_Right))
@@ -56,7 +56,7 @@ public:
 			self.xRot = self.xRot > 89.0f ? 89.0f : self.xRot;
 			self.xRot = self.xRot < -89.0f ? -89.0f : self.xRot;
 
-			transform->SetRotation({ self.xRot, self.yRot, 0.0f });
+			transform->SetLocalRotation({ self.xRot, self.yRot, 0.0f });
 		}
 	}
 
