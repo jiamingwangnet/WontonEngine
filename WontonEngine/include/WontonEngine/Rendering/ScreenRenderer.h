@@ -40,6 +40,10 @@ namespace won
 			Renderable* RetrieveRenderable(Entity entity);
 			bool HasRenderable(Entity entity);
 			void EntityDestroyed(Entity entity);
+
+		private:
+			won::Matrix4x4 CalculateMatrix(Renderable& renderable);
+
 		private:
 			cmp::Camera* camera = nullptr;
 

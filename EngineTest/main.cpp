@@ -11,7 +11,7 @@ int main()
 
 	std::vector<won::Scene*> scenes{&mainScene};
 
-	won::Game game{ 800, 600, "Engine Test", (won::WinFlags)0, won::Color{30, 30, 30, 255}, preload, scenes, false, 60.0f, 60.0f };
+	won::Game game{ 800, 600, "Engine Test", (won::WinFlags)0, won::Color{30, 30, 30, 255}, preload, scenes, false, 0.0f, 60.0f };
 	
 	game.Start();
 

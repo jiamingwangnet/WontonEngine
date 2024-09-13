@@ -32,11 +32,14 @@ namespace won
 			const Vector3& GetScale() const;
 			const Vector3& GetRotation() const; // returns in radians
 
+			Transform& SetParent(Transform* transform);
+
 			Vector3 Up() const;
 			Vector3 Forward() const;
 			Vector3 Right() const;
 
 			Matrix4x4 CalculateMatrix() const;
+
 
 			// TODO: add wrapper class for glm::quat
 			static Matrix4x4 CalculateMatrix(Vector3 scale, Vector3 position, glm::quat rotation);

@@ -16,7 +16,7 @@ public:
 	{
 		won::Entity floor = game.CreateEntity<Floor>();
 
-		for (int i = 0; i < 5000; i++)
+		for (int i = 0; i < 800; i++)
 		{
 			won::Entity box;
 
@@ -44,6 +44,12 @@ public:
 		won::Entity testBox = game.CreateEntity<KMBox>();
 		won::cmp::Transform* testBoxTra = testBox.GetComponent<won::cmp::Transform>();
 
-		testBoxTra->Scale(won::Vector3{ 2.0f, 2.0f, 2.0f });
+		testBoxTra->SetPosition(won::Vector3{230.0f, 0.0f, 0.0f });
+		testBoxTra->Scale(won::Vector3{ 5.0f, 5.0f, 5.0f });
+
+		won::Entity testBox2 = game.CreateEntity<KMBox>();
+		won::cmp::Transform* testBoxTra2 = testBox2.GetComponent<won::cmp::Transform>();
+		testBoxTra2->SetPosition(won::Vector3{ 3.0f, 0.0f, 0.0f });
+		testBoxTra2->SetParent(testBoxTra);
 	}
 };

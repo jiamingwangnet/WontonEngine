@@ -70,6 +70,12 @@ const won::Vector3& won::cmp::Transform::GetRotation() const
 	return glm::eulerAngles(renderer->RetrieveRenderable(entity)->rotation);
 }
 
+won::cmp::Transform& won::cmp::Transform::SetParent(Transform* transform)
+{
+	renderer->RetrieveRenderable(entity)->parent = transform->entity;
+	return *this;
+}
+
 won::Vector3 won::cmp::Transform::Up() const
 {
 	return glm::normalize(glm::cross((glm::vec3)Right(), (glm::vec3)Forward()));
@@ -98,6 +104,11 @@ won::Matrix4x4 won::cmp::Transform::CalculateMatrix() const
 	model = glm::translate((glm::mat4)model, (glm::vec3)renderer->RetrieveRenderable(entity)->position);
 	model *= glm::mat4_cast(renderer->RetrieveRenderable(entity)->rotation);
 	model = glm::scale((glm::mat4)model, (glm::vec3)renderer->RetrieveRenderable(entity)->scale);
+
+	Entity parent = renderer->RetrieveRenderable(entity)->parent.GetId();
+
+	if (renderer->RetrieveRenderable(entity)->parent.GetId() != INVALID_ENTITY)
+		model = parent.GetComponent<Transform>()->CalculateMatrix() * model;
 
 	return model;
 }

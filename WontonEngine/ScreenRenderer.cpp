@@ -21,13 +21,8 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		Renderable& renderable = (*renderables)[i];
 		if (renderable.material == nullptr || renderable.mesh == nullptr) continue;
 
-		Matrix4x4 transformation{1};
-		transformation = cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
-
 		renderable.material->Activate();
 		Shader shader = renderable.material->GetShader();
-
-		Mesh mesh = renderable.mesh;
 
 		// find reserved names
 		GLint count;
@@ -53,7 +48,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 				shader->SetMat4(name, camera->CalculateLookAt());
 				break;
 			case HASH_WON_MODELMATRIX:
-				shader->SetMat4(name, transformation);
+				shader->SetMat4(name, CalculateMatrix(renderable));
 				break;
 			case HASH_WON_FRAMES:
 				shader->SetInt(name, Time::GetRenderFrames());
@@ -71,8 +66,8 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		}
 
 		// render mesh
-		glBindVertexArray(mesh->vao);
-		glDrawElements(GL_TRIANGLES, mesh->nIndices, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(renderable.mesh->vao);
+		glDrawElements(GL_TRIANGLES, renderable.mesh->nIndices, GL_UNSIGNED_INT, 0);
 
 		// unbind VAO
 		glBindVertexArray(0);
@@ -118,4 +113,10 @@ void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 	indexToEntity.erase(rdsize - 1);
 
 	rdsize--;
+}
+
+won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable)
+{
+	if (renderable.parent.GetId() == INVALID_ENTITY) return cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
+	return CalculateMatrix((*renderables)[entityToIndex[renderable.parent.GetId()]]) * cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
 }

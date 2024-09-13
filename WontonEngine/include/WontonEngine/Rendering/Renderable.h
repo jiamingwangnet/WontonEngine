@@ -13,9 +13,11 @@ namespace won
 			Material material = nullptr;
 			Mesh mesh = nullptr;
 
-			Vector3 scale;
-			Vector3 position;
-			glm::quat rotation;
+			Vector3 scale{ 1.0f, 1.0f, 1.0f };
+			Vector3 position{0.0f, 0.0f, 0.0f};
+			glm::quat rotation{0.0f, 0.0f, 0.0f, 1.0f};
+
+			Entity parent = INVALID_ENTITY; // no parent
 		};
 	}
 }
