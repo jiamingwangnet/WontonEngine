@@ -104,7 +104,7 @@ void main()
 	gl_Position = won_ProjectionMatrix * won_ViewMatrix * won_ModelMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
 	vertBodyColor = bodyColor;
-	fragNormal = normal;
+	fragNormal = (won_ModelMatrix * vec4(normal,1.0)).xyz;
 	fragPos = vec3(won_ModelMatrix * vec4(position, 1.0));
 }
 )SHADER";
@@ -121,6 +121,7 @@ in vec3 fragPos;
 
 uniform sampler2D bgTexture;
 uniform vec3 won_ViewPosition;
+uniform float smoothness;
 
 // TODO: extract into file later
 struct won_Light
@@ -133,8 +134,6 @@ struct won_Light
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
-
-	float smoothness;
 
 	float linear;
 	float quadratic;
@@ -151,18 +150,18 @@ vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir
 	vec3 reflectLight = reflect(-lightDir, normal);
 
 	float diff = max(dot(normal,lightDir), 0.0);
-	float spec = pow(max(dot(viewDir, reflectLight), 0.0), light.smoothness);
+	float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothness);
 
 	float distance = length(light.position - fragPos);
 	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
 
-	vec3 diffuse = diff * vec3(light.diffuse);
-	vec3 specular = spec * vec3(light.specular);
+	vec3 diffuse = light.diffuse.a * diff * light.diffuse.rgb;
+	vec3 specular = light.specular.a * spec * light.specular.rgb;
 
 	diffuse *= attenuation;
 	specular *= attenuation;
 
-	return vec4(diffuse + vec3(light.ambient) * attenuation + specular, 0.0);
+	return vec4(diffuse + light.ambient.a * light.ambient.rgb * attenuation + specular, 0.0);
 }
 
 void main()
@@ -223,6 +222,7 @@ void won::Defaults::LoadMaterial()
 
 	datalist.push_back(UniformData<Color>::GenData("bodyColor", UniformType::Color, { 255, 255, 255, 255 }));
 	datalist.push_back(UniformData<Texture>::GenData("bgTexture", UniformType::Texture, TextureManager::GetTexture(UNDEFINED_TEXTURE_NAME)));
+	datalist.push_back(UniformData<float>::GenData("smoothness", UniformType::Float, 8.0f));
 
 	MaterialManager::CreateMaterial(DEFAULT_MATERIAL_NAME, ShaderManager::GetShader(DEFAULT_SHADER_NAME), std::move(datalist));
 }
@@ -258,5 +258,5 @@ void won::Defaults::Plane::Create(Entity& entity) const
 void won::Defaults::PointLight::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
-	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0x00, 0x00, 0x00, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 8.0f);
+	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0x00, 0x00, 0x00, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 1.0f,1.0f,1.0f);
 }

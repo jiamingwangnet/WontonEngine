@@ -16,7 +16,6 @@
 							   M_WON_LIGHTS "[" #n "].ambient", \
 							   M_WON_LIGHTS "[" #n "].diffuse", \
 							   M_WON_LIGHTS "[" #n "].specular", \
-							   M_WON_LIGHTS "[" #n "].smoothness", \
 							   M_WON_LIGHTS "[" #n "].linear", \
 							   M_WON_LIGHTS "[" #n "].quadratic",
 
@@ -46,7 +45,7 @@ namespace won
 		static constexpr unsigned int HASH_WON_LIGHTS           = COMPILE_TIME_CRC32_STR_L(WON_LIGHTS, 11);
 		static constexpr unsigned int HASH_WON_VIEWPOSITION     = COMPILE_TIME_CRC32_STR_L(WON_VIEWPOSITION, 17);
 
-		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 9;
+		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 8;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
 		{
 			WON_LIGHTS_UNIFORMS(0)
@@ -152,7 +151,6 @@ namespace won
 			std::size_t lsize = 0;
 
 			static constexpr float POINT_LIGHT_CULL_THRESHOLD = 0.005f;
-			static constexpr float THRESHOLD_C = (POINT_LIGHT_CULL_THRESHOLD - 1.0) / (POINT_LIGHT_CULL_THRESHOLD);
 		};
 	}
 }

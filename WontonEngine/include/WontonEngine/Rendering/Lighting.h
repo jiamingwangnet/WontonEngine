@@ -21,11 +21,10 @@ namespace won
 			Vector3 position;
 			Vector3 direction; // Transform::FORWARD vector rotated by the transform rotation
 
-			Color ambient;
-			Color diffuse;
-			Color specular;
-
-			float smoothness; // TODO: extract to material uniform
+			// strength stored in alpha channel
+			fColor ambient; 
+			fColor diffuse;
+			fColor specular;
 
 			float linear;
 			float quadratic;

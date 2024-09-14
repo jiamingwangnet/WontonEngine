@@ -67,6 +67,11 @@ namespace won
 			void SetColorNoThrow(const std::string& name, Color color) const noexcept;
 			void SetColorNoThrow(const char* name, Color color) const noexcept;
 
+			void SetfColor(const std::string& name, fColor color) const;
+			void SetfColor(const const char* name, fColor color) const;
+			void SetfColorNoThrow(const std::string& name, fColor color) const noexcept;
+			void SetfColorNoThrow(const char* name, fColor color) const noexcept;
+
 		private:
 			void Activate() const;
 			void Deactivate() const;

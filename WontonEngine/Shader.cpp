@@ -219,6 +219,26 @@ void won::priv::ShaderBase::SetColorNoThrow(const char* name, Color color) const
 	glUniform4f(GetUniformLocNoThrow(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
+void won::priv::ShaderBase::SetfColor(const std::string& name, fColor color) const
+{
+	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
+}
+
+void won::priv::ShaderBase::SetfColor(const const char* name, fColor color) const
+{
+	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
+}
+
+void won::priv::ShaderBase::SetfColorNoThrow(const std::string& name, fColor color) const noexcept
+{
+	glUniform4f(GetUniformLocNoThrow(name), color.r, color.g, color.b, color.a);
+}
+
+void won::priv::ShaderBase::SetfColorNoThrow(const char* name, fColor color) const noexcept
+{
+	glUniform4f(GetUniformLocNoThrow(name), color.r, color.g, color.b, color.a);
+}
+
 void won::priv::ShaderBase::Activate() const
 {
 	glUseProgram(progId);

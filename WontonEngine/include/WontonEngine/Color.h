@@ -11,4 +11,12 @@ namespace won
 		uint8_t b;
 		uint8_t a;
 	};
+
+	struct fColor
+	{
+		float r;
+		float g;
+		float b;
+		float a;
+	};
 }

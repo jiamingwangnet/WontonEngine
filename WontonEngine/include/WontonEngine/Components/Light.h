@@ -11,13 +11,16 @@ namespace won
 		class Light : Component
 		{
 		public:
-			Light(Entity entity, Game* game, LightType type, Color ambient, Color diffuse, Color specular, float smoothness);
+			Light(Entity entity, Game* game, LightType type, Color ambient, Color diffuse, Color specular, float ambientStr, float diffuseStr, float specularStr);
 			Light() = default;
 
 			void SetAmbientColor(Color ambient);
 			void SetDiffuseColor(Color diffuse);
 			void SetSpecularColor(Color specular);
-			void SetSmoothness(float smoothness);
+
+			void SetAmbientStrength(float strength);
+			void SetDiffuseStrength(float strength);
+			void SetSpecularStrength(float strength);
 
 			void SetPointLinear(float linear);
 			void SetPointQuadratic(float quadratic);
