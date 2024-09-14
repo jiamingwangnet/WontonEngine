@@ -150,6 +150,9 @@ namespace won
 			std::unordered_map<EntId, std::size_t> lEntityToIndex{};
 			std::unordered_map<std::size_t, EntId> lIndexToEntity{};
 			std::size_t lsize = 0;
+
+			static constexpr float POINT_LIGHT_CULL_THRESHOLD = 0.005f;
+			static constexpr float THRESHOLD_C = (POINT_LIGHT_CULL_THRESHOLD - 1.0) / (POINT_LIGHT_CULL_THRESHOLD);
 		};
 	}
 }

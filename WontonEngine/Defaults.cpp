@@ -258,5 +258,5 @@ void won::Defaults::Plane::Create(Entity& entity) const
 void won::Defaults::PointLight::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
-	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0xff, 0xff, 0xff, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 8.0f);
+	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0x00, 0x00, 0x00, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 8.0f);
 }

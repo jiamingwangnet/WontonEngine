@@ -34,9 +34,17 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		if (glGetUniformLocation(shader->progId, WON_WINDOWHEIGHT) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWHEIGHT, game.GetHeight());
 		if (glGetUniformLocation(shader->progId, WON_VIEWPOSITION) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_VIEWPOSITION, camera->GetEntity().GetComponent<cmp::Transform>()->GetLocalPosition());
 		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, lsize);
-		
+
 		for (std::size_t i = 0; i < lsize; i++)
 		{
+			// point light culling (ignores ambient)
+			if ((*lights)[i].type == LightType::Point)
+			{
+				glm::vec3 tmp = (glm::vec3)((*lights)[i].position - renderable.position);
+				float dist = (-(*lights)[i].linear + glm::sqrt((*lights)[i].linear * (*lights)[i].linear - 4 * (*lights)[i].quadratic * THRESHOLD_C)) / (2 * (*lights)[i].quadratic);
+				if (glm::dot(tmp, tmp) > dist) continue;
+			}
+
 			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 0], (int)(*lights)[i].type);
 
 			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 1]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 1], (*lights)[i].position);
@@ -55,9 +63,6 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		// render mesh
 		glBindVertexArray(renderable.mesh->vao);
 		glDrawElements(GL_TRIANGLES, renderable.mesh->nIndices, GL_UNSIGNED_INT, 0);
-
-		// unbind VAO
-		glBindVertexArray(0);
 
 		renderable.material->Deactivate();
 
