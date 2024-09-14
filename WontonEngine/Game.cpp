@@ -33,6 +33,7 @@ void won::Game::Start()
 	compManager.RegisterComponent<cmp::Camera>();
 	compManager.RegisterComponent<cmp::Renderer>();
 	compManager.RegisterComponent<cmp::Transform>();
+	compManager.RegisterComponent<cmp::Light>();
 
 	preload(*this);
 

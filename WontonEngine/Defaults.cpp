@@ -5,43 +5,44 @@
 #include "include/WontonEngine/Rendering/Texture.h"
 #include "include/WontonEngine/Components/Transform.h"
 #include "include/WontonEngine/Components/Renderer.h"
+#include "include/WontonEngine/Components/Light.h"
 
 const std::vector<won::Vertex> won::Defaults::box_vertices
 {
 	//            positions               UV                Colors
 
 	// +/- z
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // top left 
 
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},   {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f, -0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},   {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},   {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f, -0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},   {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // top left 
 
 	// +/- y FIXME
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top left 
 
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{-0.5f, -0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f, -0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // top left 
 
 	// +/- x FIXME
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // bottom right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // bottom left
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // top left 
 
-    won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right    0
-	won::Vertex{{-0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right 1
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left  2
-	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}  // top left     3
+    won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // top right    0
+	won::Vertex{{-0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom right 1
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom left  2
+	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}  // top left     3
 };
 
 const std::vector<unsigned int> won::Defaults::box_indices
@@ -67,10 +68,10 @@ const std::vector<unsigned int> won::Defaults::box_indices
 
 const std::vector<won::Vertex> won::Defaults::plane_vertices
 {
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0}}, // top right
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0}}, // bottom right
-	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top left 
 };
 
 const std::vector<unsigned int> won::Defaults::plane_indices
@@ -85,9 +86,12 @@ const std::string won::Defaults::vertexShader = R"SHADER(
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 uv;
 layout (location = 2) in vec4 color;
+layout (location = 3) in vec3 normal;
 
 out vec2 texCoord;
 out vec4 vertBodyColor;
+out vec3 fragNormal;
+out vec3 fragPos;
 
 uniform mat4 won_ProjectionMatrix;
 uniform mat4 won_ViewMatrix;
@@ -100,6 +104,8 @@ void main()
 	gl_Position = won_ProjectionMatrix * won_ViewMatrix * won_ModelMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
 	vertBodyColor = bodyColor;
+	fragNormal = normal;
+	fragPos = vec3(won_ModelMatrix * vec4(position, 1.0));
 }
 )SHADER";
 
@@ -110,12 +116,71 @@ out vec4 FragColor;
 
 in vec2 texCoord;
 in vec4 vertBodyColor;
+in vec3 fragNormal;
+in vec3 fragPos;
 
 uniform sampler2D bgTexture;
+uniform vec3 won_ViewPosition;
+
+// TODO: extract into file later
+struct won_Light
+{
+	int type;
+
+	vec3 position;
+	vec3 direction;
+
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
+
+	float smoothness;
+
+	float linear;
+	float quadratic;
+};
+
+#define WON_MAX_LIGHTS 32
+
+uniform float won_Lights;
+uniform won_Light won_Lightsl[WON_MAX_LIGHTS];
+uniform int won_NumLights;
+
+vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
+{
+	vec3 lightDir = normalize(light.position - fragPos);
+	vec3 reflectLight = reflect(-lightDir, normal);
+
+	float diff = max(dot(normal,lightDir), 0.0);
+	float spec = pow(max(dot(viewDir, reflectLight), 0.0), light.smoothness);
+
+	float distance = length(light.position - fragPos);
+	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
+
+	vec3 diffuse = diff * vec3(light.diffuse) + light.direction - light.direction;
+	vec3 specular = spec * vec3(light.specular);
+
+	diffuse *= attenuation;
+	specular *= attenuation;
+
+	return vec4(diffuse + vec3(light.ambient) * attenuation + specular, 0.0) * won_Lights;
+}
 
 void main()
 {
-	FragColor = texture(bgTexture, texCoord) * vec4(vertBodyColor.rgb, 1.0);
+	vec3 norm = normalize(fragNormal);
+	vec4 lighting = vec4(0.0);
+	for(int i = 0; i < won_NumLights; i++)
+	{
+		switch(won_Lightsl[i].type)
+		{
+		case 1:
+			lighting += won_CalcPointLight(won_Lightsl[i], norm, fragPos, normalize(won_ViewPosition - fragPos));
+			break;
+		}
+	}
+
+	FragColor = texture(bgTexture, texCoord) * vec4(vertBodyColor.rgb, 1.0) * vec4(lighting.rgb, 1.0);
 }
 )SHADER";
 
@@ -189,4 +254,10 @@ void won::Defaults::Plane::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 1.0f, 1.0f, 1.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
 	entity.AddComponent<cmp::Renderer>(MaterialManager::GetMaterial(DEFAULT_MATERIAL_NAME), MeshManager::GetMesh(PLANE_MESH_NAME));
+}
+
+void won::Defaults::PointLight::Create(Entity& entity) const
+{
+	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
+	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0xff, 0xff, 0xff, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 8.0f);
 }

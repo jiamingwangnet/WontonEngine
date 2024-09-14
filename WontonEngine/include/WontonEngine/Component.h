@@ -10,6 +10,7 @@ namespace won
 		Component(Entity entity, Game* game);
 		Component() = default;
 
+		Entity GetEntity() const { return entity; }
 	protected:
 		Entity entity;
 		Game* game;

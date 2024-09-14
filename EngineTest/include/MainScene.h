@@ -8,6 +8,7 @@
 #include "MyCamera.h"
 #include "KMBox.h"
 #include "Floor.h"
+#include <WontonEngine/Components/Light.h>
 
 class MainScene : public won::Scene
 {
@@ -51,5 +52,14 @@ public:
 		won::cmp::Transform* testBoxTra2 = testBox2.GetComponent<won::cmp::Transform>();
 		testBoxTra2->SetLocalPosition(won::Vector3{ 3.0f, 0.0f, 0.0f });
 		testBoxTra2->SetParent(testBoxTra);
+
+		for (int i = 0; i < 10; i++)
+		{
+			won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
+			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
+			won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
+			lightcmp->SetPointLinear(0.07f);
+			lightcmp->SetPointQuadratic(0.017f);
+		}
 	}
 };

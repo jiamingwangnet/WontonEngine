@@ -8,6 +8,7 @@
 won::priv::ScreenRenderer::ScreenRenderer()
 {
 	renderables = std::make_unique<std::array<Renderable, MAX_ENTITIES>>();
+	lights = std::make_unique<std::array<LightInternal, MAX_LIGHTS>>();
 }
 
 void won::priv::ScreenRenderer::Render(const Game& game)
@@ -62,6 +63,34 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 			case HASH_WON_WINDOWHEIGHT:
 				shader->SetInt(name, game.GetHeight());
 				break;
+			case HASH_WON_VIEWPOSITION:
+				// TODO: optimise and use global position
+				shader->SetVec3(name, camera->GetEntity().GetComponent<cmp::Transform>()->GetLocalPosition());
+				break;
+			case HASH_WON_NUMLIGHTS:
+				shader->SetInt(name, lsize);
+				break;
+			case HASH_WON_LIGHTS:
+				// TODO: optimise by pre-generating strings
+				shader->SetFloat(name, 1.0f); // required to detect uniform
+
+				for (std::size_t i = 0; i < lsize; i++)
+				{
+					shader->SetInt((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].type", (int)(*lights)[i].type);
+
+					shader->SetVec3((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].position", (*lights)[i].position);
+					shader->SetVec3((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].direction", (*lights)[i].direction);
+
+					shader->SetColor((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].ambient", (*lights)[i].ambient);
+					shader->SetColor((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].diffuse", (*lights)[i].diffuse);
+					shader->SetColor((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].specular", (*lights)[i].specular);
+
+					shader->SetFloat((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].smoothness", (*lights)[i].smoothness);
+
+					shader->SetFloat((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].linear", (*lights)[i].linear);
+					shader->SetFloat((std::string)WON_LIGHTS + (std::string)"l[" + std::to_string(i) + "].quadratic", (*lights)[i].quadratic);
+				}
+				break;
 			}
 		}
 
@@ -102,17 +131,53 @@ bool won::priv::ScreenRenderer::HasRenderable(Entity entity)
 	return entityToIndex.find(entity.GetId()) != entityToIndex.end();
 }
 
+void won::priv::ScreenRenderer::CreateLight(Entity entity)
+{
+	lIndexToEntity[lsize] = entity.GetId();
+	lEntityToIndex[entity.GetId()] = lsize;
+	lsize++;
+}
+
+won::priv::LightInternal* won::priv::ScreenRenderer::RetrieveLight(Entity entity)
+{
+	assert(lEntityToIndex.find(entity.GetId()) != lEntityToIndex.end());
+	return &((*lights)[lEntityToIndex[entity.GetId()]]);
+}
+
+bool won::priv::ScreenRenderer::HasLight(Entity entity)
+{
+	return lEntityToIndex.find(entity.GetId()) != lEntityToIndex.end();
+}
+
 void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 {
-	std::size_t dindex = entityToIndex[entity.GetId()];
-	(*renderables)[dindex] = (*renderables)[rdsize - 1];
-	entityToIndex[indexToEntity[rdsize - 1]] = dindex;
-	indexToEntity[dindex] = indexToEntity[rdsize - 1];
+	// renderables
+	if(HasRenderable(entity))
+	{
+		std::size_t dindex = entityToIndex[entity.GetId()];
+		(*renderables)[dindex] = (*renderables)[rdsize - 1];
+		entityToIndex[indexToEntity[rdsize - 1]] = dindex;
+		indexToEntity[dindex] = indexToEntity[rdsize - 1];
 
-	entityToIndex.erase(entity.GetId());
-	indexToEntity.erase(rdsize - 1);
+		entityToIndex.erase(entity.GetId());
+		indexToEntity.erase(rdsize - 1);
 
-	rdsize--;
+		rdsize--;
+	}
+
+	// lights
+	if(HasLight(entity))
+	{
+		std::size_t dindex = lEntityToIndex[entity.GetId()];
+		(*lights)[dindex] = (*lights)[lsize - 1];
+		lEntityToIndex[lIndexToEntity[lsize - 1]] = dindex;
+		lIndexToEntity[dindex] = lIndexToEntity[lsize - 1];
+
+		lEntityToIndex.erase(entity.GetId());
+		lIndexToEntity.erase(lsize - 1);
+
+		lsize--;
+	}
 }
 
 won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable)

@@ -70,6 +70,11 @@ const won::Vector3 won::cmp::Transform::GetLocalRotation() const
 	return glm::eulerAngles(renderer->RetrieveRenderable(entity)->rotation);
 }
 
+const glm::quat won::cmp::Transform::GetLocalRotationQuat() const
+{
+	return renderer->RetrieveRenderable(entity)->rotation;
+}
+
 won::cmp::Transform& won::cmp::Transform::SetParent(Transform* transform)
 {
 	renderer->RetrieveRenderable(entity)->parent = transform->entity;

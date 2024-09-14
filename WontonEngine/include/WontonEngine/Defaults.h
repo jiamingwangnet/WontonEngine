@@ -51,6 +51,13 @@ namespace won
 			void Create(Entity& entity) const override;
 		};
 
+		class PointLight : public EntityCreator
+		{
+		private:
+			friend class Game;
+			void Create(Entity& entity) const override;
+		};
+
 	private:
 		static const std::vector<Vertex> box_vertices;
 		static const std::vector<unsigned int> box_indices;

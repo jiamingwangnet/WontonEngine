@@ -11,6 +11,7 @@ namespace won
 		Vector2 uv;
 
 		Color color;
+		Vector3 normal;
 	};
 
 	/*struct Vertex

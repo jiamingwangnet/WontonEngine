@@ -32,6 +32,9 @@ namespace won
 			const Vector3 GetLocalScale() const;
 			const Vector3 GetLocalRotation() const; // returns in radians
 
+			// TODO: encapsulate quaternion
+			const glm::quat GetLocalRotationQuat() const;
+
 			Transform& SetParent(Transform* transform);
 
 			Vector3 Up() const;
