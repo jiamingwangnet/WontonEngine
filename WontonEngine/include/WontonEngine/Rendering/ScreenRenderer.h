@@ -7,6 +7,18 @@
 #include <unordered_map>
 #include <array>
 #include "Lighting.h"
+#include <utility>
+
+#define M_WON_LIGHTS "won_Lights"
+#define WON_LIGHTS_UNIFORMS(n) M_WON_LIGHTS "[" #n "].type", \
+							   M_WON_LIGHTS "[" #n "].position", \
+							   M_WON_LIGHTS "[" #n "].direction",\
+							   M_WON_LIGHTS "[" #n "].ambient", \
+							   M_WON_LIGHTS "[" #n "].diffuse", \
+							   M_WON_LIGHTS "[" #n "].specular", \
+							   M_WON_LIGHTS "[" #n "].smoothness", \
+							   M_WON_LIGHTS "[" #n "].linear", \
+							   M_WON_LIGHTS "[" #n "].quadratic",
 
 namespace won
 {
@@ -20,7 +32,7 @@ namespace won
 		static constexpr const char* WON_WINDOWWIDTH      = "won_WindowWidth";
 		static constexpr const char* WON_WINDOWHEIGHT     = "won_WindowHeight";
 		static constexpr const char* WON_NUMLIGHTS	      = "won_NumLights";
-		static constexpr const char* WON_LIGHTS			  = "won_Lights";
+		static constexpr const char* WON_LIGHTS			  =  M_WON_LIGHTS;
 		static constexpr const char* WON_VIEWPOSITION     = "won_ViewPosition";
 
 		static constexpr unsigned int HASH_WON_PROJECTIONMATRIX = COMPILE_TIME_CRC32_STR_L(WON_PROJECTIONMATRIX, 21);
@@ -33,6 +45,76 @@ namespace won
 		static constexpr unsigned int HASH_WON_NUMLIGHTS        = COMPILE_TIME_CRC32_STR_L(WON_NUMLIGHTS, 14);
 		static constexpr unsigned int HASH_WON_LIGHTS           = COMPILE_TIME_CRC32_STR_L(WON_LIGHTS, 11);
 		static constexpr unsigned int HASH_WON_VIEWPOSITION     = COMPILE_TIME_CRC32_STR_L(WON_VIEWPOSITION, 17);
+
+		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 9;
+		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
+		{
+			WON_LIGHTS_UNIFORMS(0)
+			WON_LIGHTS_UNIFORMS(1)
+			WON_LIGHTS_UNIFORMS(2)
+			WON_LIGHTS_UNIFORMS(3)
+			WON_LIGHTS_UNIFORMS(4)
+			WON_LIGHTS_UNIFORMS(5)
+			WON_LIGHTS_UNIFORMS(6)
+			WON_LIGHTS_UNIFORMS(7)
+			WON_LIGHTS_UNIFORMS(8)
+			WON_LIGHTS_UNIFORMS(9)
+			WON_LIGHTS_UNIFORMS(10)
+			WON_LIGHTS_UNIFORMS(11)
+			WON_LIGHTS_UNIFORMS(12)
+			WON_LIGHTS_UNIFORMS(13)
+			WON_LIGHTS_UNIFORMS(14)
+			WON_LIGHTS_UNIFORMS(15)
+			WON_LIGHTS_UNIFORMS(16)
+			WON_LIGHTS_UNIFORMS(17)
+			WON_LIGHTS_UNIFORMS(18)
+			WON_LIGHTS_UNIFORMS(19)
+			WON_LIGHTS_UNIFORMS(20)
+			WON_LIGHTS_UNIFORMS(21)
+			WON_LIGHTS_UNIFORMS(22)
+			WON_LIGHTS_UNIFORMS(23)
+			WON_LIGHTS_UNIFORMS(24)
+			WON_LIGHTS_UNIFORMS(25)
+			WON_LIGHTS_UNIFORMS(26)
+			WON_LIGHTS_UNIFORMS(27)
+			WON_LIGHTS_UNIFORMS(28)
+			WON_LIGHTS_UNIFORMS(29)
+			WON_LIGHTS_UNIFORMS(30)
+			WON_LIGHTS_UNIFORMS(31)
+			WON_LIGHTS_UNIFORMS(32)
+			WON_LIGHTS_UNIFORMS(33)
+			WON_LIGHTS_UNIFORMS(34)
+			WON_LIGHTS_UNIFORMS(35)
+			WON_LIGHTS_UNIFORMS(36)
+			WON_LIGHTS_UNIFORMS(37)
+			WON_LIGHTS_UNIFORMS(38)
+			WON_LIGHTS_UNIFORMS(39)
+			WON_LIGHTS_UNIFORMS(40)
+			WON_LIGHTS_UNIFORMS(41)
+			WON_LIGHTS_UNIFORMS(42)
+			WON_LIGHTS_UNIFORMS(43)
+			WON_LIGHTS_UNIFORMS(44)
+			WON_LIGHTS_UNIFORMS(45)
+			WON_LIGHTS_UNIFORMS(46)
+			WON_LIGHTS_UNIFORMS(47)
+			WON_LIGHTS_UNIFORMS(48)
+			WON_LIGHTS_UNIFORMS(49)
+			WON_LIGHTS_UNIFORMS(50)
+			WON_LIGHTS_UNIFORMS(51)
+			WON_LIGHTS_UNIFORMS(52)
+			WON_LIGHTS_UNIFORMS(53)
+			WON_LIGHTS_UNIFORMS(54)
+			WON_LIGHTS_UNIFORMS(55)
+			WON_LIGHTS_UNIFORMS(56)
+			WON_LIGHTS_UNIFORMS(57)
+			WON_LIGHTS_UNIFORMS(58)
+			WON_LIGHTS_UNIFORMS(59)
+			WON_LIGHTS_UNIFORMS(60)
+			WON_LIGHTS_UNIFORMS(61)
+			WON_LIGHTS_UNIFORMS(62)
+			WON_LIGHTS_UNIFORMS(63)
+		};
+
 
 		class ScreenRenderer
 		{

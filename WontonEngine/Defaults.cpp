@@ -140,10 +140,9 @@ struct won_Light
 	float quadratic;
 };
 
-#define WON_MAX_LIGHTS 32
+#define WON_MAX_LIGHTS 64
 
-uniform float won_Lights;
-uniform won_Light won_Lightsl[WON_MAX_LIGHTS];
+uniform won_Light won_Lights[WON_MAX_LIGHTS];
 uniform int won_NumLights;
 
 vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -157,13 +156,13 @@ vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir
 	float distance = length(light.position - fragPos);
 	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
 
-	vec3 diffuse = diff * vec3(light.diffuse) + light.direction - light.direction;
+	vec3 diffuse = diff * vec3(light.diffuse);
 	vec3 specular = spec * vec3(light.specular);
 
 	diffuse *= attenuation;
 	specular *= attenuation;
 
-	return vec4(diffuse + vec3(light.ambient) * attenuation + specular, 0.0) * won_Lights;
+	return vec4(diffuse + vec3(light.ambient) * attenuation + specular, 0.0);
 }
 
 void main()
@@ -172,10 +171,10 @@ void main()
 	vec4 lighting = vec4(0.0);
 	for(int i = 0; i < won_NumLights; i++)
 	{
-		switch(won_Lightsl[i].type)
+		switch(won_Lights[i].type)
 		{
 		case 1:
-			lighting += won_CalcPointLight(won_Lightsl[i], norm, fragPos, normalize(won_ViewPosition - fragPos));
+			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, normalize(won_ViewPosition - fragPos));
 			break;
 		}
 	}
