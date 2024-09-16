@@ -18,6 +18,8 @@ namespace won
 			glm::quat rotation{0.0f, 0.0f, 0.0f, 1.0f};
 
 			Entity parent = INVALID_ENTITY; // no parent
+
+			bool tdirty = true;
 		};
 	}
 }

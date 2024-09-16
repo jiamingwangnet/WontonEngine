@@ -32,6 +32,13 @@ namespace won
 			const Vector3 GetLocalScale() const;
 			const Vector3 GetLocalRotation() const; // returns in radians
 
+			// global
+			const Vector3 GetPosition() const;
+			const Vector3 GetScale() const;
+			const Vector3 GetRotation() const;
+
+			const glm::quat GetRotationQuat() const;
+
 			// TODO: encapsulate quaternion
 			const glm::quat GetLocalRotationQuat() const;
 
@@ -42,6 +49,8 @@ namespace won
 			Vector3 Right() const;
 
 			Matrix4x4 CalculateMatrix() const;
+
+			bool IsDirty() const;
 
 
 			// TODO: add wrapper class for glm::quat

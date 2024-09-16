@@ -39,7 +39,7 @@ const std::vector<won::Vertex> won::Defaults::box_vertices
 	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // bottom left
 	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // top left 
 
-    won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // top right    0
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // top right    0
 	won::Vertex{{-0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom right 1
 	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom left  2
 	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}  // top left     3
@@ -54,7 +54,7 @@ const std::vector<unsigned int> won::Defaults::box_indices
 	4, 7, 6,
 
 	10, 8, 9, // top
-	8, 10, 11, 
+	8, 10, 11,
 
 	14, 13, 12, // bottom
 	12, 15, 14,
@@ -89,7 +89,6 @@ layout (location = 2) in vec4 color;
 layout (location = 3) in vec3 normal;
 
 out vec2 texCoord;
-out vec4 vertBodyColor;
 out vec3 fragNormal;
 out vec3 fragPos;
 
@@ -97,14 +96,11 @@ uniform mat4 won_ProjectionMatrix;
 uniform mat4 won_ViewMatrix;
 uniform mat4 won_ModelMatrix;
 
-uniform vec4 bodyColor;
-
 void main()
 {
 	gl_Position = won_ProjectionMatrix * won_ViewMatrix * won_ModelMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
-	vertBodyColor = bodyColor;
-	fragNormal = (won_ModelMatrix * vec4(normal,1.0)).xyz;
+	fragNormal = mat3(transpose(inverse(won_ModelMatrix))) * normal;
 	fragPos = vec3(won_ModelMatrix * vec4(position, 1.0));
 }
 )SHADER";
@@ -115,13 +111,16 @@ const std::string won::Defaults::fragmentShader = R"SHADER(
 out vec4 FragColor;
 
 in vec2 texCoord;
-in vec4 vertBodyColor;
 in vec3 fragNormal;
 in vec3 fragPos;
 
-uniform sampler2D bgTexture;
-uniform vec3 won_ViewPosition;
+uniform vec4 diffuse;
+uniform sampler2D diffuseTexture;
+uniform vec4 specular;
+uniform vec4 ambient;
 uniform float smoothness;
+
+uniform vec3 won_ViewPosition;
 
 // TODO: extract into file later
 struct won_Light
@@ -131,9 +130,8 @@ struct won_Light
 	vec3 position;
 	vec3 direction;
 
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
+	vec4 color;
+	float ambientStrength;
 
 	float linear;
 	float quadratic;
@@ -144,41 +142,47 @@ struct won_Light
 uniform won_Light won_Lights[WON_MAX_LIGHTS];
 uniform int won_NumLights;
 
-vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse)
 {
+	float distance = length(light.position - fragPos);
+	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
+
+	float smoothm = smoothness * 128.0;
+
 	vec3 lightDir = normalize(light.position - fragPos);
 	vec3 reflectLight = reflect(-lightDir, normal);
 
 	float diff = max(dot(normal,lightDir), 0.0);
-	float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothness);
+	float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothm);
 
-	float distance = length(light.position - fragPos);
-	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
-
-	vec3 diffuse = light.diffuse.a * diff * light.diffuse.rgb;
-	vec3 specular = light.specular.a * spec * light.specular.rgb;
+	vec3 diffuse = light.color.rgb * diff * tdiffuse.rgb;
+	vec3 specular = light.color.rgb * spec * specular.rgb;
+	vec3 ambient = light.ambientStrength * light.color.rgb * ambient.rgb;
 
 	diffuse *= attenuation;
 	specular *= attenuation;
+	ambient *= attenuation;
 
-	return vec4(diffuse + light.ambient.a * light.ambient.rgb * attenuation + specular, 0.0);
+	return vec4(diffuse + ambient + specular, 0.0); // - (diffuse + ambient + specular) + attenuation
 }
 
 void main()
 {
 	vec3 norm = normalize(fragNormal);
 	vec4 lighting = vec4(0.0);
+	vec3 tdiff = (texture(diffuseTexture, texCoord) * diffuse).rgb;
+
 	for(int i = 0; i < won_NumLights; i++)
 	{
 		switch(won_Lights[i].type)
 		{
 		case 1:
-			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, normalize(won_ViewPosition - fragPos));
+			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, normalize(won_ViewPosition - fragPos), tdiff);
 			break;
 		}
 	}
 
-	FragColor = texture(bgTexture, texCoord) * vec4(vertBodyColor.rgb, 1.0) * vec4(lighting.rgb, 1.0);
+	FragColor = vec4(lighting.rgb, diffuse.a);
 }
 )SHADER";
 
@@ -220,9 +224,11 @@ void won::Defaults::LoadMaterial()
 {
 	UniformDataList datalist;
 
-	datalist.push_back(UniformData<Color>::GenData("bodyColor", UniformType::Color, { 255, 255, 255, 255 }));
-	datalist.push_back(UniformData<Texture>::GenData("bgTexture", UniformType::Texture, TextureManager::GetTexture(UNDEFINED_TEXTURE_NAME)));
-	datalist.push_back(UniformData<float>::GenData("smoothness", UniformType::Float, 8.0f));
+	datalist.push_back(UniformData<Color>::GenData("diffuse", UniformType::Color, { 140, 140, 140, 255 }));
+	datalist.push_back(UniformData<Texture>::GenData("diffuseTexture", UniformType::Texture, TextureManager::GetTexture(UNDEFINED_TEXTURE_NAME)));
+	datalist.push_back(UniformData<Color>::GenData("specular", UniformType::Color, { 20, 20, 20, 255 }));
+	datalist.push_back(UniformData<Color>::GenData("ambient", UniformType::Color, { 0, 0, 0, 255 }));
+	datalist.push_back(UniformData<float>::GenData("smoothness", UniformType::Float, 1.0f / 128.0f));
 
 	MaterialManager::CreateMaterial(DEFAULT_MATERIAL_NAME, ShaderManager::GetShader(DEFAULT_SHADER_NAME), std::move(datalist));
 }
@@ -258,5 +264,5 @@ void won::Defaults::Plane::Create(Entity& entity) const
 void won::Defaults::PointLight::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
-	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 0x00, 0x00, 0x00, 0xff}, Color{ 0xff, 0xff, 0xff, 0xff }, Color{ 0xff, 0xff, 0xff, 0xff }, 1.0f,1.0f,1.0f);
+	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 30, 30, 30, 0xff }, 0.1f);
 }

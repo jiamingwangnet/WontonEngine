@@ -22,12 +22,15 @@ namespace won
 			Vector3 direction; // Transform::FORWARD vector rotated by the transform rotation
 
 			// strength stored in alpha channel
-			fColor ambient; 
-			fColor diffuse;
-			fColor specular;
+			fColor color;
+			float ambientStrength;
 
 			float linear;
 			float quadratic;
+
+			// all below are not part of the shader definition
+			// set uniform only when dirty is true
+			bool dirty = true;
 		};
 	}
 }

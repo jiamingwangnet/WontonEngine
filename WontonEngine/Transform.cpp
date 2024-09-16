@@ -21,37 +21,49 @@ won::cmp::Transform::Transform(Entity entity, Game* game, Vector3 position, Vect
 
 won::cmp::Transform& won::cmp::Transform::Translate(Vector3 translation)
 {
-	renderer->RetrieveRenderable(entity)->position += translation;
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->position += translation;
+	renderable->tdirty = true;
 	return *this;
 }
 
 won::cmp::Transform& won::cmp::Transform::Scale(Vector3 scale)
 {
-	renderer->RetrieveRenderable(entity)->scale *= scale;
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->scale *= scale;
+	renderable->tdirty = true;
 	return *this;
 }
 
 won::cmp::Transform& won::cmp::Transform::Rotate(Vector3 rotation)
 {
-	renderer->RetrieveRenderable(entity)->rotation *= glm::quat{ glm::quat{ glm::radians((glm::vec3)rotation) } };
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->rotation *= glm::quat{ glm::quat{ glm::radians((glm::vec3)rotation) } };
+	renderable->tdirty = true;
 	return *this;
 }
 
 won::cmp::Transform& won::cmp::Transform::SetLocalPosition(Vector3 position)
 {
-	renderer->RetrieveRenderable(entity)->position = position;
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->position = position;
+	renderable->tdirty = true;
 	return *this;
 }
 
 won::cmp::Transform& won::cmp::Transform::SetLocalScale(Vector3 scale)
 {
-	renderer->RetrieveRenderable(entity)->scale = scale;
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->scale = scale;
+	renderable->tdirty = true;
 	return *this;
 }
 
 won::cmp::Transform& won::cmp::Transform::SetLocalRotation(Vector3 eulerAngles)
 {
-	renderer->RetrieveRenderable(entity)->rotation = glm::quat{ glm::radians((glm::vec3)eulerAngles) };
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	renderable->rotation = glm::quat{ glm::radians((glm::vec3)eulerAngles) };
+	renderable->tdirty = true;
 	return *this;
 }
 
@@ -70,6 +82,13 @@ const won::Vector3 won::cmp::Transform::GetLocalRotation() const
 	return glm::eulerAngles(renderer->RetrieveRenderable(entity)->rotation);
 }
 
+const won::Vector3 won::cmp::Transform::GetPosition() const
+{
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	if (renderable->parent.GetId() == INVALID_ENTITY) return renderable->position;
+	return renderable->position + renderable->parent.GetComponent<Transform>()->GetPosition();
+}
+
 const glm::quat won::cmp::Transform::GetLocalRotationQuat() const
 {
 	return renderer->RetrieveRenderable(entity)->rotation;
@@ -77,6 +96,7 @@ const glm::quat won::cmp::Transform::GetLocalRotationQuat() const
 
 won::cmp::Transform& won::cmp::Transform::SetParent(Transform* transform)
 {
+	// TODO: set parent to INVALID when destroyed
 	renderer->RetrieveRenderable(entity)->parent = transform->entity;
 	return *this;
 }
@@ -116,6 +136,12 @@ won::Matrix4x4 won::cmp::Transform::CalculateMatrix() const
 		model = parent.GetComponent<Transform>()->CalculateMatrix() * model;
 
 	return model;
+}
+
+bool won::cmp::Transform::IsDirty() const
+{
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	return renderable->tdirty || (renderable->parent.GetId() != INVALID_ENTITY ? renderable->parent.GetComponent<Transform>()->IsDirty() : false);
 }
 
 won::Matrix4x4 won::cmp::Transform::CalculateMatrix(Vector3 scale, Vector3 position, glm::quat rotation)

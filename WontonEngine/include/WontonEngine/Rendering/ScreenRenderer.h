@@ -13,9 +13,8 @@
 #define WON_LIGHTS_UNIFORMS(n) M_WON_LIGHTS "[" #n "].type", \
 							   M_WON_LIGHTS "[" #n "].position", \
 							   M_WON_LIGHTS "[" #n "].direction",\
-							   M_WON_LIGHTS "[" #n "].ambient", \
-							   M_WON_LIGHTS "[" #n "].diffuse", \
-							   M_WON_LIGHTS "[" #n "].specular", \
+							   M_WON_LIGHTS "[" #n "].color", \
+							   M_WON_LIGHTS "[" #n "].ambientStrength", \
 							   M_WON_LIGHTS "[" #n "].linear", \
 							   M_WON_LIGHTS "[" #n "].quadratic",
 
@@ -45,7 +44,7 @@ namespace won
 		static constexpr unsigned int HASH_WON_LIGHTS           = COMPILE_TIME_CRC32_STR_L(WON_LIGHTS, 11);
 		static constexpr unsigned int HASH_WON_VIEWPOSITION     = COMPILE_TIME_CRC32_STR_L(WON_VIEWPOSITION, 17);
 
-		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 8;
+		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 7;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
 		{
 			WON_LIGHTS_UNIFORMS(0)
@@ -136,6 +135,7 @@ namespace won
 
 		private:
 			won::Matrix4x4 CalculateMatrix(Renderable& renderable);
+			bool IsTransformDirty(Renderable& renderable);
 
 		private:
 			cmp::Camera* camera = nullptr;
@@ -150,7 +150,10 @@ namespace won
 			std::unordered_map<std::size_t, EntId> lIndexToEntity{};
 			std::size_t lsize = 0;
 
+			std::array<std::size_t, MAX_LIGHTS> lIndexToEIndex;
+
 			static constexpr float POINT_LIGHT_CULL_THRESHOLD = 0.005f;
+			static constexpr float CTHRESHOLD = ((POINT_LIGHT_CULL_THRESHOLD - 1.0) / (POINT_LIGHT_CULL_THRESHOLD));
 		};
 	}
 }
