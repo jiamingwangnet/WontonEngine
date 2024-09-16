@@ -73,7 +73,7 @@ void won::Game::Start()
 
 		priv::TimeUpd::IncRdrFrames();
 		priv::UpdateLimiter::CalcRendersPerSecond();
-
+		
 		std::cout << "Renders/s: " << priv::UpdateLimiter::GetRendersPerSecond() << " Updates/s: " << priv::UpdateLimiter::GetUpdatesPerSecond() << '\n';
 
 		priv::UpdateLimiter::End(targetFramerate);

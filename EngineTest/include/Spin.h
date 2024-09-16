@@ -27,16 +27,16 @@ public:
 		{
 			if (won::Random::RandomRange<int>(0, 1))
 			{
-				self.game->DestroyEntity(self.entity);
-			}
-			else
-			{
 				won::Entity box = self.game->CreateEntity<KMBox>();
 
 				won::cmp::Transform* transform = box.GetComponent<won::cmp::Transform>();
 				transform->Scale(won::Vector3{ won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f), won::Random::RandomRange<float>(0.5f, 5.0f) });
 				transform->Rotate(won::Vector3{ won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f), won::Random::RandomRange<float>(0.0f, 360.0f) });
-				transform->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
+				transform->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(-40.0f, 40.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
+			}
+			else
+			{
+				self.game->DestroyEntity(self.entity);
 			}
 		}
 	}
