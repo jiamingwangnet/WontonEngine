@@ -29,6 +29,8 @@ namespace won
 
 			Matrix4x4 CalculateLookAt();
 			Matrix4x4 CalculateProjection();
+		private:
+			Matrix4x4 ReturnProjection();
 
 		private:
 			ProjectionType projType;
@@ -39,6 +41,8 @@ namespace won
 			float aspect;
 			Rect viewRect;
 			Matrix4x4 lookat{1.0f};
+
+			Matrix4x4 projection{ 1.0f };
 		};
 	}
 }
