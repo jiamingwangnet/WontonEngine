@@ -9,6 +9,8 @@ won::priv::ScreenRenderer::ScreenRenderer()
 {
 	renderables = std::make_unique<std::array<Renderable, MAX_ENTITIES>>();
 	lights = std::make_unique<std::array<LightInternal, MAX_LIGHTS>>();
+
+	threadPool.Start();
 }
 
 void won::priv::ScreenRenderer::Render(const Game& game)
@@ -26,10 +28,26 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		}
 	}
 
+	// calculate matrices
+	for (std::size_t i = 0; i < rdsize; i++)
+	{
+		Renderable* renderable = &((*renderables)[i]);
+		if (renderable->tdirty)
+		{
+			threadPool.QueueJob(
+				[this, renderable]() {
+					Matrix4x4 model{ 1.0f };
+					renderable->modelMatCache = CalculateMatrix(*renderable, model);
+				}
+			);
+		}
+	};
+
+	threadPool.WaitTillDone();
+
 	Matrix4x4 projection = camera->CalculateProjection();
 	Matrix4x4 lookat = camera->CalculateLookAt();
 	Vector3 camPos = camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition();
-	Matrix4x4 model{ 1.0f }; // doesnt change but works??
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -52,13 +70,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, (int)lsize);
 
 		// have to set a different model matrix for each object
-		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX)
-		{
-			if (renderable.tdirty)
-				renderable.modelMatCache = CalculateMatrix(renderable, model); // TODO: multithread calculations
-			
-			shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
-		}
+		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
 
 		for (std::size_t i = 0; i < dirtyLsize; i++)
 		{

@@ -8,6 +8,7 @@
 #include <array>
 #include "Lighting.h"
 #include <utility>
+#include "../ThreadPool.h"
 
 #define M_WON_LIGHTS "won_Lights"
 #define WON_LIGHTS_UNIFORMS(n) M_WON_LIGHTS "[" #n "].type", \
@@ -223,6 +224,7 @@ namespace won
 
 			/*static constexpr float POINT_LIGHT_CULL_THRESHOLD = 0.005f;
 			static constexpr float CTHRESHOLD = ((POINT_LIGHT_CULL_THRESHOLD - 1.0) / (POINT_LIGHT_CULL_THRESHOLD));*/
+			ThreadPool threadPool;
 		};
 	}
 }
