@@ -16,8 +16,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 	if (camera == nullptr) return;
 
 	// find dirty lights
-	std::array<std::size_t, MAX_LIGHTS> dirtyLights;
-	std::size_t dirtyLsize = 0;
+	dirtyLsize = 0;
 	for (int i = 0; i < lsize; i++)
 	{
 		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
@@ -30,6 +29,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 	Matrix4x4 projection = camera->CalculateProjection();
 	Matrix4x4 lookat = camera->CalculateLookAt();
 	Vector3 camPos = camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition();
+	Matrix4x4 model{ 1.0f }; // doesnt change but works??
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -49,11 +49,14 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		if (glGetUniformLocation(shader->progId, WON_WINDOWWIDTH) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWWIDTH, game.GetWidth());
 		if (glGetUniformLocation(shader->progId, WON_WINDOWHEIGHT) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWHEIGHT, game.GetHeight());
 		if (glGetUniformLocation(shader->progId, WON_VIEWPOSITION) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_VIEWPOSITION, camPos);
-		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, lsize);
+		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, (int)lsize);
 
+		// have to set a different model matrix for each object
 		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX)
 		{
-			if (renderable.tdirty) renderable.modelMatCache = CalculateMatrix(renderable);
+			if (renderable.tdirty)
+				renderable.modelMatCache = CalculateMatrix(renderable, model); // TODO: multithread calculations
+			
 			shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
 		}
 
@@ -177,10 +180,11 @@ void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 	}
 }
 
-won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable)
+won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable, Matrix4x4& model)
 {
-	if (renderable.parent.GetId() == INVALID_ENTITY) return cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
-	return CalculateMatrix((*renderables)[entityToIndex[renderable.parent.GetId()]]) * cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
+	if (renderable.parent.GetId() == INVALID_ENTITY)
+		return cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation, model);
+	return CalculateMatrix((*renderables)[entityToIndex[renderable.parent.GetId()]], model) * cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation, model);
 }
 
 bool won::priv::ScreenRenderer::IsTransformDirty(Renderable& renderable)

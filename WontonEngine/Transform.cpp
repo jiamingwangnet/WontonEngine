@@ -138,7 +138,7 @@ won::Matrix4x4 won::cmp::Transform::CalculateMatrix() const
 	return model;
 }
 
-won::Matrix4x4 won::cmp::Transform::CalculateMatrix(Vector3 scale, Vector3 position, glm::quat rotation)
+won::Matrix4x4 won::cmp::Transform::CalculateMatrix(const Vector3& scale, const Vector3& position, const glm::quat& rotation)
 {
 	Matrix4x4 model{ 1.0f };
 
@@ -151,4 +151,17 @@ won::Matrix4x4 won::cmp::Transform::CalculateMatrix(Vector3 scale, Vector3 posit
 	model[2] *= scale[2];
 
 	return model;
+}
+
+won::Matrix4x4& won::cmp::Transform::CalculateMatrix(const Vector3& scale, const Vector3& position, const glm::quat& rotation, Matrix4x4 matOut)
+{
+	matOut[3][0] = position.x();
+	matOut[3][1] = position.y();
+	matOut[3][2] = position.z();
+	matOut *= glm::mat4_cast(rotation);
+	matOut[0] *= scale[0];
+	matOut[1] *= scale[1];
+	matOut[2] *= scale[2];
+
+	return matOut;
 }

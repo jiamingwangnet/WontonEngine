@@ -62,14 +62,14 @@ public:
 		testBoxTra2->SetLocalPosition(won::Vector3{ 3.0f, 0.0f, 0.0f });
 		testBoxTra2->SetParent(testBoxTra);
 
-		for (int i = 0; i < 32; i++)
+		for (int i = 0; i < 64; i++)
 		{
 			won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
 			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(0.0f, 40.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
 			won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
-			lightcmp->SetColor({ 90, 90, 90, 0xff });
-			lightcmp->SetPointLinear(0.07f);
-			lightcmp->SetPointQuadratic(0.017f);
+			lightcmp->SetColor({ 30, 30, 30, 0xff });
+			lightcmp->SetPointLinear(0.045f);
+			lightcmp->SetPointQuadratic(0.0075f);
 		}
 
 		won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
@@ -77,11 +77,11 @@ public:
 		won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
 		lightcmp->SetPointLinear(0.027f);
 		lightcmp->SetPointQuadratic(0.0028f);
-		lightcmp->SetColor({ 135, 135, 135, 0xff });
+		lightcmp->SetColor({ 255, 255, 255, 0xff });
 		//lightcmp->SetAmbientStrength(0.05f);
 
 		won::Entity light2 = game.CreateEntity<won::Defaults::PointLight>();
-		light2.GetComponent<won::cmp::Transform>()->SetLocalPosition({ 0.0f, 3.0f, 0.0f });
+		light2.GetComponent<won::cmp::Transform>()->SetLocalPosition({ 0.0f, 1.0f, 0.0f });
 		won::cmp::Light* light2cmp = light2.GetComponent<won::cmp::Light>();
 		light2cmp->SetPointLinear(0.09f);
 		light2cmp->SetPointQuadratic(0.032f);

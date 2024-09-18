@@ -6,6 +6,7 @@
 #include "include/WontonEngine/Components/Transform.h"
 #include "include/WontonEngine/Components/Renderer.h"
 #include "include/WontonEngine/Components/Light.h"
+#include "include/WontonEngine/Constants.h"
 
 const std::vector<won::Vertex> won::Defaults::box_vertices
 {
@@ -136,9 +137,8 @@ struct won_Light
 	float linear;
 	float quadratic;
 };
-
-#define WON_MAX_LIGHTS 64
-
+#define WON_MAX_LIGHTS )SHADER" S_WON_MAX_LIGHTS
+R"SHADER(
 uniform won_Light won_Lights[WON_MAX_LIGHTS];
 uniform int won_NumLights;
 

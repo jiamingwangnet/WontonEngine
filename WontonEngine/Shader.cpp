@@ -103,32 +103,32 @@ void won::priv::ShaderBase::SetFloatNoThrow(const std::string& name, float value
 	glUniform1f(GetUniformLocNoThrow(name), value);
 }
 
-void won::priv::ShaderBase::SetVec2NoThrow(const std::string& name, Vector2 value) const noexcept
+void won::priv::ShaderBase::SetVec2NoThrow(const std::string& name, const Vector2& value) const noexcept
 {
 	glUniform2f(GetUniformLocNoThrow(name), value[0], value[1]);
 }
 
-void won::priv::ShaderBase::SetVec3NoThrow(const std::string& name, Vector3 value) const noexcept
+void won::priv::ShaderBase::SetVec3NoThrow(const std::string& name, const Vector3& value) const noexcept
 {
 	glUniform3f(GetUniformLocNoThrow(name), value[0], value[1], value[2]);
 }
 
-void won::priv::ShaderBase::SetVec4NoThrow(const std::string& name, Vector4 value) const noexcept
+void won::priv::ShaderBase::SetVec4NoThrow(const std::string& name, const Vector4& value) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), value[0], value[1], value[2], value[3]);
 }
 
-void won::priv::ShaderBase::SetMat2NoThrow(const std::string& name, Matrix2x2 value) const noexcept
+void won::priv::ShaderBase::SetMat2NoThrow(const std::string& name, const Matrix2x2& value) const noexcept
 {
 	glUniformMatrix2fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
 
-void won::priv::ShaderBase::SetMat3NoThrow(const std::string& name, Matrix3x3 value) const noexcept
+void won::priv::ShaderBase::SetMat3NoThrow(const std::string& name, const Matrix3x3& value) const noexcept
 {
 	glUniformMatrix3fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
 
-void won::priv::ShaderBase::SetMat4NoThrow(const std::string& name, Matrix4x4 value) const noexcept
+void won::priv::ShaderBase::SetMat4NoThrow(const std::string& name, const Matrix4x4& value) const noexcept
 {
 	glUniformMatrix4fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
@@ -143,32 +143,32 @@ void won::priv::ShaderBase::SetFloatNoThrow(const char* name, float value) const
 	glUniform1f(GetUniformLocNoThrow(name), value);
 }
 
-void won::priv::ShaderBase::SetVec2NoThrow(const char* name, Vector2 value) const noexcept
+void won::priv::ShaderBase::SetVec2NoThrow(const char* name, const Vector2& value) const noexcept
 {
 	glUniform2f(GetUniformLocNoThrow(name), value[0], value[1]);
 }
 
-void won::priv::ShaderBase::SetVec3NoThrow(const char* name, Vector3 value) const noexcept
+void won::priv::ShaderBase::SetVec3NoThrow(const char* name, const Vector3& value) const noexcept
 {
 	glUniform3f(GetUniformLocNoThrow(name), value[0], value[1], value[2]);
 }
 
-void won::priv::ShaderBase::SetVec4NoThrow(const char* name, Vector4 value) const noexcept
+void won::priv::ShaderBase::SetVec4NoThrow(const char* name, const Vector4& value) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), value[0], value[1], value[2], value[3]);
 }
 
-void won::priv::ShaderBase::SetMat2NoThrow(const char* name, Matrix2x2 value) const noexcept
+void won::priv::ShaderBase::SetMat2NoThrow(const char* name, const Matrix2x2& value) const noexcept
 {
 	glUniformMatrix2fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
 
-void won::priv::ShaderBase::SetMat3NoThrow(const char* name, Matrix3x3 value) const noexcept
+void won::priv::ShaderBase::SetMat3NoThrow(const char* name, const Matrix3x3& value) const noexcept
 {
 	glUniformMatrix3fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
 
-void won::priv::ShaderBase::SetMat4NoThrow(const char* name, Matrix4x4 value) const noexcept
+void won::priv::ShaderBase::SetMat4NoThrow(const char* name, const Matrix4x4& value) const noexcept
 {
 	glUniformMatrix4fv(GetUniformLocNoThrow(name), 1, GL_FALSE, &value[0][0]);
 }
@@ -199,42 +199,42 @@ void won::priv::ShaderBase::SetTextureNoThrow(const char* name, Texture value) c
 	glUniform1i(GetUniformLocNoThrow(name), value->GetUnit());
 }
 
-void won::priv::ShaderBase::SetColor(const std::string& name, Color color) const
+void won::priv::ShaderBase::SetColor(const std::string& name, const Color& color) const
 {
 	glUniform4f(GetUniformLoc(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
-void won::priv::ShaderBase::SetColor(const const char* name, Color color) const
+void won::priv::ShaderBase::SetColor(const const char* name, const Color& color) const
 {
 	glUniform4f(GetUniformLoc(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
-void won::priv::ShaderBase::SetColorNoThrow(const std::string& name, Color color) const noexcept
+void won::priv::ShaderBase::SetColorNoThrow(const std::string& name, const Color& color) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
-void won::priv::ShaderBase::SetColorNoThrow(const char* name, Color color) const noexcept
+void won::priv::ShaderBase::SetColorNoThrow(const char* name, const Color& color) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
-void won::priv::ShaderBase::SetfColor(const std::string& name, fColor color) const
+void won::priv::ShaderBase::SetfColor(const std::string& name, const fColor& color) const
 {
 	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
 }
 
-void won::priv::ShaderBase::SetfColor(const const char* name, fColor color) const
+void won::priv::ShaderBase::SetfColor(const const char* name, const fColor& color) const
 {
 	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
 }
 
-void won::priv::ShaderBase::SetfColorNoThrow(const std::string& name, fColor color) const noexcept
+void won::priv::ShaderBase::SetfColorNoThrow(const std::string& name, const fColor& color) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), color.r, color.g, color.b, color.a);
 }
 
-void won::priv::ShaderBase::SetfColorNoThrow(const char* name, fColor color) const noexcept
+void won::priv::ShaderBase::SetfColorNoThrow(const char* name, const fColor& color) const noexcept
 {
 	glUniform4f(GetUniformLocNoThrow(name), color.r, color.g, color.b, color.a);
 }
