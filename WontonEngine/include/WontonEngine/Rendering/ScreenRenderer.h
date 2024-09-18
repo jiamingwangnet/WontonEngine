@@ -221,10 +221,6 @@ namespace won
 
 			std::array<std::size_t, MAX_LIGHTS> dirtyLights;
 			std::size_t dirtyLsize = 0;
-
-			/*static constexpr float POINT_LIGHT_CULL_THRESHOLD = 0.005f;
-			static constexpr float CTHRESHOLD = ((POINT_LIGHT_CULL_THRESHOLD - 1.0) / (POINT_LIGHT_CULL_THRESHOLD));*/
-			ThreadPool threadPool;
 		};
 	}
 }
