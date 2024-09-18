@@ -138,19 +138,17 @@ won::Matrix4x4 won::cmp::Transform::CalculateMatrix() const
 	return model;
 }
 
-bool won::cmp::Transform::IsDirty() const
-{
-	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
-	return renderable->tdirty || (renderable->parent.GetId() != INVALID_ENTITY ? renderable->parent.GetComponent<Transform>()->IsDirty() : false);
-}
-
 won::Matrix4x4 won::cmp::Transform::CalculateMatrix(Vector3 scale, Vector3 position, glm::quat rotation)
 {
 	Matrix4x4 model{ 1.0f };
 
-	model = glm::translate((glm::mat4)model, (glm::vec3)position);
+	model[3][0] = position.x();
+	model[3][1] = position.y();
+	model[3][2] = position.z();
 	model *= glm::mat4_cast(rotation);
-	model = glm::scale((glm::mat4)model, (glm::vec3)scale);
+	model[0] *= scale[0];
+	model[1] *= scale[1];
+	model[2] *= scale[2];
 
 	return model;
 }

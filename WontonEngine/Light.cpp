@@ -56,11 +56,7 @@ void won::cmp::Light::Update(Light& self)
 	Transform* transform = self.entity.GetComponent<Transform>();
 	LightInternal* light = self.renderer->RetrieveLight(self.entity);
 
-	// TODO: set to global position
 	light->position = transform->GetPosition();
-	//std::cout << light->position.x() << ' ' << light->position.y() << ' ' << light->position.z() << '\n';
 	glm::vec3 forward = (glm::vec3)Transform::FORWARD;
 	light->direction = (Vector3)(glm::vec4{ forward.x, forward.y, forward.z, 1.0f } * glm::mat4_cast(transform->GetLocalRotationQuat()));
-
-	light->dirty |= transform->IsDirty(); // may give broken results if transform updates after light
 }

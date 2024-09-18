@@ -15,6 +15,18 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 {
 	if (camera == nullptr) return;
 
+	// find dirty lights
+	std::array<std::size_t, MAX_LIGHTS> dirtyLights;
+	std::size_t dirtyLsize = 0;
+	for (int i = 0; i < lsize; i++)
+	{
+		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
+		{
+			dirtyLights[dirtyLsize] = i;
+			dirtyLsize++;
+		}
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (std::size_t i = 0; i < rdsize; i++)
@@ -27,7 +39,11 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 
 		if (glGetUniformLocation(shader->progId, WON_PROJECTIONMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_PROJECTIONMATRIX, camera->CalculateProjection());
 		if (glGetUniformLocation(shader->progId, WON_VIEWMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_VIEWMATRIX, camera->CalculateLookAt());
-		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_MODELMATRIX, CalculateMatrix(renderable));
+		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX)
+		{
+			if (renderable.tdirty) renderable.modelMatCache = CalculateMatrix(renderable);
+			shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
+		}
 		if (glGetUniformLocation(shader->progId, WON_FRAMES) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_FRAMES, Time::GetRenderFrames());
 		if (glGetUniformLocation(shader->progId, WON_TIME) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_TIME, (int)Time::GetTime());
 		if (glGetUniformLocation(shader->progId, WON_WINDOWWIDTH) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWWIDTH, game.GetWidth());
@@ -35,7 +51,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		if (glGetUniformLocation(shader->progId, WON_VIEWPOSITION) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_VIEWPOSITION, camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition());
 		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, lsize);
 
-		for (std::size_t i = 0; i < lsize; i++)
+		for (std::size_t i = 0; i < dirtyLsize; i++)
 		{
 			// point light culling
 			//if ((*lights)[i].type == LightType::Point)
@@ -47,26 +63,28 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 			//}
 
 			// dirty culling
-			if (!(*lights)[i].dirty && !IsTransformDirty((*renderables)[lIndexToEIndex[i]])) continue;
+			//if (!(*lights)[i].dirty && !IsTransformDirty((*renderables)[lIndexToEIndex[i]])) continue;
 
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 0], (int)(*lights)[i].type);
+			std::size_t li = dirtyLights[i];
 
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 1]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 1], (*lights)[i].position);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 2]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 2], (*lights)[i].direction);
-	
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 3]) != GL_INVALID_INDEX) shader->SetfColorNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 3], (*lights)[i].color);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 4]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 4], (*lights)[i].ambientStrength);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0], (int)(*lights)[li].type);
 
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 5]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 5], (*lights)[i].linear);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 6]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * i + 6], (*lights)[i].quadratic);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1], (*lights)[li].position);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2], (*lights)[li].direction);
+
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3]) != GL_INVALID_INDEX) shader->SetfColorNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3], (*lights)[li].color);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4], (*lights)[li].ambientStrength);
+
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5], (*lights)[li].linear);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6], (*lights)[li].quadratic);
 		}
 
 		// render mesh
 		glBindVertexArray(renderable.mesh->vao);
 		glDrawElements(GL_TRIANGLES, renderable.mesh->nIndices, GL_UNSIGNED_INT, 0);
-
+		
 		renderable.material->Deactivate();
-
+		
 		// reset the active texture
 		glActiveTexture(GL_TEXTURE0);
 	}
@@ -137,7 +155,7 @@ void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 	rdsize--;
 
 	// lights
-	if(HasLight(entity))
+	if (HasLight(entity))
 	{
 		std::size_t ldindex = lEntityToIndex[entity.GetId()];
 		(*lights)[ldindex] = (*lights)[lsize - 1];

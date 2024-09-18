@@ -65,7 +65,7 @@ public:
 		for (int i = 0; i < 32; i++)
 		{
 			won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
-			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(0.0f, 80.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
+			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(0.0f, 40.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
 			won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
 			lightcmp->SetColor({ 90, 90, 90, 0xff });
 			lightcmp->SetPointLinear(0.07f);

@@ -50,7 +50,7 @@ namespace won
 
 			Matrix4x4 CalculateMatrix() const;
 
-			bool IsDirty() const;
+			// wont work if transform updates after than the calling component
 
 
 			// TODO: add wrapper class for glm::quat

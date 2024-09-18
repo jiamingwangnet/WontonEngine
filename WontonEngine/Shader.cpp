@@ -242,17 +242,11 @@ void won::priv::ShaderBase::SetfColorNoThrow(const char* name, fColor color) con
 void won::priv::ShaderBase::Activate() const
 {
 	glUseProgram(progId);
-	//glEnableVertexAttribArray(0);
-	//glEnableVertexAttribArray(1);
-	//glEnableVertexAttribArray(2);
 }
 
 void won::priv::ShaderBase::Deactivate() const
 {
 	glUseProgram(0);
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
-	//glDisableVertexAttribArray(2);
 }
 
 uint32_t won::priv::ShaderBase::GetUniformLoc(const std::string& name) const

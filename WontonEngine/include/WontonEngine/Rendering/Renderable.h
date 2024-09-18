@@ -20,6 +20,7 @@ namespace won
 			Entity parent = INVALID_ENTITY; // no parent
 
 			bool tdirty = true;
+			Matrix4x4 modelMatCache{ 1.0f };
 		};
 	}
 }

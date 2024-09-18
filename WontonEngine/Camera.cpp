@@ -23,7 +23,7 @@ void won::cmp::Camera::Update(Camera& self)
 		forwards = transform->Forward();
 	}
 
-	self.lookat = Matrix4x4{ glm::lookAt((glm::vec3)position, (glm::vec3)(position + forwards), (glm::vec3)upwards) };;
+	self.lookat = Matrix4x4{ glm::lookAt((glm::vec3)position, (glm::vec3)(position + forwards), (glm::vec3)upwards) };
 }
 
 won::cmp::Camera::ProjectionType won::cmp::Camera::GetProjectionType() const
