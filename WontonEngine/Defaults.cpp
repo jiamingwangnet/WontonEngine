@@ -93,15 +93,15 @@ out vec2 texCoord;
 out vec3 fragNormal;
 out vec3 fragPos;
 
-uniform mat4 won_ProjectionMatrix;
-uniform mat4 won_ViewMatrix;
+uniform mat4 won_ModelViewProjMatrix;
 uniform mat4 won_ModelMatrix;
+uniform mat3 won_NormalMatrix;
 
 void main()
 {
-	gl_Position = won_ProjectionMatrix * won_ViewMatrix * won_ModelMatrix * vec4(position.xyz, 1.0);
+	gl_Position = won_ModelViewProjMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
-	fragNormal = mat3(transpose(inverse(won_ModelMatrix))) * normal;
+	fragNormal = won_NormalMatrix * normal;
 	fragPos = vec3(won_ModelMatrix * vec4(position, 1.0));
 }
 )SHADER";

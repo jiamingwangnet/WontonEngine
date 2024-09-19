@@ -44,7 +44,7 @@ public:
 		cml->SetColor({ 255, 255, 255, 255 });
 		cml->SetPointLinear(0.07f);
 		cml->SetPointQuadratic(0.017f);
-		cameraLight.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalPosition({ 0.0f, 0.0f,-3.0f });
+		cameraLight.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalPosition({ 0.0f, 0.0f, 0.0f });
 
 		/*won::Entity testlBox = game.CreateEntity<won::Defaults::Box>();
 		testlBox.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalPosition({ 0.0f, 0.0f,-2.0f });*/

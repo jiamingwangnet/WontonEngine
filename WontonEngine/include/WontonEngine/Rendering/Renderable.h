@@ -21,6 +21,7 @@ namespace won
 
 			bool tdirty = true;
 			Matrix4x4 modelMatCache{ 1.0f };
+			Matrix3x3 normalMatCache{ 1.0f };
 		};
 	}
 }

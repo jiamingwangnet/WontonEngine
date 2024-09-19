@@ -33,11 +33,14 @@ namespace won
 		static constexpr const char* WON_NUMLIGHTS	      = "won_NumLights";
 		static constexpr const char* WON_LIGHTS			  =  M_WON_LIGHTS;
 		static constexpr const char* WON_VIEWPOSITION     = "won_ViewPosition";
+		static constexpr const char* WON_MODELVIEWPROJMAT = "won_ModelViewProjMatrix";
+		static constexpr const char* WON_MODELVIEWMATRIX  = "won_ModelViewMatrix";
+		static constexpr const char* WON_NORMALMATRIX     = "won_NormalMatrix";
 
 		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 7;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
 		{
-#pragma region WON_LEIGHT_UNIFORMS_128
+#pragma region WON_LIGHT_UNIFORMS_128
 			WON_LIGHTS_UNIFORMS(0)
 			WON_LIGHTS_UNIFORMS(1)
 			WON_LIGHTS_UNIFORMS(2)

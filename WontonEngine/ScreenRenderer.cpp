@@ -30,6 +30,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 	Matrix4x4 lookat = camera->CalculateLookAt();
 	Vector3 camPos = camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition();
 	Matrix4x4 model{ 1.0f };
+	Matrix4x4 projview = projection * lookat;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -52,10 +53,26 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, (int)lsize);
 
 		// have to set a different model matrix for each object
-		if (glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX) 
-		{ 
-			if (renderable.tdirty) renderable.modelMatCache = CalculateMatrix(renderable, model);
-			shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
+		bool modelmat = glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX;
+		bool mvpmat = glGetUniformLocation(shader->progId, WON_MODELVIEWPROJMAT) != GL_INVALID_INDEX;
+		bool mvmat = glGetUniformLocation(shader->progId, WON_MODELVIEWMATRIX) != GL_INVALID_INDEX;
+		bool nmat = glGetUniformLocation(shader->progId, WON_NORMALMATRIX) != GL_INVALID_INDEX;
+		if (modelmat || mvpmat || mvmat || nmat)
+		{
+			if (renderable.tdirty)
+			{
+				renderable.modelMatCache = CalculateMatrix(renderable, model);
+				renderable.normalMatCache = glm::mat3{ glm::transpose(glm::inverse((glm::mat4)renderable.modelMatCache)) }; // use viewmodel or model??
+			}
+
+			if (modelmat)
+				shader->SetMat4NoThrow(WON_MODELMATRIX, renderable.modelMatCache);
+			if(mvpmat)
+				shader->SetMat4NoThrow(WON_MODELVIEWPROJMAT, projview * renderable.modelMatCache);
+			if (mvmat)
+				shader->SetMat4NoThrow(WON_MODELVIEWMATRIX, lookat * renderable.modelMatCache);
+			if (nmat)
+				shader->SetMat3NoThrow(WON_NORMALMATRIX, renderable.normalMatCache);
 		}
 
 		for (std::size_t i = 0; i < dirtyLsize; i++)
