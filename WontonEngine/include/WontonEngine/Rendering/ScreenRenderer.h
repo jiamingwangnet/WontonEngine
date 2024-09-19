@@ -34,17 +34,6 @@ namespace won
 		static constexpr const char* WON_LIGHTS			  =  M_WON_LIGHTS;
 		static constexpr const char* WON_VIEWPOSITION     = "won_ViewPosition";
 
-		static constexpr unsigned int HASH_WON_PROJECTIONMATRIX = COMPILE_TIME_CRC32_STR_L(WON_PROJECTIONMATRIX, 21);
-		static constexpr unsigned int HASH_WON_VIEWMATRIX       = COMPILE_TIME_CRC32_STR_L(WON_VIEWMATRIX, 15);
-		static constexpr unsigned int HASH_WON_MODELMATRIX      = COMPILE_TIME_CRC32_STR_L(WON_MODELMATRIX, 16);
-		static constexpr unsigned int HASH_WON_FRAMES           = COMPILE_TIME_CRC32_STR_L(WON_FRAMES, 11);
-		static constexpr unsigned int HASH_WON_TIME             = COMPILE_TIME_CRC32_STR_L(WON_TIME, 9);
-		static constexpr unsigned int HASH_WON_WINDOWWIDTH      = COMPILE_TIME_CRC32_STR_L(WON_WINDOWWIDTH, 16);
-		static constexpr unsigned int HASH_WON_WINDOWHEIGHT     = COMPILE_TIME_CRC32_STR_L(WON_WINDOWHEIGHT, 17);
-		static constexpr unsigned int HASH_WON_NUMLIGHTS        = COMPILE_TIME_CRC32_STR_L(WON_NUMLIGHTS, 14);
-		static constexpr unsigned int HASH_WON_LIGHTS           = COMPILE_TIME_CRC32_STR_L(WON_LIGHTS, 11);
-		static constexpr unsigned int HASH_WON_VIEWPOSITION     = COMPILE_TIME_CRC32_STR_L(WON_VIEWPOSITION, 17);
-
 		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 7;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
 		{
