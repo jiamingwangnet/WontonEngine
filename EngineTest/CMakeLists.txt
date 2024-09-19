@@ -29,5 +29,10 @@ target_link_libraries(EngineTest "${SDL_LIB_PATH}")
 
 set_property(TARGET EngineTest PROPERTY CXX_STANDARD 17)
 
+target_compile_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/Zi>")
+target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
+target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+
 
 # TODO: Add tests and install targets if needed.
