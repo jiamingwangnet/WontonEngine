@@ -22,6 +22,30 @@ void won::Input::Poll()
 	SDL_Event event;
 	lastMousePosition = mousePosition;
 
+	/*
+		Direction
+		--> first, second -->
+	*/
+
+	// update at next frame
+	for (auto& keypair : keymap)
+	{
+		auto& key = keypair.second;
+
+		bool before = key.first;
+		//key.first = false;
+		key.second = before;
+	}
+
+	for (auto& mousepair : mousemap)
+	{
+		auto& mouse = mousepair.second;
+
+		bool before = mouse.first;
+		//mouse.first = false;
+		mouse.second = before;
+	}
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -40,16 +64,16 @@ void won::Input::Poll()
 		case SDL_EVENT_KEY_DOWN:
 		{
 			// keycodes are currently the same as SDL keycodes
-			bool before = keymap[(KeyCode)event.key.keysym.sym].first;
+			//bool before = keymap[(KeyCode)event.key.keysym.sym].first;
 			keymap[(KeyCode)event.key.keysym.sym].first = true;
-			keymap[(KeyCode)event.key.keysym.sym].second = before;
+			//keymap[(KeyCode)event.key.keysym.sym].second = before;
 			break;
 		}
 		case SDL_EVENT_KEY_UP:
 		{
-			bool before = keymap[(KeyCode)event.key.keysym.sym].first;
+			//bool before = keymap[(KeyCode)event.key.keysym.sym].first;
 			keymap[(KeyCode)event.key.keysym.sym].first = false;
-			keymap[(KeyCode)event.key.keysym.sym].second = before;
+			//keymap[(KeyCode)event.key.keysym.sym].second = before;
 			break;
 		}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -62,9 +86,9 @@ void won::Input::Poll()
 			if (event.button.button == SDL_BUTTON_RIGHT)
 				button = MouseButton::Button_Right;
 
-			bool before = mousemap[button].first;
+			//bool before = mousemap[button].first;
 			mousemap[button].first = true;
-			mousemap[button].second = before;
+			//mousemap[button].second = before;
 
 			break;
 		}
@@ -78,9 +102,9 @@ void won::Input::Poll()
 			if (event.button.button == SDL_BUTTON_RIGHT)
 				button = MouseButton::Button_Right;
 
-			bool before = mousemap[button].first;
+			//bool before = mousemap[button].first;
 			mousemap[button].first = false;
-			mousemap[button].second = before;
+			//mousemap[button].second = before;
 			break;
 		}
 		}
