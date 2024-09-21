@@ -28,6 +28,9 @@ namespace won
 			float linear;
 			float quadratic;
 
+			float cutOff;
+			float outerCutOff;
+
 			// all below are not part of the shader definition
 			// set uniform only when dirty is true
 			bool dirty = true;

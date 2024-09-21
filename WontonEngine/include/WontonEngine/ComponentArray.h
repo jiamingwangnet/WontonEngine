@@ -32,7 +32,7 @@ namespace won
 		class ComponentArray : public IComponentArray
 		{
 		public:
-			ComponentArray() = default;
+			ComponentArray();
 
 			template<class ...Args>
 			void Insert(EntId entity, Args&& ...args);
@@ -46,6 +46,8 @@ namespace won
 			void UpdateComponents() override;
 
 		private:
+			static constexpr std::size_t INVALID_INDEX = (std::size_t)-1;
+
 			// store components of type T's properties (using array as we do not need to allocate on the heap)
 			std::array<T, MAX_ENTITIES> components{};
 
@@ -57,9 +59,9 @@ namespace won
 			void (*fupdate)(T&) = &T::Update;
 
 			// map from entity id to array index
-			std::unordered_map<EntId, std::size_t> entityToIndexMap{};
+			std::array<std::size_t, MAX_ENTITIES> entityToIndexMap{};
 			// reverse
-			std::unordered_map<std::size_t, EntId> indexToEntityMap{};
+			std::array<EntId, MAX_ENTITIES> indexToEntityMap{};
 
 			std::size_t size = 0;
 		};
@@ -77,6 +79,16 @@ namespace won
 		}
 
 		template<class T>
+		inline ComponentArray<T>::ComponentArray()
+		{
+			for (std::size_t i = 0; i < MAX_ENTITIES; i++)
+				entityToIndexMap[i] = INVALID_INDEX;
+
+			for (std::size_t i = 0; i < MAX_ENTITIES; i++)
+				indexToEntityMap[i] = INVALID_ENTITY;
+		}
+
+		template<class T>
 		inline void ComponentArray<T>::Remove(EntId entity)
 		{
 			// remove the component for the specified entity
@@ -88,8 +100,8 @@ namespace won
 			entityToIndexMap[indexToEntityMap[size - 1]] = index;
 			indexToEntityMap[index] = indexToEntityMap[size - 1];
 
-			entityToIndexMap.erase(entity);
-			indexToEntityMap.erase(size - 1);
+			entityToIndexMap[entity] = INVALID_INDEX;
+			indexToEntityMap[size - 1] = INVALID_ENTITY;
 
 			size--;
 		}
@@ -105,7 +117,7 @@ namespace won
 		{
 			// check if the entity has the specified component
 			// call Remove to remove the component
-			if (entityToIndexMap.find(entity.GetId()) != entityToIndexMap.end())
+			if (entityToIndexMap[entity.GetId()] != INVALID_INDEX)
 			{
 				Remove(entity.GetId());
 			}

@@ -39,12 +39,9 @@ public:
 		}
 
 		won::Entity camera = game.CreateEntity<MyCamera>();
-		won::Entity cameraLight = game.CreateEntity<won::Defaults::PointLight>();
+		won::Entity cameraLight = game.CreateEntity<won::Defaults::SpotLight>();
 		won::cmp::Light* cml = cameraLight.GetComponent<won::cmp::Light>();
-		cml->SetColor({ 255, 255, 255, 255 });
-		cml->SetPointLinear(0.07f);
-		cml->SetPointQuadratic(0.017f);
-		cameraLight.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalPosition({ 0.0f, 0.0f, 0.0f });
+		cameraLight.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalRotation({ 0.0f, 0.0f, 0.0f });
 
 		/*won::Entity testlBox = game.CreateEntity<won::Defaults::Box>();
 		testlBox.GetComponent<won::cmp::Transform>()->SetParent(camera.GetComponent<won::cmp::Transform>()).SetLocalPosition({ 0.0f, 0.0f,-2.0f });*/
@@ -67,17 +64,19 @@ public:
 			won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
 			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(0.0f, 40.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });
 			won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
-			lightcmp->SetColor({ 30, 30, 30, 0xff });
+			lightcmp->SetColor({ 90, 90, 90, 0xff });
 			lightcmp->SetPointLinear(0.045f);
 			lightcmp->SetPointQuadratic(0.0075f);
+			lightcmp->SetAmbientStrength(0.0f);
 		}
 
-		won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
-		light.GetComponent<won::cmp::Transform>()->SetLocalPosition({0.0f, 6.0f, 0.0f });
+		won::Entity light = game.CreateEntity<won::Defaults::SpotLight>();
+		light.GetComponent<won::cmp::Transform>()->SetLocalPosition({ 0.0f, 10.0f, 0.0f });
+		light.GetComponent<won::cmp::Transform>()->SetLocalRotation({ -90.0f, 0.0f, 0.0f });
 		won::cmp::Light* lightcmp = light.GetComponent<won::cmp::Light>();
-		lightcmp->SetPointLinear(0.027f);
-		lightcmp->SetPointQuadratic(0.0028f);
-		lightcmp->SetColor({ 255, 255, 255, 0xff });
+		lightcmp->SetColor({ 120, 120, 120, 0xff });
+		lightcmp->SetPointLinear(0.09f);
+		lightcmp->SetPointQuadratic(0.032f);
 		//lightcmp->SetAmbientStrength(0.05f);
 
 		won::Entity light2 = game.CreateEntity<won::Defaults::PointLight>();
@@ -86,5 +85,12 @@ public:
 		light2cmp->SetPointLinear(0.09f);
 		light2cmp->SetPointQuadratic(0.032f);
 		light2cmp->SetColor({ 255, 255, 255, 0xff });
+		light2cmp->SetIntensity(10.0f);
+
+		won::Entity dirlight = game.CreateEntity<won::Defaults::DirectionalLight>();
+		dirlight.GetComponent<won::cmp::Transform>()->SetLocalRotation({45.0f, 0.0f, 0.0f});
+		won::cmp::Light* dirLightl = dirlight.GetComponent<won::cmp::Light>();
+		dirLightl->SetColor({ 60, 60, 60 });
+		dirLightl->SetAmbientStrength(0.0f);
 	}
 };

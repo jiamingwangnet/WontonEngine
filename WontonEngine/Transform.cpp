@@ -89,6 +89,13 @@ const won::Vector3 won::cmp::Transform::GetPosition() const
 	return renderable->position + renderable->parent.GetComponent<Transform>()->GetPosition();
 }
 
+const glm::quat won::cmp::Transform::GetRotationQuat() const
+{
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	if (renderable->parent.GetId() == INVALID_ENTITY) return renderable->rotation;
+	return renderable->parent.GetComponent<Transform>()->GetRotationQuat() * renderable->rotation;
+}
+
 const glm::quat won::cmp::Transform::GetLocalRotationQuat() const
 {
 	return renderer->RetrieveRenderable(entity)->rotation;

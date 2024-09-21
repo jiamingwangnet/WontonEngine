@@ -136,6 +136,9 @@ struct won_Light
 
 	float linear;
 	float quadratic;
+
+	float cutOff;
+	float outerCutOff;
 };
 #define WON_MAX_LIGHTS )SHADER" S_WON_MAX_LIGHTS
 R"SHADER(
@@ -155,15 +158,67 @@ vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir
 	float diff = max(dot(normal,lightDir), 0.0);
 	float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothm);
 
-	vec3 diffuse = light.color.rgb * diff * tdiffuse.rgb;
-	vec3 specular = light.color.rgb * spec * specular.rgb;
-	vec3 ambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+	vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
+	vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
+	vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
 
-	diffuse *= attenuation;
-	specular *= attenuation;
-	ambient *= attenuation;
+	ldiffuse *= attenuation;
+	lspecular *= attenuation;
+	lambient *= attenuation;
 
-	return vec4(diffuse + ambient + specular, 0.0); // - (diffuse + ambient + specular) + attenuation
+	return vec4(ldiffuse + lambient + lspecular, 0.0);
+}
+
+vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 tdiffuse)
+{
+	float smoothm = smoothness * 128.0;
+
+	vec3 lightDir = normalize(-light.direction);
+	vec3 reflectLight = reflect(-lightDir, normal);
+
+	float diff = max(dot(normal,lightDir), 0.0);
+	float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothm);
+
+	vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
+	vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
+	vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+
+	return vec4(ldiffuse + lambient + lspecular, 0.0);
+}
+
+vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse)
+{
+	vec3 lightDir = normalize(light.position - fragPos);
+	float theta = dot(lightDir, normalize(-light.direction));
+
+	if(theta > light.outerCutOff)
+	{
+		float epsilon = light.cutOff - light.outerCutOff;
+		float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0); 
+		float smoothm = smoothness * 128.0;
+
+		float distance = length(light.position - fragPos);
+		float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
+
+		vec3 reflectLight = reflect(-lightDir, normal);
+
+		float diff = max(dot(normal,lightDir), 0.0);
+		float spec = pow(max(dot(viewDir, reflectLight), 0.0), smoothm);
+
+		vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
+		vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
+		vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+
+		ldiffuse  *= intensity;
+		lspecular *= intensity;
+
+		ldiffuse *= attenuation;
+		lspecular *= attenuation;
+		lambient *= attenuation;
+
+		return vec4(ldiffuse + lambient + lspecular, 0.0);
+	}
+	return vec4(light.ambientStrength * light.color.rgb * ambient.rgb, 0.0);
 }
 
 void main()
@@ -171,14 +226,20 @@ void main()
 	vec3 norm = normalize(fragNormal);
 	vec4 lighting = vec4(0.0);
 	vec3 tdiff = (texture(diffuseTexture, texCoord) * diffuse).rgb;
+	vec3 viewDir = normalize(won_ViewPosition - fragPos);
 
 	for(int i = 0; i < won_NumLights; i++)
 	{
 		switch(won_Lights[i].type)
 		{
-		case 1:
-			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, normalize(won_ViewPosition - fragPos), tdiff);
+		case 0:
+			lighting += won_CalcDirectionalLight(won_Lights[i], norm, viewDir, tdiff);
 			break;
+		case 1:
+			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, viewDir, tdiff);
+			break;
+		case 2:
+			lighting += won_CalcSpotLight(won_Lights[i], norm, fragPos, viewDir, tdiff);
 		}
 	}
 
@@ -264,5 +325,23 @@ void won::Defaults::Plane::Create(Entity& entity) const
 void won::Defaults::PointLight::Create(Entity& entity) const
 {
 	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
-	entity.AddComponent<cmp::Light>(LightType::Point, Color{ 30, 30, 30, 0xff }, 0.1f);
+	cmp::Light* light = entity.AddComponent<cmp::Light>(LightType::Point, Color{ 100, 100, 100, 0xff }, 0.1f, 1.0f);
+	light->SetPointLinear(0.045f);
+	light->SetPointQuadratic(0.0075f);
+}
+
+void won::Defaults::DirectionalLight::Create(Entity& entity) const
+{
+	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
+	entity.AddComponent<cmp::Light>(LightType::Directional, Color{ 200, 200, 200, 0xff }, 0.3f, 1.0f);
+}
+
+void won::Defaults::SpotLight::Create(Entity& entity) const
+{
+	entity.AddComponent<cmp::Transform>(Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f }, Vector3{ 0.0f, 0.0f, 0.0f });
+	cmp::Light* light = entity.AddComponent<cmp::Light>(LightType::Spot, Color{ 150, 150, 150, 0xff }, 0.0f, 1.0f);
+	light->SetCutOff(10.0f);
+	light->SetOuterCutOff(15.0f);
+	light->SetPointLinear(0.007f);
+	light->SetPointQuadratic(0.0002f);
 }

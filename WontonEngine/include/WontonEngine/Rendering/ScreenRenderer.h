@@ -17,7 +17,9 @@
 							   M_WON_LIGHTS "[" #n "].color", \
 							   M_WON_LIGHTS "[" #n "].ambientStrength", \
 							   M_WON_LIGHTS "[" #n "].linear", \
-							   M_WON_LIGHTS "[" #n "].quadratic",
+							   M_WON_LIGHTS "[" #n "].quadratic", \
+							   M_WON_LIGHTS "[" #n "].cutOff", \
+							   M_WON_LIGHTS "[" #n "].outerCutOff", \
 
 namespace won
 {
@@ -37,7 +39,7 @@ namespace won
 		static constexpr const char* WON_MODELVIEWMATRIX  = "won_ModelViewMatrix";
 		static constexpr const char* WON_NORMALMATRIX     = "won_NormalMatrix";
 
-		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 7;
+		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 9;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
 		{
 #pragma region WON_LIGHT_UNIFORMS_128

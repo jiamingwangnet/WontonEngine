@@ -21,6 +21,11 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 	{
 		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
 		{
+			cmp::Transform* transform = ((Entity)lIndexToEIndex[i]).GetComponent<cmp::Transform>();
+			(*lights)[i].position = transform->GetPosition();
+			glm::vec3 forward = (glm::vec3)cmp::Transform::FORWARD;
+			(*lights)[i].direction = (Vector3)(transform->GetRotationQuat() * glm::vec3{ forward.x, forward.y, forward.z });
+
 			dirtyLights[dirtyLsize] = i;
 			dirtyLsize++;
 		}
@@ -59,7 +64,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		bool nmat = glGetUniformLocation(shader->progId, WON_NORMALMATRIX) != GL_INVALID_INDEX;
 		if (modelmat || mvpmat || mvmat || nmat)
 		{
-			if (renderable.tdirty)
+			if (IsTransformDirty(renderable))
 			{
 				renderable.modelMatCache = CalculateMatrix(renderable, model);
 				renderable.normalMatCache = glm::mat3{ glm::transpose(glm::inverse((glm::mat4)renderable.modelMatCache)) }; // use viewmodel or model??
@@ -77,18 +82,6 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 
 		for (std::size_t i = 0; i < dirtyLsize; i++)
 		{
-			// point light culling
-			//if ((*lights)[i].type == LightType::Point)
-			//{
-			//	//std::cout << (*lights)[i].position.x() << ' ' << (*lights)[i].position.y() << ' ' << (*lights)[i].position.z() << '\n';
-			//	glm::vec3 tmp = (glm::vec3)((*lights)[i].position - renderable.position);
-			//	float dist = (-(*lights)[i].linear + glm::sqrt((*lights)[i].linear * (*lights)[i].linear - 4 * (*lights)[i].quadratic * CTHRESHOLD)) / (2 * (*lights)[i].quadratic);
-			//	if (glm::dot(tmp, tmp) > dist) continue;
-			//}
-
-			// dirty culling
-			//if (!(*lights)[i].dirty && !IsTransformDirty((*renderables)[lIndexToEIndex[i]])) continue;
-
 			std::size_t li = dirtyLights[i];
 
 			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0], (int)(*lights)[li].type);
@@ -101,6 +94,9 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 
 			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5], (*lights)[li].linear);
 			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6], (*lights)[li].quadratic);
+			
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7], (*lights)[li].cutOff);
+			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8], (*lights)[li].outerCutOff);
 		}
 
 		// render mesh

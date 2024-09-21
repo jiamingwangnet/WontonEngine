@@ -2,7 +2,7 @@
 #include "include/WontonEngine/Components/Transform.h"
 #include "include/WontonEngine/Game.h"
 
-won::cmp::Light::Light(Entity entity, Game* game, LightType type, Color color, float ambientStr)
+won::cmp::Light::Light(Entity entity, Game* game, LightType type, Color color, float ambientStr, float intensity)
 	: Component{entity, game}
 {
 	using namespace won::priv;
@@ -12,7 +12,7 @@ won::cmp::Light::Light(Entity entity, Game* game, LightType type, Color color, f
 
 	LightInternal* light = renderer->RetrieveLight(entity);
 	light->type = type;
-	light->color = fColor{ (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, 1.0f };
+	light->color = fColor{ (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, intensity };
 	light->ambientStrength = ambientStr;
 	
 	if (!renderer->HasRenderable(entity)) renderer->CreateRenderable(entity);
@@ -34,6 +34,13 @@ void won::cmp::Light::SetAmbientStrength(float strength)
 	light->dirty = true;
 }
 
+void won::cmp::Light::SetIntensity(float intensity)
+{
+	priv::LightInternal* light = renderer->RetrieveLight(entity);
+	light->color.a = intensity;
+	light->dirty = true;
+}
+
 void won::cmp::Light::SetPointLinear(float linear)
 {
 	priv::LightInternal* light = renderer->RetrieveLight(entity);
@@ -48,15 +55,16 @@ void won::cmp::Light::SetPointQuadratic(float quadratic)
 	light->dirty = true;
 }
 
-void won::cmp::Light::Update(Light& self)
+void won::cmp::Light::SetCutOff(float cutOff)
 {
-	using namespace priv;
+	priv::LightInternal* light = renderer->RetrieveLight(entity);
+	light->cutOff = glm::cos(glm::radians(cutOff));
+	light->dirty = true;
+}
 
-	// TODO: optimise componet retrieval away
-	Transform* transform = self.entity.GetComponent<Transform>();
-	LightInternal* light = self.renderer->RetrieveLight(self.entity);
-
-	light->position = transform->GetPosition();
-	glm::vec3 forward = (glm::vec3)Transform::FORWARD;
-	light->direction = (Vector3)(glm::vec4{ forward.x, forward.y, forward.z, 1.0f } * glm::mat4_cast(transform->GetLocalRotationQuat()));
+void won::cmp::Light::SetOuterCutOff(float outerCutOff)
+{
+	priv::LightInternal* light = renderer->RetrieveLight(entity);
+	light->outerCutOff = glm::cos(glm::radians(outerCutOff));
+	light->dirty = true;
 }

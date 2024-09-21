@@ -51,6 +51,7 @@ namespace won
 		private:
 			Shader shader;
 			UniformDataList info;
+			bool uniformsSet = false;
 		};
 	}
 
