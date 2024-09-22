@@ -95,6 +95,11 @@ void won::Game::LoadScene(int index)
 	nextSceneToLoad = index;
 }
 
+int won::Game::GetCurrentScene() const
+{
+	return currentScene;
+}
+
 int won::Game::GetWidth() const
 {
 	return window.GetWidth();
@@ -120,9 +125,13 @@ void won::Game::HandleSceneLoading()
 {
 	if (nextSceneToLoad == -1) return;
 
+	currentScene = nextSceneToLoad;
+
 	Scene* scene = scenes[nextSceneToLoad];
 
-	// TODO: remove all entities
+	entityManager.Clear();
+	renderer.Clear();
+	renderer.SetActiveCamera(nullptr);
 
 	scene->Init(*this);
 

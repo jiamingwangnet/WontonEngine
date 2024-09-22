@@ -145,7 +145,7 @@ R"SHADER(
 uniform won_Light won_Lights[WON_MAX_LIGHTS];
 uniform int won_NumLights;
 
-vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse)
+vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse, vec3 tambient)
 {
 	float distance = length(light.position - fragPos);
 	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
@@ -160,7 +160,7 @@ vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir
 
 	vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
 	vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
-	vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+	vec3 lambient = light.ambientStrength * light.color.rgb * tambient.rgb;
 
 	ldiffuse *= attenuation;
 	lspecular *= attenuation;
@@ -169,7 +169,7 @@ vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir
 	return vec4(ldiffuse + lambient + lspecular, 0.0);
 }
 
-vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 tdiffuse)
+vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 tdiffuse, vec3 tambient)
 {
 	float smoothm = smoothness * 128.0;
 
@@ -181,12 +181,12 @@ vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 t
 
 	vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
 	vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
-	vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+	vec3 lambient = light.ambientStrength * light.color.rgb * tambient.rgb;
 
 	return vec4(ldiffuse + lambient + lspecular, 0.0);
 }
 
-vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse)
+vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse, vec3 tambient)
 {
 	vec3 lightDir = normalize(light.position - fragPos);
 	float theta = dot(lightDir, normalize(-light.direction));
@@ -207,7 +207,7 @@ vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir,
 
 		vec3 ldiffuse = light.color.a * light.color.rgb * diff * tdiffuse.rgb;
 		vec3 lspecular = light.color.a * light.color.rgb * spec * specular.rgb;
-		vec3 lambient = light.ambientStrength * light.color.rgb * ambient.rgb;
+		vec3 lambient = light.ambientStrength * light.color.rgb * tambient.rgb;
 
 		ldiffuse  *= intensity;
 		lspecular *= intensity;
@@ -218,14 +218,16 @@ vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir,
 
 		return vec4(ldiffuse + lambient + lspecular, 0.0);
 	}
-	return vec4(light.ambientStrength * light.color.rgb * ambient.rgb, 0.0);
+	return vec4(light.ambientStrength * light.color.rgb * tambient.rgb, 0.0);
 }
 
 void main()
 {
 	vec3 norm = normalize(fragNormal);
 	vec4 lighting = vec4(0.0);
-	vec3 tdiff = (texture(diffuseTexture, texCoord) * diffuse).rgb;
+	vec4 tex = texture(diffuseTexture, texCoord);
+	vec3 tdiff = (tex * diffuse).rgb;
+	vec3 tambi = (tex * ambient).rgb;
 	vec3 viewDir = normalize(won_ViewPosition - fragPos);
 
 	for(int i = 0; i < won_NumLights; i++)
@@ -233,13 +235,13 @@ void main()
 		switch(won_Lights[i].type)
 		{
 		case 0:
-			lighting += won_CalcDirectionalLight(won_Lights[i], norm, viewDir, tdiff);
+			lighting += won_CalcDirectionalLight(won_Lights[i], norm, viewDir, tdiff, tambi);
 			break;
 		case 1:
-			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, viewDir, tdiff);
+			lighting += won_CalcPointLight(won_Lights[i], norm, fragPos, viewDir, tdiff, tambi);
 			break;
 		case 2:
-			lighting += won_CalcSpotLight(won_Lights[i], norm, fragPos, viewDir, tdiff);
+			lighting += won_CalcSpotLight(won_Lights[i], norm, fragPos, viewDir, tdiff, tambi);
 		}
 	}
 

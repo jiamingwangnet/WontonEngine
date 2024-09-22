@@ -17,11 +17,11 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 
 	// find dirty lights
 	dirtyLsize = 0;
-	for (int i = 0; i < lsize; i++)
+	for (int i = 0; i < lsize; i++) // FIXME: broken after switching scenes
 	{
 		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
 		{
-			cmp::Transform* transform = ((Entity)lIndexToEIndex[i]).GetComponent<cmp::Transform>();
+			cmp::Transform* transform = ((Entity)lIndexToEntity[i]).GetComponent<cmp::Transform>();
 			(*lights)[i].position = transform->GetPosition();
 			glm::vec3 forward = (glm::vec3)cmp::Transform::FORWARD;
 			(*lights)[i].direction = (Vector3)(transform->GetRotationQuat() * glm::vec3{ forward.x, forward.y, forward.z });
@@ -146,7 +146,7 @@ void won::priv::ScreenRenderer::CreateLight(Entity entity)
 {
 	lIndexToEntity[lsize] = entity.GetId();
 	lEntityToIndex[entity.GetId()] = lsize;
-	lIndexToEIndex[lsize] = entity.GetId();
+	lIndexToEIndex[lsize] = entityToIndex[entity.GetId()];
 	lsize++;
 }
 
@@ -188,6 +188,36 @@ void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 		lIndexToEntity.erase(lsize - 1);
 
 		lsize--;
+	}
+}
+
+void won::priv::ScreenRenderer::Clear()
+{
+	entityToIndex.clear();
+	indexToEntity.clear();
+	lEntityToIndex.clear();
+	lIndexToEntity.clear();
+	rdsize = 0;
+	lsize = 0;
+	dirtyLsize = 0;
+	for (Renderable& renderable : *renderables)
+	{
+		renderable = Renderable{};
+	}
+
+	for (LightInternal& light : *lights)
+	{
+		light = LightInternal{};
+	}
+
+	for (std::size_t& index : lIndexToEIndex)
+	{
+		index = 0;
+	}
+
+	for (std::size_t& light : dirtyLights)
+	{
+		light = 0;
 	}
 }
 

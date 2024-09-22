@@ -58,6 +58,12 @@ public:
 
 			transform->SetLocalRotation({ self.xRot, self.yRot, 0.0f });
 		}
+
+		if (won::Input::GetKeyDown(won::KeyCode::Key_P))
+		{
+			if (self.game->GetCurrentScene() == 0) self.game->LoadScene(1);
+			else if (self.game->GetCurrentScene() == 1) self.game->LoadScene(0);
+		}
 	}
 
 private:

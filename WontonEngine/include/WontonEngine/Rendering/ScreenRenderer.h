@@ -193,6 +193,7 @@ namespace won
 			bool HasLight(Entity entity);
 
 			void EntityDestroyed(Entity entity);
+			void Clear();
 
 		private:
 			won::Matrix4x4 CalculateMatrix(Renderable& renderable, Matrix4x4& model);
@@ -211,7 +212,7 @@ namespace won
 			std::unordered_map<std::size_t, EntId> lIndexToEntity{};
 			std::size_t lsize = 0;
 
-			std::array<std::size_t, MAX_LIGHTS> lIndexToEIndex;
+			std::array<std::size_t, MAX_LIGHTS> lIndexToEIndex; // gives the index to the renderable not entity ID
 
 			std::array<std::size_t, MAX_LIGHTS> dirtyLights;
 			std::size_t dirtyLsize = 0;

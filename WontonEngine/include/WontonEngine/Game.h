@@ -27,6 +27,7 @@ namespace won
 		template<class Creator>
 		Entity CreateEntity();
 		void LoadScene(int index);  // sets the next scene to load
+		int GetCurrentScene() const;
 
 		int GetWidth() const;
 		int GetHeight() const;
@@ -48,6 +49,7 @@ namespace won
 		std::vector<Scene*> scenes;
 
 		int nextSceneToLoad = 0; // default to -1 if there is no scene
+		int currentScene = -1;
 		float targetFramerate;
 		float targetUpdateRate;
 

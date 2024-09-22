@@ -19,7 +19,7 @@ void preload(won::Game& game)
 	won::UniformDataList datalist;
 	datalist.push_back(won::UniformData<won::Color>::GenData("diffuse", won::UniformType::Color, { 255, 237, 186, 255 }));
 	datalist.push_back(won::UniformData<won::Color>::GenData("specular", won::UniformType::Color, { 255, 237, 186, 255 }));
-	datalist.push_back(won::UniformData<won::Color>::GenData("ambient", won::UniformType::Color, { 20, 20, 20, 255 }));
+	datalist.push_back(won::UniformData<won::Color>::GenData("ambient", won::UniformType::Color, { 255, 237, 186, 255 }));
 	datalist.push_back(won::UniformData<won::Texture>::GenData("diffuseTexture", won::UniformType::Texture, won::TextureManager::GetTexture("km")));
 	datalist.push_back(won::UniformData<float>::GenData("smoothness", won::UniformType::Float, 0.6f));
 
@@ -28,7 +28,7 @@ void preload(won::Game& game)
 	won::UniformDataList datalist2;
 	datalist2.push_back(won::UniformData<won::Color>::GenData("diffuse", won::UniformType::Color, { 10, 198, 50, 255 }));
 	datalist2.push_back(won::UniformData<won::Color>::GenData("specular", won::UniformType::Color, { 10, 198, 50, 255 }));
-	datalist2.push_back(won::UniformData<won::Color>::GenData("ambient", won::UniformType::Color, { 5, 80, 34, 255 }));
+	datalist2.push_back(won::UniformData<won::Color>::GenData("ambient", won::UniformType::Color, { 10, 198, 50, 255 }));
 	datalist2.push_back(won::UniformData<won::Texture>::GenData("diffuseTexture", won::UniformType::Texture, won::TextureManager::GetTexture(won::Defaults::UNDEFINED_TEXTURE_NAME)));
 	datalist2.push_back(won::UniformData<float>::GenData("smoothness", won::UniformType::Float, 0.4f));
 
