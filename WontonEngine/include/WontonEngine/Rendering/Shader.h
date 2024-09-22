@@ -97,7 +97,12 @@ namespace won
 	public:
 		// input the source codes
 		static Shader CreateShader(const std::string& name, const std::string& vertexShader, const std::string& fragmentShader);
+		static Shader CreateShaderF(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
 		static Shader GetShader(const std::string& name);
+
+	private:
+		static std::string Preprocess(const std::string& source);
+		static std::string ExtractIncludeValue(const std::string& line);
 
 	private:
 		static priv::IAssetManager<priv::ShaderBase, Shader> assetManager;

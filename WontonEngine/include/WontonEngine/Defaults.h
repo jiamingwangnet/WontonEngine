@@ -26,6 +26,10 @@ namespace won
 		static constexpr char* PLANE_MESH_NAME = "WON_PlaneMesh";
 		static constexpr char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
 
+		static constexpr char* WON_LIGHTING_FUNC_NAME = "WON_LIGHTING_FUNCTIONS";
+
+		static const std::string WON_LIGHTING_FUNC_SRC;
+
 	public:
 		static void Load(AssetType type);
 

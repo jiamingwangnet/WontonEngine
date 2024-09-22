@@ -3,6 +3,10 @@
 #include <glad/glad.h>
 #include <thread>
 #include "include/WontonEngine/Game.h"
+#include "include/WontonEngine/FileManager.h"
+#include <regex>
+#include <sstream>
+#include "include/WontonEngine/Defaults.h"
 
 // TODO: change to a file stream
 #include <iostream>
@@ -253,7 +257,7 @@ uint32_t won::priv::ShaderBase::GetUniformLoc(const std::string& name) const
 {
 	GLint loc = glGetUniformLocation(progId, name.c_str());
 	if (loc == GL_INVALID_INDEX)
-		Error::ThrowError((std::string)"Uniform" + name + " not found in shader.", std::cout, __LINE__, __FILE__);
+		Error::ThrowError((std::string)"Uniform \"" + name + "\" not found in shader.", std::cout, __LINE__, __FILE__);
 	return (uint32_t)loc;
 }
 
@@ -261,7 +265,7 @@ uint32_t won::priv::ShaderBase::GetUniformLoc(const const char* name) const
 {
 	GLint loc = glGetUniformLocation(progId, name);
 	if (loc == GL_INVALID_INDEX)
-		Error::ThrowError((std::string)"Uniform" + name + " not found in shader.", std::cout, __LINE__, __FILE__);
+		Error::ThrowError((std::string)"Uniform \"" + name + "\" not found in shader.", std::cout, __LINE__, __FILE__);
 	return (uint32_t)loc;
 }
 
@@ -277,8 +281,11 @@ uint32_t won::priv::ShaderBase::GetUniformLocNoThrow(const char* name) const noe
 
 won::Shader won::ShaderManager::CreateShader(const std::string& name, const std::string& vertexShader, const std::string& fragmentShader)
 {
-	const char* vertSource = vertexShader.c_str();
-	const char* fragSource = fragmentShader.c_str();
+	std::string pvertexShader = Preprocess(vertexShader);
+	std::string pfragmentShader = Preprocess(fragmentShader);
+
+	const char* vertSource = pvertexShader.c_str();
+	const char* fragSource = pfragmentShader.c_str();
 
 	unsigned int vertex, fragment;
 
@@ -330,7 +337,70 @@ won::Shader won::ShaderManager::CreateShader(const std::string& name, const std:
 	return assetManager.GetAsset(name);
 }
 
+won::Shader won::ShaderManager::CreateShaderF(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
+{
+	std::vector<unsigned char> vertexSrc;
+	std::vector<unsigned char> fragmentSrc;
+	FileManager::ReadFile(vertexShaderPath, vertexSrc);
+	FileManager::ReadFile(fragmentShaderPath, fragmentSrc);
+	return CreateShader(name, std::string{vertexSrc.begin(), vertexSrc.end()}, std::string{fragmentSrc.begin(),fragmentSrc.end()});
+}
+
 won::Shader won::ShaderManager::GetShader(const std::string& name)
 {
 	return assetManager.GetAsset(name);
+}
+
+std::string won::ShaderManager::Preprocess(const std::string& source)
+{
+	// find #include token
+
+	std::regex reg{"^[[:space:]]*#[[:space:]]*include(.)*>$"}; // regex matching #include <...>
+	std::stringstream fstr{ source };
+	std::string line;
+	std::string out;
+
+	while (fstr.good())
+	{
+		std::getline(fstr, line);
+
+		if (std::regex_match(line, reg))
+		{
+			std::string name = ExtractIncludeValue(line);
+			std::string nsrc;
+
+			// if name starts with WON_, find the correct default source
+			if (std::regex_match(name, std::regex{ "^WON_(.*)$" }))
+			{
+				// else if chain to find the right source
+				if (name == Defaults::WON_LIGHTING_FUNC_NAME)
+				{
+					nsrc = Defaults::WON_LIGHTING_FUNC_SRC;
+				}
+			}
+			else
+			{
+				std::vector<unsigned char> buf;
+				FileManager::ReadFile(name, buf);
+				nsrc = Preprocess(std::string{ buf.begin(), buf.end() });
+			}
+			out.append(nsrc);
+		}
+		else out.append(line + '\n');
+	}
+
+	return out;
+}
+
+std::string won::ShaderManager::ExtractIncludeValue(const std::string& line)
+{
+	std::smatch match;
+	std::regex nreg{ "<.*>" };
+	std::regex_search(line, match, nreg);
+
+	std::string strMatch = match.str();
+	unsigned int start = strMatch.find('<');
+	unsigned int end = strMatch.find('>');
+
+	return strMatch.substr(++start, --end);
 }
