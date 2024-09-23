@@ -346,6 +346,20 @@ won::Shader won::ShaderManager::CreateShaderF(const std::string& name, const std
 	return CreateShader(name, std::string{vertexSrc.begin(), vertexSrc.end()}, std::string{fragmentSrc.begin(),fragmentSrc.end()});
 }
 
+won::Shader won::ShaderManager::CreateShaderVF(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShader)
+{
+	std::vector<unsigned char> vertexSrc;
+	FileManager::ReadFile(vertexShaderPath, vertexSrc);
+	return CreateShader(name, std::string{ vertexSrc.begin(), vertexSrc.end() }, fragmentShader);
+}
+
+won::Shader won::ShaderManager::CreateShaderFF(const std::string& name, const std::string& vertexShader, const std::string& fragmentShaderPath)
+{
+	std::vector<unsigned char> fragmentSrc;
+	FileManager::ReadFile(fragmentShaderPath, fragmentSrc);
+	return CreateShader(name, vertexShader, std::string{ fragmentSrc.begin(), fragmentSrc.end() });
+}
+
 won::Shader won::ShaderManager::GetShader(const std::string& name)
 {
 	return assetManager.GetAsset(name);
@@ -355,7 +369,7 @@ std::string won::ShaderManager::Preprocess(const std::string& source)
 {
 	// find #include token
 
-	std::regex reg{"^[[:space:]]*#[[:space:]]*include(.)*>$"}; // regex matching #include <...>
+	std::regex reg{"^[[:space:]]*#[[:space:]]*include(.)*>(\\r|\\n|\\s|\\r\\n)*$"}; // regex matching #include <...>
 	std::stringstream fstr{ source };
 	std::string line;
 	std::string out;
@@ -376,6 +390,14 @@ std::string won::ShaderManager::Preprocess(const std::string& source)
 				if (name == Defaults::WON_LIGHTING_FUNC_NAME)
 				{
 					nsrc = Defaults::WON_LIGHTING_FUNC_SRC;
+				}
+				else if (name == Defaults::WON_POSTPROC_PIXELATE_FUNC_NAME)
+				{
+					nsrc = Defaults::WON_POSTPROC_PIXELATE_FUNC_SRC;
+				}
+				else if (name == Defaults::WON_POSTPROC_COLORLIMIT_FUNC_NAME)
+				{
+					nsrc = Defaults::WON_POSTPROC_COLORLIMIT_FUNC_SRC;
 				}
 			}
 			else

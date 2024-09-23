@@ -44,6 +44,26 @@ won::Matrix4x4 won::cmp::Camera::CalculateProjection()
 	return projection;
 }
 
+void won::cmp::Camera::UsePost(bool v)
+{
+	usePost = v;
+}
+
+bool won::cmp::Camera::IsUsingPost() const
+{
+	return usePost;
+}
+
+void won::cmp::Camera::SetPostMaterial(Material material)
+{
+	postMaterial = material;
+}
+
+won::Material won::cmp::Camera::GetPostMaterial() const
+{
+	return postMaterial;
+}
+
 won::Matrix4x4 won::cmp::Camera::ReturnProjection()
 {
 	switch (projType)

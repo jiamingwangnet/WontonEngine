@@ -98,6 +98,10 @@ namespace won
 		// input the source codes
 		static Shader CreateShader(const std::string& name, const std::string& vertexShader, const std::string& fragmentShader);
 		static Shader CreateShaderF(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+
+		static Shader CreateShaderVF(const std::string& name, const std::string& vertexShaderPath, const std::string& fragmentShader);
+		static Shader CreateShaderFF(const std::string& name, const std::string& vertexShader, const std::string& fragmentShaderPath);
+
 		static Shader GetShader(const std::string& name);
 
 	private:

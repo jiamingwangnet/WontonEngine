@@ -81,7 +81,7 @@ const std::vector<unsigned int> won::Defaults::plane_indices
 	0, 2, 3
 };
 
-const std::string won::Defaults::vertexShader = R"SHADER(
+const std::string won::Defaults::WON_DEFAULT_VERTEX_SHADER = R"SHADER(
 #version 330 core
 
 layout (location = 0) in vec3 position;
@@ -99,6 +99,7 @@ uniform mat3 won_NormalMatrix;
 
 void main()
 {
+	//  lighting calculations should be done in world space
 	gl_Position = won_ModelViewProjMatrix * vec4(position.xyz, 1.0);
 	texCoord = uv;
 	fragNormal = won_NormalMatrix * normal;
@@ -106,7 +107,7 @@ void main()
 }
 )SHADER";
 
-const std::string won::Defaults::fragmentShader = R"SHADER(
+const std::string won::Defaults::WON_DEFAULT_FRAGMENT_SHADER = R"SHADER(
 #version 330 core
 
 out vec4 FragColor;
@@ -253,6 +254,37 @@ vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir,
 }
 )SHADER";
 
+const std::string won::Defaults::WON_POSTPROC_PIXELATE_FUNC_SRC = R"SHADER(
+vec4 won_Pixelate(sampler2D pinput, vec2 texCoord, vec2 winSize, float pixelSize)
+{
+	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize + vec2(pixelSize, pixelSize) / winSize / vec2(2.0,2.0);
+
+	return texture(pinput, pixelCoord);
+}
+)SHADER";
+
+const std::string won::Defaults::WON_POSTPROC_COLORLIMIT_FUNC_SRC = R"SHADER(
+vec4 won_ColorLimiter(vec4 pinput, float stepFactor)
+{
+	return vec4(stepFactor * floor(pinput.rgb / stepFactor), 1.0);
+}
+)SHADER";
+
+const std::string won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER = R"SHADER(
+#version 330
+
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 uv;
+
+out vec2 won_TexCoords;
+
+void main()
+{
+	won_TexCoords = uv;
+	gl_Position = vec4(position, 0.0, 1.0);
+}
+)SHADER";
+
 void won::Defaults::Load(AssetType type)
 {
 	switch (type)
@@ -284,7 +316,7 @@ void won::Defaults::Load(AssetType type)
 
 void won::Defaults::LoadShader()
 {
-	ShaderManager::CreateShader(DEFAULT_SHADER_NAME, vertexShader, fragmentShader);
+	ShaderManager::CreateShader(DEFAULT_SHADER_NAME, WON_DEFAULT_VERTEX_SHADER, WON_DEFAULT_FRAGMENT_SHADER);
 }
 
 void won::Defaults::LoadMaterial()

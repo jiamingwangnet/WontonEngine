@@ -3,6 +3,7 @@
 #include "../Component.h"
 #include "../Math/Rect.h"
 #include "../Math/Matrix.h"
+#include "../Rendering/Material.h"
 
 namespace won
 {
@@ -29,6 +30,11 @@ namespace won
 
 			Matrix4x4 CalculateLookAt();
 			Matrix4x4 CalculateProjection();
+
+			void UsePost(bool v);
+			bool IsUsingPost() const;
+			void SetPostMaterial(Material material);
+			Material GetPostMaterial() const;
 		private:
 			Matrix4x4 ReturnProjection();
 
@@ -43,6 +49,9 @@ namespace won
 			Matrix4x4 lookat{1.0f};
 
 			Matrix4x4 projection{ 1.0f };
+
+			bool usePost = false;
+			Material postMaterial = nullptr;
 		};
 	}
 }

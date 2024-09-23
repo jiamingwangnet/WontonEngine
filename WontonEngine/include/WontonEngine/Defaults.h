@@ -27,8 +27,17 @@ namespace won
 		static constexpr char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
 
 		static constexpr char* WON_LIGHTING_FUNC_NAME = "WON_LIGHTING_FUNCTIONS";
+		static constexpr char* WON_POSTPROC_PIXELATE_FUNC_NAME = "WON_POSTPROC_PIXELATE";
+		static constexpr char* WON_POSTPROC_COLORLIMIT_FUNC_NAME = "WON_POSTPROC_COLOR_LIMITER";
 
 		static const std::string WON_LIGHTING_FUNC_SRC;
+		static const std::string WON_POSTPROC_PIXELATE_FUNC_SRC;
+		static const std::string WON_POSTPROC_COLORLIMIT_FUNC_SRC;
+
+		static const std::string WON_POST_PROCESSING_VERTEX_SHADER;
+
+		static const std::string WON_DEFAULT_VERTEX_SHADER;
+		static const std::string WON_DEFAULT_FRAGMENT_SHADER;
 
 	public:
 		static void Load(AssetType type);
@@ -81,7 +90,5 @@ namespace won
 		static const std::vector<unsigned int> box_indices;
 		static const std::vector<Vertex> plane_vertices;
 		static const std::vector<unsigned int> plane_indices;
-		static const std::string vertexShader;
-		static const std::string fragmentShader;
 	};
 }

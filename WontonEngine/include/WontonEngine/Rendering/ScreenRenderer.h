@@ -9,6 +9,7 @@
 #include "Lighting.h"
 #include <utility>
 #include "../ThreadPool.h"
+#include "../Window.h"
 
 #define M_WON_LIGHTS "won_Lights"
 #define WON_LIGHTS_UNIFORMS(n) M_WON_LIGHTS "[" #n "].type", \
@@ -25,6 +26,20 @@ namespace won
 {
 	namespace priv
 	{
+		static constexpr float POST_QUAD_VERTS[] =
+		{
+			 1.0f,  1.0f, 	1.0f, 1.0f,// top right
+			 1.0f, -1.0f,	1.0f, 0.0f,// bottom right
+			-1.0f, -1.0f,	0.0f, 0.0f,// bottom left
+			-1.0f,  1.0f,	0.0f, 1.0f,// top left 
+		};
+
+		static constexpr int POST_QUAD_INDICES[] =
+		{
+			0, 1, 3,
+			1, 2, 3,
+		};
+
 		static constexpr const char* WON_PROJECTIONMATRIX = "won_ProjectionMatrix";
 		static constexpr const char* WON_VIEWMATRIX       = "won_ViewMatrix";
 		static constexpr const char* WON_MODELMATRIX      = "won_ModelMatrix";
@@ -38,6 +53,7 @@ namespace won
 		static constexpr const char* WON_MODELVIEWPROJMAT = "won_ModelViewProjMatrix";
 		static constexpr const char* WON_MODELVIEWMATRIX  = "won_ModelViewMatrix";
 		static constexpr const char* WON_NORMALMATRIX     = "won_NormalMatrix";
+		static constexpr const char* WON_POSTPROCTEXTURE  = "won_PostProcTexture";
 
 		static constexpr const unsigned int WON_LIGHT_INTERNAL_NPROPERTIES = 9;
 		static constexpr const char* WON_LIGHT_UNIFORMS_ARRAY[MAX_LIGHTS * WON_LIGHT_INTERNAL_NPROPERTIES]
@@ -181,6 +197,7 @@ namespace won
 			ScreenRenderer();
 			ScreenRenderer(const ScreenRenderer&) = delete;
 
+			void Init(const Window& window);
 			void Render(const Game& game);
 			void SetActiveCamera(cmp::Camera* camera);
 
@@ -216,6 +233,17 @@ namespace won
 
 			std::array<std::size_t, MAX_LIGHTS> dirtyLights;
 			std::size_t dirtyLsize = 0;
+
+			// post processing
+
+			// screen quad
+			unsigned int pvao;
+			unsigned int pvbo;
+			unsigned int pebo;
+
+			unsigned int fbo;
+			unsigned int rtex; // render texture
+			unsigned int rbo; // render buffer for stencil and depth
 		};
 	}
 }

@@ -29,6 +29,8 @@ void won::Game::Start()
 	window.Init();
 	window.InitContext();
 
+	renderer.Init(window);
+
 	// register predefined components
 	compManager.RegisterComponent<cmp::Camera>();
 	compManager.RegisterComponent<cmp::Renderer>();
