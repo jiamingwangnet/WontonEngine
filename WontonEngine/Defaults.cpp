@@ -261,12 +261,19 @@ vec4 won_Pixelate(sampler2D pinput, vec2 texCoord, vec2 winSize, float pixelSize
 
 	return texture(pinput, pixelCoord);
 }
+
+vec2 won_PixelateCoords(vec2 texCoord, vec2 winSize, float pixelSize)
+{
+	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize + vec2(pixelSize, pixelSize) / winSize / vec2(2.0,2.0);
+
+	return pixelCoord;
+}
 )SHADER";
 
 const std::string won::Defaults::WON_POSTPROC_COLORLIMIT_FUNC_SRC = R"SHADER(
-vec4 won_ColorLimiter(vec4 pinput, float stepFactor)
+vec4 won_ColorLimiter(vec4 cinput, float stepFactor)
 {
-	return vec4(stepFactor * floor(pinput.rgb / stepFactor), 1.0);
+	return vec4(stepFactor * floor(cinput.rgb / stepFactor), 1.0);
 }
 )SHADER";
 
@@ -284,6 +291,98 @@ void main()
 	gl_Position = vec4(position, 0.0, 1.0);
 }
 )SHADER";
+
+const std::string won::Defaults::WON_UTIL_RANDOM_FUNC_SRC = R"SHADER(
+/*
+	Code by Spatial
+	05 July 2013
+*/
+
+// A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
+uint hash(uint x)
+{
+	x += (x << 10u);
+	x ^= (x >> 6u);
+	x += (x << 3u);
+	x ^= (x >> 11u);
+	x += (x << 15u);
+	return x;
+}
+
+// Compound versions of the hashing algorithm I whipped together.
+uint hash(uvec2 v) { return hash(v.x ^ hash(v.y)); }
+uint hash(uvec3 v) { return hash(v.x ^ hash(v.y) ^ hash(v.z)); }
+uint hash(uvec4 v) { return hash(v.x ^ hash(v.y) ^ hash(v.z) ^ hash(v.w)); }
+
+// Construct a float with half-open range [0:1] using low 23 bits.
+// All zeroes yields 0.0, all ones yields the next smallest representable value below 1.0.
+float floatConstruct(uint m)
+{
+	const uint ieeeMantissa = 0x007FFFFFu; // binary32 mantissa bitmask
+	const uint ieeeOne = 0x3F800000u; // 1.0 in IEEE binary32
+
+	m &= ieeeMantissa;                     // Keep only mantissa bits (fractional part)
+	m |= ieeeOne;                          // Add fractional part to 1.0
+
+	float  f = uintBitsToFloat(m);       // Range [1:2]
+	return f - 1.0;                        // Range [0:1]
+}
+
+
+
+// Pseudo-random value in half-open range [0:1].
+float won_Random(float x) { return floatConstruct(hash(floatBitsToUint(x))); }
+float won_Random(vec2  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+float won_Random(vec3  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+float won_Random(vec4  v) { return floatConstruct(hash(floatBitsToUint(v))); }
+
+float won_RandRange(float min, float max, vec2 seed)
+{
+	return clamp(floor(won_Random(seed) * (float(max) - float(min) + 1.0) + float(min)), min, max); // clamp incase random returns 1
+}
+
+float won_RandRange(float min, float max, vec3 seed)
+{
+	return clamp(floor(won_Random(seed) * (float(max) - float(min) + 1.0) + float(min)), min, max); // clamp incase random returns 1
+}
+
+float won_RandRange(float min, float max, vec4 seed)
+{
+	return clamp(floor(won_Random(seed) * (float(max) - float(min) + 1.0) + float(min)), min, max); // clamp incase random returns 1
+}
+
+float won_RandRange(float min, float max, float seed)
+{
+	return clamp(floor(won_Random(seed) * (float(max) - float(min) + 1.0) + float(min)), min, max); // clamp incase random returns 1
+}
+
+)SHADER";
+
+const std::string won::Defaults::WON_POSTPROC_NOISE_FUNC_SRC = R"SHADER(
+#include <WON_UTILITY_RANDOM>
+
+vec4 won_NoiseBW(vec2 seed, float min, float max)
+{
+	return vec4(won_RandRange(min, max, seed) * vec3(1.0), 1.0);
+}
+
+vec4 won_NoiseCL(vec2 seed, float min, float max)
+{
+	float s0 = won_Random(seed);
+	float s1 = won_Random(seed * won_Random(seed));
+	float s2 = won_Random(seed * won_Random(seed * won_Random(seed)));
+
+	return vec4(won_RandRange(min, max, s0), won_RandRange(min, max, s1), won_RandRange(min, max, s2), 1.0);
+}
+)SHADER";
+
+const std::unordered_map<std::string, const std::string*> won::Defaults::nameToSource{
+	{(std::string)WON_LIGHTING_FUNC_NAME, &WON_LIGHTING_FUNC_SRC},
+	{(std::string)WON_POSTPROC_PIXELATE_FUNC_NAME, &WON_POSTPROC_PIXELATE_FUNC_SRC},
+	{(std::string)WON_POSTPROC_COLORLIMIT_FUNC_NAME, &WON_POSTPROC_COLORLIMIT_FUNC_SRC},
+	{(std::string)WON_UTIL_RANDOM_FUNC_NAME, &WON_UTIL_RANDOM_FUNC_SRC},
+	{(std::string)WON_POSTPROC_NOISE_FUNC_NAME, &WON_POSTPROC_NOISE_FUNC_SRC},
+};
 
 void won::Defaults::Load(AssetType type)
 {
@@ -312,6 +411,11 @@ void won::Defaults::Load(AssetType type)
 		LoadUndefinedTexture();
 		break;
 	}
+}
+
+const std::string* won::Defaults::GetShaderSource(const std::string& name)
+{
+	return nameToSource.at(name);
 }
 
 void won::Defaults::LoadShader()

@@ -12,12 +12,16 @@ won::priv::Window::Window(int width, int height, const std::string& name, WinFla
 
 int won::priv::Window::GetWidth() const
 {
-	return width;
+	int w;
+	SDL_GetWindowSizeInPixels(window, &w, nullptr); // returns the actual size determined by OS
+	return w;
 }
 
 int won::priv::Window::GetHeight() const
 {
-	return height;
+	int h;
+	SDL_GetWindowSizeInPixels(window, nullptr, &h);
+	return h;
 }
 
 std::string won::priv::Window::GetName() const

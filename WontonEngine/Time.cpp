@@ -13,6 +13,11 @@ float won::Time::DeltaTime()
 	return deltaTime;
 }
 
+float won::Time::RDeltaTime()
+{
+	return rdeltaTime;
+}
+
 uint64_t won::Time::GetTime()
 {
 	return SDL_GetTicks();
@@ -44,9 +49,4 @@ void won::priv::TimeUpd::UpdateRDelta()
 	Time::rlastFrameTime = currentTime;
 
 	Time::rdeltaTime = (float)deltaMillisec / 1000.0f;
-}
-
-float won::priv::TimeUpd::RDeltaTime()
-{
-	return Time::rdeltaTime;
 }

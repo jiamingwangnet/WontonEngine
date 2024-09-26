@@ -4,6 +4,7 @@
 #include "EntityCreator.h"
 #include "Vertex.h"
 #include <vector>
+#include <unordered_map>
 
 namespace won
 {
@@ -26,13 +27,19 @@ namespace won
 		static constexpr char* PLANE_MESH_NAME = "WON_PlaneMesh";
 		static constexpr char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
 
+
 		static constexpr char* WON_LIGHTING_FUNC_NAME = "WON_LIGHTING_FUNCTIONS";
 		static constexpr char* WON_POSTPROC_PIXELATE_FUNC_NAME = "WON_POSTPROC_PIXELATE";
 		static constexpr char* WON_POSTPROC_COLORLIMIT_FUNC_NAME = "WON_POSTPROC_COLOR_LIMITER";
+		static constexpr char* WON_UTIL_RANDOM_FUNC_NAME = "WON_UTILITY_RANDOM";
+		static constexpr char* WON_POSTPROC_NOISE_FUNC_NAME = "WON_POSTPROC_NOISE";
 
 		static const std::string WON_LIGHTING_FUNC_SRC;
 		static const std::string WON_POSTPROC_PIXELATE_FUNC_SRC;
 		static const std::string WON_POSTPROC_COLORLIMIT_FUNC_SRC;
+		static const std::string WON_UTIL_RANDOM_FUNC_SRC;
+		static const std::string WON_POSTPROC_NOISE_FUNC_SRC;
+
 
 		static const std::string WON_POST_PROCESSING_VERTEX_SHADER;
 
@@ -41,6 +48,7 @@ namespace won
 
 	public:
 		static void Load(AssetType type);
+		static const std::string* GetShaderSource(const std::string& name);
 
 	private:
 		static void LoadShader();
@@ -90,5 +98,6 @@ namespace won
 		static const std::vector<unsigned int> box_indices;
 		static const std::vector<Vertex> plane_vertices;
 		static const std::vector<unsigned int> plane_indices;
+		static const std::unordered_map<std::string, const std::string*> nameToSource;
 	};
 }

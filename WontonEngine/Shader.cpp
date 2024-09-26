@@ -365,7 +365,7 @@ won::Shader won::ShaderManager::GetShader(const std::string& name)
 	return assetManager.GetAsset(name);
 }
 
-std::string won::ShaderManager::Preprocess(const std::string& source)
+std::string won::ShaderManager::Preprocess(const std::string& source) // TODO: add duplicate include detection
 {
 	// find #include token
 
@@ -387,26 +387,15 @@ std::string won::ShaderManager::Preprocess(const std::string& source)
 			if (std::regex_match(name, std::regex{ "^WON_(.*)$" }))
 			{
 				// else if chain to find the right source
-				if (name == Defaults::WON_LIGHTING_FUNC_NAME)
-				{
-					nsrc = Defaults::WON_LIGHTING_FUNC_SRC;
-				}
-				else if (name == Defaults::WON_POSTPROC_PIXELATE_FUNC_NAME)
-				{
-					nsrc = Defaults::WON_POSTPROC_PIXELATE_FUNC_SRC;
-				}
-				else if (name == Defaults::WON_POSTPROC_COLORLIMIT_FUNC_NAME)
-				{
-					nsrc = Defaults::WON_POSTPROC_COLORLIMIT_FUNC_SRC;
-				}
+				nsrc = *Defaults::GetShaderSource(name);
 			}
 			else
 			{
 				std::vector<unsigned char> buf;
 				FileManager::ReadFile(name, buf);
-				nsrc = Preprocess(std::string{ buf.begin(), buf.end() });
+				nsrc = std::string{ buf.begin(), buf.end() };
 			}
-			out.append(nsrc);
+			out.append(Preprocess(nsrc));
 		}
 		else out.append(line + '\n');
 	}
