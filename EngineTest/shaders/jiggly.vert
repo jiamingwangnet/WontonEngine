@@ -22,7 +22,7 @@ vec3 pixelate(vec3 pos, float pfac)
 void main()
 {
 	vec4 screenc = won_ModelViewProjMatrix * vec4(position.xyz, 1.0);
-	gl_Position = vec4(pixelate(screenc.xyz/screenc.w, 55.0).xy * screenc.w, screenc.z, screenc.w);
+	gl_Position = vec4(pixelate(screenc.xyz/screenc.w, 45.0).xy * screenc.w, screenc.z, screenc.w);
 	texCoord = uv;
 	fragNormal = won_NormalMatrix * normal;
 	fragPos = vec3(won_ModelMatrix * vec4(position, 1.0));

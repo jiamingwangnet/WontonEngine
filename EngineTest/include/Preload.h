@@ -40,4 +40,7 @@ void preload(won::Game& game)
 
 	won::UniformDataList datalist3;
 	won::MaterialManager::CreateMaterial("PostProcess", won::ShaderManager::CreateShaderFF("PostShader", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, SHADER_PATH), std::move(datalist3));
+
+	won::UniformDataList datalist4;
+	won::MaterialManager::CreateMaterial("PostProcess1", won::ShaderManager::CreateShaderFF("PostShader1", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, SHADER1_PATH), std::move(datalist4));
 }
