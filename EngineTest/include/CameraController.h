@@ -22,9 +22,12 @@ public:
 
 	}
 
+	static void RUpdate(CameraController& self) {}
+
 	static void Update(CameraController& self)
 	{
 		won::cmp::Transform* transform = self.entity.GetComponent<won::cmp::Transform>();
+		won::cmp::Camera* camera = self.entity.GetComponent<won::cmp::Camera>();
 
 		if (won::Input::GetKey(won::KeyCode::Key_W))
 		{
@@ -64,6 +67,27 @@ public:
 			if (self.game->GetCurrentScene() == 0) self.game->LoadScene(1);
 			else if (self.game->GetCurrentScene() == 1) self.game->LoadScene(0);
 		}
+
+		if (won::Input::GetKeyDown(won::KeyCode::Key_L))
+		{
+			if (self.shader == 0)
+			{
+				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess"));
+				camera->UsePost(true);
+				self.shader++;
+			}
+			else if (self.shader == 1)
+			{
+				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess1"));
+				self.shader++;
+			}
+			else
+			{
+				camera->SetPostMaterial(nullptr);
+				camera->UsePost(false);
+				self.shader = 0;
+			}
+		}
 	}
 
 private:
@@ -71,4 +95,5 @@ private:
 	float xRot = 0.0f;
 	float yRot = -90.0f;
 	float sens = 0.2f;
+	int shader = 0;
 };

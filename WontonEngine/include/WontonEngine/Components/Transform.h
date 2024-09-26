@@ -19,6 +19,7 @@ namespace won
 
 			static void Init(Transform& self) {};
 			static void Update(Transform& self) {};
+			static void RUpdate(Transform& self) {};
 
 			Transform& Translate(Vector3 translation);
 			Transform& Scale(Vector3 scale);

@@ -18,11 +18,14 @@ public:
 	Spin() = default;
 
 	static void Init(Spin& self) {};
+
+	static void RUpdate(Spin& self) {
+		won::cmp::Transform* transf = self.entity.GetComponent<won::cmp::Transform>();
+		transf->Rotate(won::Vector3{ 1.0f, 1.0f, 1.0f } *self.amount * won::Time::RDeltaTime());
+	};
+
 	static void Update(Spin& self)
 	{
-		won::cmp::Transform* transf = self.entity.GetComponent<won::cmp::Transform>();
-		transf->Rotate(won::Vector3{ 1.0f, 1.0f, 1.0f } * self.amount * won::Time::DeltaTime());
-
 		if (won::Input::GetMouseDown(won::MouseButton::Button_Middle))
 		{
 			if (won::Random::RandomRange<int>(0, 1))

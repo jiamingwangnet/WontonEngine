@@ -24,6 +24,7 @@ namespace won
 			// for the component manager to update and init
 			virtual void InitComponents() = 0;
 			virtual void UpdateComponents() = 0;
+			virtual void RUpdateComponents() = 0;
 
 			virtual void EntityDestroyed(Entity entity) = 0;
 		};
@@ -44,6 +45,7 @@ namespace won
 			// for the component manager to update and init
 			void InitComponents() override;
 			void UpdateComponents() override;
+			void RUpdateComponents() override;
 
 		private:
 			static constexpr std::size_t INVALID_INDEX = (std::size_t)-1;
@@ -57,6 +59,7 @@ namespace won
 			// store functions
 			void (*finit)(T&) = &T::Init;
 			void (*fupdate)(T&) = &T::Update;
+			void (*frupdate)(T&) = &T::RUpdate;
 
 			// map from entity id to array index
 			std::array<std::size_t, MAX_ENTITIES> entityToIndexMap{};
@@ -139,6 +142,15 @@ namespace won
 			for (int i = 0; i < size; i++)
 			{
 				fupdate(components[i]);
+			}
+		}
+		template<class T>
+		inline void ComponentArray<T>::RUpdateComponents()
+		{
+			// updates all components
+			for (int i = 0; i < size; i++)
+			{
+				frupdate(components[i]);
 			}
 		}
 	}

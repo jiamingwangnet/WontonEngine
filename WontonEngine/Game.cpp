@@ -50,7 +50,7 @@ void won::Game::Start()
 		// render step delta between frames
 		priv::TimeUpd::UpdateRDelta();
 
-		accumulator += priv::TimeUpd::RDeltaTime();
+		accumulator += Time::RDeltaTime();
 
 		// fuzzy timing
 		while (accumulator > 1.0f/(targetUpdateRate + 1.0f))
@@ -69,6 +69,7 @@ void won::Game::Start()
 			accumulator -= 1.0f / (targetUpdateRate - 1.0f);
 			if (accumulator < 0) accumulator = 0;
 		}
+		Game::compManager.RUpdateComponents();
 		renderer.Render(*this);
 
 		window.SwapBuffer();

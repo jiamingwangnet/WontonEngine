@@ -19,6 +19,7 @@ namespace won
 
 			static void Init(Renderer& self) {};
 			static void Update(Renderer& self) {};
+			static void RUpdate(Renderer& self) {};
 
 			Mesh GetMesh() const;
 			Material GetMaterial() const;

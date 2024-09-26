@@ -20,6 +20,15 @@ void won::priv::ComponentManager::UpdateComponents()
 	}
 }
 
+void won::priv::ComponentManager::RUpdateComponents()
+{
+	// loop through arrays and call update
+	for (auto& cmp : components)
+	{
+		cmp.second->RUpdateComponents();
+	}
+}
+
 void won::priv::ComponentManager::EntityDestroyed(Entity entity)
 {
 	// loop through component arrays and call their EntityDestroyed

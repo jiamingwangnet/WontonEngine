@@ -33,6 +33,7 @@ namespace won
 
 			void InitComponents();
 			void UpdateComponents();
+			void RUpdateComponents();
 
 			void EntityDestroyed(Entity entity);
 

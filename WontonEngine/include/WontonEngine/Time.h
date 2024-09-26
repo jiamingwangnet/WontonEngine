@@ -14,6 +14,7 @@ namespace won
 	{
 	public:
 		static float DeltaTime();
+		static float RDeltaTime();
 		static uint64_t GetTime();
 
 		static unsigned int GetRenderFrames();
@@ -44,8 +45,6 @@ namespace won
 
 			static void UpdateDelta();
 			static void UpdateRDelta();
-
-			static float RDeltaTime();
 		};
 	}
 }
