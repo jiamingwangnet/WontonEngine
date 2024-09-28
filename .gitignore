@@ -2,3 +2,4 @@
 out/
 CMakePresets.json
 EngineTest/include/LocalPaths.h
+Profiling/
