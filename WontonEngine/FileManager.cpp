@@ -15,7 +15,7 @@ void won::FileManager::WriteFile(const std::string& path, const std::vector<unsi
 {
 	std::ofstream stream;
 
-	stream.open(path, std::ios::binary | (append ? std::ios::app : 0));
+	stream.open(path, std::ios::binary | (append ? std::ios::app : (std::ios::openmode)0));
 
 	for (unsigned char c : data)
 	{

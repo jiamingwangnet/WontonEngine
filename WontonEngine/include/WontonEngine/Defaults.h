@@ -21,18 +21,18 @@ namespace won
 			UndefinedTexture
 		};
 	
-		static constexpr char* DEFAULT_SHADER_NAME = "WON_DefaultShader";
-		static constexpr char* DEFAULT_MATERIAL_NAME = "WON_DefaultMaterial";
-		static constexpr char* BOX_MESH_NAME = "WON_BoxMesh";
-		static constexpr char* PLANE_MESH_NAME = "WON_PlaneMesh";
-		static constexpr char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
+		static constexpr const char* DEFAULT_SHADER_NAME = "WON_DefaultShader";
+		static constexpr const char* DEFAULT_MATERIAL_NAME = "WON_DefaultMaterial";
+		static constexpr const char* BOX_MESH_NAME = "WON_BoxMesh";
+		static constexpr const char* PLANE_MESH_NAME = "WON_PlaneMesh";
+		static constexpr const char* UNDEFINED_TEXTURE_NAME = "WON_UndefinedTexture";
 
 
-		static constexpr char* WON_LIGHTING_FUNC_NAME = "WON_LIGHTING_FUNCTIONS";
-		static constexpr char* WON_POSTPROC_PIXELATE_FUNC_NAME = "WON_POSTPROC_PIXELATE";
-		static constexpr char* WON_POSTPROC_COLORLIMIT_FUNC_NAME = "WON_POSTPROC_COLOR_LIMITER";
-		static constexpr char* WON_UTIL_RANDOM_FUNC_NAME = "WON_UTILITY_RANDOM";
-		static constexpr char* WON_POSTPROC_NOISE_FUNC_NAME = "WON_POSTPROC_NOISE";
+		static constexpr const char* WON_LIGHTING_FUNC_NAME = "WON_LIGHTING_FUNCTIONS";
+		static constexpr const char* WON_POSTPROC_PIXELATE_FUNC_NAME = "WON_POSTPROC_PIXELATE";
+		static constexpr const char* WON_POSTPROC_COLORLIMIT_FUNC_NAME = "WON_POSTPROC_COLOR_LIMITER";
+		static constexpr const char* WON_UTIL_RANDOM_FUNC_NAME = "WON_UTILITY_RANDOM";
+		static constexpr const char* WON_POSTPROC_NOISE_FUNC_NAME = "WON_POSTPROC_NOISE";
 
 		static const std::string WON_LIGHTING_FUNC_SRC;
 		static const std::string WON_POSTPROC_PIXELATE_FUNC_SRC;

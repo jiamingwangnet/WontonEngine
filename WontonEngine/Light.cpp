@@ -8,7 +8,7 @@ won::cmp::Light::Light(Entity entity, Game* game, LightType type, Color color, f
 	using namespace won::priv;
 
 	renderer = &(game->GetRenderer());
-	if (!renderer->HasLight(entity)) renderer->CreateLight(entity);
+	if (!renderer->HasLight(entity.GetId())) renderer->CreateLight(entity);
 
 	LightInternal* light = renderer->RetrieveLight(entity);
 	light->type = type;

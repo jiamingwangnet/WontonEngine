@@ -65,12 +65,12 @@ namespace won
 		template<glm::length_t C, glm::length_t R, class T>
 		inline Matrix<C, R, T> Matrix<C, R, T>::operator/(const Matrix<C, R, T>& mat) const
 		{
-			return return Matrix<C, R, T>{matrix / mat.matrix};;
+			return Matrix<C, R, T>{matrix / mat.matrix};
 		}
 		template<glm::length_t C, glm::length_t R, class T>
 		inline Matrix<C, R, T>& Matrix<C, R, T>::operator*(const T& scalar) const
 		{
-			return Matrix<C, R, T>{matrix + scalar};
+			return Matrix<C, R, T>{matrix * scalar};
 		}
 		template<glm::length_t C, glm::length_t R, class T>
 		inline Matrix<C, R, T>& Matrix<C, R, T>::operator+=(const Matrix<C, R, T>& mat)
@@ -102,7 +102,7 @@ namespace won
 		template<glm::length_t C, glm::length_t R, class T>
 		inline Matrix<C, R, T>& Matrix<C, R, T>::operator*=(const T& scalar)
 		{
-			matrix *= mat.matrix;
+			matrix *= scalar;
 			return *this;
 		}
 

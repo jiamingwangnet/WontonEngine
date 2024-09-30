@@ -32,7 +32,7 @@ void won::priv::EntityManager::DestroyEntity(Entity entity)
 	entities--;
 	availableIds.push(entity.GetId());
 	created.erase(entity.GetId());
-	componentManager.EntityDestroyed(entity);
+	componentManager.EntityDestroyed(entity.GetId());
 }
 
 void won::priv::EntityManager::Clear()

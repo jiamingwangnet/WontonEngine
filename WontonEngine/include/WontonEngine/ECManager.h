@@ -18,7 +18,7 @@ namespace won
 			static ComponentManager& GetComponentManager();
 			static EntityManager& GetEntityManager();
 
-			friend class Entity;
+			friend class won::Entity;
 			friend class ComponentManager;
 			friend class EntityManager;
 			template<class T>

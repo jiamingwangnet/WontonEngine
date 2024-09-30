@@ -29,7 +29,7 @@ void won::priv::ComponentManager::RUpdateComponents()
 	}
 }
 
-void won::priv::ComponentManager::EntityDestroyed(Entity entity)
+void won::priv::ComponentManager::EntityDestroyed(EntId entity)
 {
 	// loop through component arrays and call their EntityDestroyed
 	for (auto& cmp : components)

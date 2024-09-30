@@ -207,13 +207,13 @@ namespace won
 
 			void CreateLight(Entity entity);
 			LightInternal* RetrieveLight(Entity entity);
-			bool HasLight(Entity entity);
+			bool HasLight(EntId entity);
 
-			void EntityDestroyed(Entity entity);
+			void EntityDestroyed(EntId entity);
 			void Clear();
 
 		private:
-			won::Matrix4x4 CalculateMatrix(Renderable& renderable, Matrix4x4& model);
+			won::Matrix4x4 CalculateMatrix(Renderable& renderable);
 			bool IsTransformDirty(Renderable& renderable);
 
 		private:

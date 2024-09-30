@@ -56,7 +56,6 @@ namespace won
 
 			// TODO: add wrapper class for glm::quat
 			static Matrix4x4 CalculateMatrix(const Vector3& scale, const Vector3& position, const glm::quat& rotation);
-			static Matrix4x4& CalculateMatrix(const Vector3& scale, const Vector3& position, const glm::quat& rotation, Matrix4x4 matOut);
 
 		public:
 			static const Vector3 UP;
@@ -64,7 +63,7 @@ namespace won
 			static const Vector3 RIGHT;
 
 		private:
-			priv::ScreenRenderer* renderer;
+			priv::ScreenRenderer* renderer = nullptr;
 		};
 	}
 }

@@ -92,7 +92,6 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 	Matrix4x4 projection = camera->CalculateProjection();
 	Matrix4x4 lookat = camera->CalculateLookAt();
 	Vector3 camPos = camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition();
-	Matrix4x4 model{ 1.0f };
 	Matrix4x4 projview = projection * lookat;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,7 +124,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 		{
 			if (IsTransformDirty(renderable))
 			{
-				renderable.modelMatCache = CalculateMatrix(renderable, model);
+				renderable.modelMatCache = CalculateMatrix(renderable);
 				renderable.normalMatCache = glm::mat3{ glm::transpose(glm::inverse((glm::mat4)renderable.modelMatCache)) }; // calculate in world space
 			}
 
@@ -264,20 +263,20 @@ won::priv::LightInternal* won::priv::ScreenRenderer::RetrieveLight(Entity entity
 	return &((*lights)[lEntityToIndex[entity.GetId()]]);
 }
 
-bool won::priv::ScreenRenderer::HasLight(Entity entity)
+bool won::priv::ScreenRenderer::HasLight(EntId entity)
 {
-	return lEntityToIndex.find(entity.GetId()) != lEntityToIndex.end();
+	return lEntityToIndex.find(entity) != lEntityToIndex.end();
 }
 
-void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
+void won::priv::ScreenRenderer::EntityDestroyed(EntId entity)
 {
 	// renderables (lights will always have renderables)
-	std::size_t dindex = entityToIndex[entity.GetId()];
+	std::size_t dindex = entityToIndex[entity];
 	(*renderables)[dindex] = (*renderables)[rdsize - 1];
 	entityToIndex[indexToEntity[rdsize - 1]] = dindex;
 	indexToEntity[dindex] = indexToEntity[rdsize - 1];
 
-	entityToIndex.erase(entity.GetId());
+	entityToIndex.erase(entity);
 	indexToEntity.erase(rdsize - 1);
 
 	rdsize--;
@@ -285,14 +284,14 @@ void won::priv::ScreenRenderer::EntityDestroyed(Entity entity)
 	// lights
 	if (HasLight(entity))
 	{
-		std::size_t ldindex = lEntityToIndex[entity.GetId()];
+		std::size_t ldindex = lEntityToIndex[entity];
 		(*lights)[ldindex] = (*lights)[lsize - 1];
 		lEntityToIndex[lIndexToEntity[lsize - 1]] = ldindex;
 		lIndexToEntity[ldindex] = lIndexToEntity[lsize - 1];
 
 		lIndexToEIndex[ldindex] = dindex;
 
-		lEntityToIndex.erase(entity.GetId());
+		lEntityToIndex.erase(entity);
 		lIndexToEntity.erase(lsize - 1);
 
 		lsize--;
@@ -329,11 +328,11 @@ void won::priv::ScreenRenderer::Clear()
 	}
 }
 
-won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable, Matrix4x4& model)
+won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable)
 {
 	if (renderable.parent.GetId() == INVALID_ENTITY)
-		return cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation, model);
-	return CalculateMatrix((*renderables)[entityToIndex[renderable.parent.GetId()]], model) * cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation, model);
+		return cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
+	return CalculateMatrix((*renderables)[entityToIndex[renderable.parent.GetId()]]) * cmp::Transform::CalculateMatrix(renderable.scale, renderable.position, renderable.rotation);
 }
 
 bool won::priv::ScreenRenderer::IsTransformDirty(Renderable& renderable)

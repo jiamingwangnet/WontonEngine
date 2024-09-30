@@ -10,6 +10,7 @@
 namespace won
 {
 	class Entity;
+	class Game;
 
 	namespace priv
 	{
@@ -26,7 +27,7 @@ namespace won
 			virtual void UpdateComponents() = 0;
 			virtual void RUpdateComponents() = 0;
 
-			virtual void EntityDestroyed(Entity entity) = 0;
+			virtual void EntityDestroyed(EntId entity) = 0;
 		};
 
 		template<class T>
@@ -36,11 +37,11 @@ namespace won
 			ComponentArray();
 
 			template<class ...Args>
-			void Insert(EntId entity, Args&& ...args);
+			void Insert(EntId entity, Game* activeGame, Args&& ...args);
 			void Remove(EntId entity);
 			T& Retrieve(EntId entity);
 
-			void EntityDestroyed(Entity entity) override;
+			void EntityDestroyed(EntId entity) override;
 
 			// for the component manager to update and init
 			void InitComponents() override;
@@ -71,9 +72,9 @@ namespace won
 
 		template<class T>
 		template<class ...Args>
-		inline void ComponentArray<T>::Insert(EntId entity, Args && ...args)
+		inline void ComponentArray<T>::Insert(EntId entity, Game* activeGame, Args && ...args)
 		{
-			components[size] = T{ (Entity)entity, ECManager::GetComponentManager().GetActiveGame(), std::forward<Args>(args)... };
+			components[size] = T{ entity, activeGame, std::forward<Args>(args)... };
 			entityToIndexMap[entity] = size;
 			indexToEntityMap[size] = entity;
 			newComponents.push_back(size);
@@ -116,13 +117,13 @@ namespace won
 		}
 
 		template<class T>
-		inline void ComponentArray<T>::EntityDestroyed(Entity entity)
+		inline void ComponentArray<T>::EntityDestroyed(EntId entity)
 		{
 			// check if the entity has the specified component
 			// call Remove to remove the component
-			if (entityToIndexMap[entity.GetId()] != INVALID_INDEX)
+			if (entityToIndexMap[entity] != INVALID_INDEX)
 			{
-				Remove(entity.GetId());
+				Remove(entity);
 			}
 		}
 

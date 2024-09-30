@@ -12,7 +12,7 @@ namespace won
 
 		Entity GetEntity() const { return entity; }
 	protected:
-		Entity entity;
-		Game* game;
+		Entity entity = INVALID_ENTITY;
+		Game* game = nullptr;
 	};
 }

@@ -32,10 +32,13 @@ target_link_libraries(WontonEngine "${SDL_LIB_PATH}")
 
 set_property(TARGET WontonEngine PROPERTY CXX_STANDARD 17)
 
-target_compile_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/Zi>")
-target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
-target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
-target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+if("${CMAKE_CXX_COMPILER}" STREQUAL "cl.exe")
+    target_compile_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/Zi>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+endif()
+
 
 
 # TODO: Add tests and install targets if needed.

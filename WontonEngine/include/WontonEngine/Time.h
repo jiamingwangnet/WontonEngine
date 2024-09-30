@@ -38,7 +38,7 @@ namespace won
 		class TimeUpd
 		{
 		private:
-			friend class Game;
+			friend class won::Game;
 
 			static void IncUpdFrames() { Time::updFrames++; }
 			static void IncRdrFrames() { Time::rdrFrames++; }

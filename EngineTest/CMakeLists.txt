@@ -26,14 +26,15 @@ target_include_directories(EngineTest PRIVATE "${GLM_INCLUDE_PATH}")
 
 target_link_libraries(EngineTest "${ENGINE_BIN_PATH}")
 target_link_libraries(EngineTest "${SDL_LIB_PATH}")
+configure_file("${SDL_DLL_PATH}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
 
 set_property(TARGET EngineTest PROPERTY CXX_STANDARD 17)
-set_property(TARGET EngineTest PROPERTY VS_DPI_AWARE "PerMonitor")
 
-target_compile_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/Zi>")
-target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
-target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
-target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
-
+if("${CMAKE_CXX_COMPILER}" STREQUAL "cl.exe")
+    target_compile_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/Zi>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+endif()
 
 # TODO: Add tests and install targets if needed.

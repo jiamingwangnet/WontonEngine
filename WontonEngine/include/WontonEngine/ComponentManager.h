@@ -35,7 +35,7 @@ namespace won
 			void UpdateComponents();
 			void RUpdateComponents();
 
-			void EntityDestroyed(Entity entity);
+			void EntityDestroyed(EntId entity);
 
 			void SetActiveGame(Game* game);
 			Game* GetActiveGame() const;
@@ -81,7 +81,7 @@ namespace won
 		template<class T, class ...Args>
 		inline void ComponentManager::AddComponent(EntId id, Args && ...args)
 		{
-			CAST_T(components[typeid(T).hash_code()])->Insert(id, std::forward<Args>(args)...);
+			CAST_T(components[typeid(T).hash_code()])->Insert(id, game, std::forward<Args>(args)...);
 		}
 	}
 }

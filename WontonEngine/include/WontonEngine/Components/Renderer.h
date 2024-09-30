@@ -27,7 +27,7 @@ namespace won
 			void ActivateMaterial();
 
 		private:
-			priv::ScreenRenderer* renderer;
+			priv::ScreenRenderer* renderer = nullptr;
 		};
 	}
 }

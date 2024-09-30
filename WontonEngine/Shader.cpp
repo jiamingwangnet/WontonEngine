@@ -185,7 +185,7 @@ void won::priv::ShaderBase::SetTexture(const std::string& name, Texture value) c
 	glUniform1i(GetUniformLoc(name), value->GetUnit());
 }
 
-void won::priv::ShaderBase::SetTexture(const const char* name, Texture value) const
+void won::priv::ShaderBase::SetTexture(const char* name, Texture value) const
 {
 	if (value->GetUnit() == (unsigned int)-1)
 		Error::ThrowError("Texture is not bound.", std::cout, __LINE__, __FILE__);
@@ -208,7 +208,7 @@ void won::priv::ShaderBase::SetColor(const std::string& name, const Color& color
 	glUniform4f(GetUniformLoc(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
 
-void won::priv::ShaderBase::SetColor(const const char* name, const Color& color) const
+void won::priv::ShaderBase::SetColor(const char* name, const Color& color) const
 {
 	glUniform4f(GetUniformLoc(name), (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f);
 }
@@ -228,7 +228,7 @@ void won::priv::ShaderBase::SetfColor(const std::string& name, const fColor& col
 	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
 }
 
-void won::priv::ShaderBase::SetfColor(const const char* name, const fColor& color) const
+void won::priv::ShaderBase::SetfColor(const char* name, const fColor& color) const
 {
 	glUniform4f(GetUniformLoc(name), color.r, color.g, color.b, color.a);
 }
@@ -261,7 +261,7 @@ uint32_t won::priv::ShaderBase::GetUniformLoc(const std::string& name) const
 	return (uint32_t)loc;
 }
 
-uint32_t won::priv::ShaderBase::GetUniformLoc(const const char* name) const
+uint32_t won::priv::ShaderBase::GetUniformLoc(const char* name) const
 {
 	GLint loc = glGetUniformLocation(progId, name);
 	if (loc == GL_INVALID_INDEX)

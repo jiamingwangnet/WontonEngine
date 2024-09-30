@@ -5,6 +5,7 @@
 #include "include/WontonEngine/Entity.h"
 #include <iostream>
 #include "include/WontonEngine/UpdateLimiter.h"
+#include "include/WontonEngine/ECManager.h"
 
 won::priv::ComponentManager won::Game::compManager;
 won::priv::EntityManager won::Game::entityManager{ won::Game::compManager };
@@ -116,7 +117,7 @@ int won::Game::GetHeight() const
 void won::Game::DestroyEntity(Entity entity)
 {
 	Game::entityManager.DestroyEntity(entity);
-	renderer.EntityDestroyed(entity);
+	renderer.EntityDestroyed(entity.GetId());
 }
 
 won::priv::ScreenRenderer& won::Game::GetRenderer()

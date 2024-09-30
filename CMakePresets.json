@@ -17,6 +17,17 @@
         "rhs": "Windows"
       }
     },
+    {
+        "hidden": true,
+        "name": "windows-mingw",
+        "binaryDir": "${sourceDir}/out/build-mingw/${presetName}",
+        "installDir": "${sourceDir}/out/install-mingw/${presetName}",
+        "cacheVariables": {
+            "CMAKE_C_COMPILER": "gcc.exe",
+            "CMAKE_CXX_COMPILER": "g++.exe"
+        },
+        "generator": "NMake Makefiles"
+    },
       {
         "architecture": {
           "value": "x64",
@@ -25,6 +36,7 @@
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
           "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.lib",
+          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.dll",
           "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
           "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
           "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x64-debug/WontonEngine/WontonEngine.lib"
@@ -41,9 +53,43 @@
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
           "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.lib",
+          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.dll",
           "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
           "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
           "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x64-release/WontonEngine/WontonEngine.lib"
+        }
+      },
+
+
+      {
+        "architecture": {
+          "value": "x64",
+          "strategy": "external"
+        },
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Debug",
+          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.lib",
+          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.dll",
+          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
+          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
+          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x64-debug-mingw/WontonEngine/libWontonEngine.a"
+        },
+        "displayName": "x64 Debug MinGW",
+        "inherits": "windows-mingw",
+        "name": "x64-debug-mingw"
+      },
+      {
+        "name": "x64-release-mingw",
+        "displayName": "x64 Release MinGW",
+        "inherits": "x64-debug-mingw",
+
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.lib",
+          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.dll",
+          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
+          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
+          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x64-release-mingw/WontonEngine/libWontonEngine.a"
         }
       }
   ]
