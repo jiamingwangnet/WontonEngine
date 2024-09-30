@@ -23,7 +23,7 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-if("${CMAKE_CXX_COMPILER}" STREQUAL "cl.exe")
+if("${CMAKE_CXX_COMPILER}" STREQUAL "g++.exe")
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3")
