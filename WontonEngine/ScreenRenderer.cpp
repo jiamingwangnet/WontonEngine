@@ -75,7 +75,7 @@ void won::priv::ScreenRenderer::Render(const Game& game)
 
 	// find dirty lights
 	dirtyLsize = 0;
-	for (int i = 0; i < lsize; i++) // FIXME: broken after switching scenes
+	for (int i = 0; i < lsize; i++)
 	{
 		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
 		{
