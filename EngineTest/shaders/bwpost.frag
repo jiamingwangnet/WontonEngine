@@ -11,7 +11,7 @@ uniform int won_Time;
 #include <WON_POSTPROC_PIXELATE>
 #include <WON_UTILITY_RANDOM>
 
-const float pfac = 6.0;
+const float pfac = 7.0;
 const float contrast = 0.37;
 const float brightness = 0.5;
 

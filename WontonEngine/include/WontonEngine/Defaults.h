@@ -33,12 +33,14 @@ namespace won
 		static constexpr const char* WON_POSTPROC_COLORLIMIT_FUNC_NAME = "WON_POSTPROC_COLOR_LIMITER";
 		static constexpr const char* WON_UTIL_RANDOM_FUNC_NAME = "WON_UTILITY_RANDOM";
 		static constexpr const char* WON_POSTPROC_NOISE_FUNC_NAME = "WON_POSTPROC_NOISE";
+		static constexpr const char* WON_POSTPROC_DITHER_FUNC_NAME = "WON_POSTPROC_DITHER";
 
 		static const std::string WON_LIGHTING_FUNC_SRC;
 		static const std::string WON_POSTPROC_PIXELATE_FUNC_SRC;
 		static const std::string WON_POSTPROC_COLORLIMIT_FUNC_SRC;
 		static const std::string WON_UTIL_RANDOM_FUNC_SRC;
 		static const std::string WON_POSTPROC_NOISE_FUNC_SRC;
+		static const std::string WON_POSTPROC_DITHER_FUNC_SRC;
 
 
 		static const std::string WON_POST_PROCESSING_VERTEX_SHADER;

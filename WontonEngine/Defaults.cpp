@@ -257,14 +257,21 @@ vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir,
 const std::string won::Defaults::WON_POSTPROC_PIXELATE_FUNC_SRC = R"SHADER(
 vec4 won_Pixelate(sampler2D pinput, vec2 texCoord, vec2 winSize, float pixelSize)
 {
-	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize + vec2(pixelSize, pixelSize) / winSize / vec2(2.0,2.0);
+	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize;
 
 	return texture(pinput, pixelCoord);
 }
 
 vec2 won_PixelateCoords(vec2 texCoord, vec2 winSize, float pixelSize)
 {
-	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize + vec2(pixelSize, pixelSize) / winSize / vec2(2.0,2.0);
+	vec2 pixelCoord = pixelSize * floor(winSize * texCoord / vec2(pixelSize, pixelSize)) / winSize ;
+
+	return pixelCoord;
+}
+
+vec2 won_PixelateFragCoords(vec2 fragCoord, float pixelSize)
+{
+	vec2 pixelCoord = pixelSize * floor(fragCoord / vec2(pixelSize, pixelSize));
 
 	return pixelCoord;
 }
@@ -376,12 +383,56 @@ vec4 won_NoiseCL(vec2 seed, float min, float max)
 }
 )SHADER";
 
+const std::string won::Defaults::WON_POSTPROC_DITHER_FUNC_SRC = R"SHADER(
+vec4 won_BayerDither8x8(vec4 cinput, vec2 fragCoords, float strength)
+{
+	int x = clamp(int(mod(fragCoords.x, 8.0)), 0, 8);
+	int y = clamp(int(mod(fragCoords.y, 8.0)), 0, 8);
+	int idx = x + y * 8;
+	
+	int dither[8 * 8] = {
+     0, 32, 8, 40, 2, 34, 10, 42, /* 8x8 Bayer ordered dithering */
+    48, 16, 56, 24, 50, 18, 58, 26, /* pattern. Each input pixel */
+    12, 44, 4, 36, 14, 46, 6, 38, /* is scaled to the 0..63 range */
+    60, 28, 52, 20, 62, 30, 54, 22, /* before looking in this table */
+     3, 35, 11, 43, 1, 33, 9, 41, /* to determine the action. */
+    51, 19, 59, 27, 49, 17, 57, 25,
+    15, 47, 7, 39, 13, 45, 5, 37,
+    63, 31, 55, 23, 61, 29, 53, 21 }; 
+
+	cinput *= 255.0;
+	cinput += dither[idx] * strength;
+
+	return vec4(cinput.rgb / 255.0, 1.0);
+}
+
+vec4 won_BayerDither4x4(vec4 cinput, vec2 fragCoords, float strength)
+{
+	int x = int(mod(fragCoords.x, 4.0));
+	int y = int(mod(fragCoords.y, 4.0));
+	int idx = x + y * 4;
+
+	int dither[4 * 4] = {
+		0, 8, 2, 10,
+		12, 4, 14, 6,
+		3, 11, 1, 9,
+		15, 6, 13, 5
+    }; 
+
+	cinput *= 255.0;
+	cinput += dither[idx] * strength;
+
+	return vec4(cinput.rgb / 255.0, 1.0);
+}
+)SHADER";
+
 const std::unordered_map<std::string, const std::string*> won::Defaults::nameToSource{
 	{(std::string)WON_LIGHTING_FUNC_NAME, &WON_LIGHTING_FUNC_SRC},
 	{(std::string)WON_POSTPROC_PIXELATE_FUNC_NAME, &WON_POSTPROC_PIXELATE_FUNC_SRC},
 	{(std::string)WON_POSTPROC_COLORLIMIT_FUNC_NAME, &WON_POSTPROC_COLORLIMIT_FUNC_SRC},
 	{(std::string)WON_UTIL_RANDOM_FUNC_NAME, &WON_UTIL_RANDOM_FUNC_SRC},
 	{(std::string)WON_POSTPROC_NOISE_FUNC_NAME, &WON_POSTPROC_NOISE_FUNC_SRC},
+	{(std::string)WON_POSTPROC_DITHER_FUNC_NAME, &WON_POSTPROC_DITHER_FUNC_SRC},
 };
 
 void won::Defaults::Load(AssetType type)
