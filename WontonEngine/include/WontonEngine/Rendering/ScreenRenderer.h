@@ -198,7 +198,7 @@ namespace won
 			ScreenRenderer(const ScreenRenderer&) = delete;
 
 			void Init(const Window& window);
-			void Render(const Game& game);
+			void Render(const Game& game, Window* window);
 			void SetActiveCamera(cmp::Camera* camera);
 
 			void CreateRenderable(Entity entity);

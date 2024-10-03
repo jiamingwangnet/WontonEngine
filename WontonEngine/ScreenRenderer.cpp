@@ -58,7 +58,6 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window.GetWidth(), window.GetHeight());
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
@@ -67,9 +66,28 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void won::priv::ScreenRenderer::Render(const Game& game)
+void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 {
 	if (camera == nullptr) return;
+
+	if (window->rdr_hasResized)
+	{
+		// resize buffers
+		glViewport(0, 0, window->GetWidth(), window->GetHeight());
+
+		glBindTexture(GL_TEXTURE_2D, rtex);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window->GetWidth(), window->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+
+		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window->GetWidth(), window->GetHeight());
+
+		if (camera->WillAutoCalcAspect())
+		{
+			camera->SetAspectRatio((float)window->GetWidth() / (float)window->GetHeight());
+		}
+		
+		window->rdr_hasResized = false;
+	}
 
 	if (camera->IsUsingPost()) glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 

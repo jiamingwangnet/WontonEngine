@@ -12,16 +12,12 @@ won::priv::Window::Window(int width, int height, const std::string& name, WinFla
 
 int won::priv::Window::GetWidth() const
 {
-	int w;
-	SDL_GetWindowSizeInPixels(window, &w, nullptr); // returns the actual size determined by OS
-	return w;
+	return width;
 }
 
 int won::priv::Window::GetHeight() const
 {
-	int h;
-	SDL_GetWindowSizeInPixels(window, nullptr, &h);
-	return h;
+	return height;
 }
 
 std::string won::priv::Window::GetName() const
@@ -54,6 +50,8 @@ void won::priv::Window::Init()
 		windowFlags |= SDL_WINDOW_FULLSCREEN;
 	if((unsigned int)flags & (unsigned int)WinFlags::Invisible)
 		windowFlags |= SDL_WINDOW_HIDDEN;
+	if ((unsigned int)flags & (unsigned int)WinFlags::Resizable)
+		windowFlags |= SDL_WINDOW_RESIZABLE;
 
 	// Set OpenGL version to 3.3
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -73,6 +71,12 @@ void won::priv::Window::InitContext()
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 		Error::ThrowError("Could not load OpenGL functions.", std::cout, __LINE__, __FILE__);
+
+	int w, h;
+	SDL_GetWindowSizeInPixels(window, &w, &h); // returns the actual size determined by OS
+	glViewport(0, 0, w, h);
+	width = w;
+	height = h;
 
 	glClearColor(clear.r / 255.0f, clear.g / 255.0f, clear.b / 255.0f, clear.a / 255.0f);
 
@@ -94,4 +98,13 @@ void won::priv::Window::InitContext()
 void won::priv::Window::SwapBuffer()
 {
 	SDL_GL_SwapWindow(window);
+}
+
+void won::priv::Window::UpdateWindowSize()
+{
+	int w, h;
+	SDL_GetWindowSizeInPixels(window, &w, &h);
+	width = w;
+	height = h;
+	rdr_hasResized = true;
 }

@@ -8,9 +8,10 @@ namespace won
 {
 	enum class WinFlags
 	{
-		Invisible = 0b001,
-		Fullscreen = 0b010,
-		Borderless = 0b100
+		Invisible  = 0b0001,
+		Fullscreen = 0b0010,
+		Borderless = 0b0100,
+		Resizable  = 0b1000,
 	};
 
 	namespace priv
@@ -32,6 +33,8 @@ namespace won
 			void InitContext();
 			void SwapBuffer();
 
+			void UpdateWindowSize();
+
 		private:
 			int width;
 			int height;
@@ -41,6 +44,10 @@ namespace won
 			WinFlags flags;
 
 			SDL_Window* window;
+
+			bool rdr_hasResized = false; // rdr means this flag must only be reset by the renderer
+
+			friend class ScreenRenderer;
 		};
 	}
 }

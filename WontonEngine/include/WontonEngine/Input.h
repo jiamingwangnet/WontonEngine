@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "Math/Vector.h"
 #include <SDL3/SDL.h>
+#include "Window.h"
 
 namespace won
 {
@@ -115,6 +116,7 @@ namespace won
         {
         public:
             static void InputPoll();
+            static void SetWindow(priv::Window* window);
 
             friend class Game;
         };
@@ -142,6 +144,7 @@ namespace won
 		static std::unordered_map<MouseButton, std::pair<bool, bool>> mousemap;
         static Vector2 mousePosition;
         static Vector2 lastMousePosition;
+        static priv::Window* window;
 
         static bool hasQuit;
 

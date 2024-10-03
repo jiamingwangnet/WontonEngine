@@ -1,10 +1,13 @@
 #include "include/WontonEngine/Components/Camera.h"
 #include "include/WontonEngine/Components/Transform.h"
 #include "include/WontonEngine/Entity.h"
+#include "include/WontonEngine/Game.h"
 
-won::cmp::Camera::Camera(Entity entity, Game* game, float near, float far, float fov, float aspect)
-	: Component{ entity, game }, near{ near }, far{ far }, fov{ fov }, aspect{ aspect }, projType{ ProjectionType::Perspective }, viewRect{ {0.0f, 0.0f}, 0.0f, 0.0f }
+won::cmp::Camera::Camera(Entity entity, Game* game, float near, float far, float fov, bool autoCalcAspect, float aspect)
+	: Component{ entity, game }, near{ near }, far{ far }, fov{ fov }, projType{ ProjectionType::Perspective }, viewRect{ {0.0f, 0.0f}, 0.0f, 0.0f }, autoCalcAspect{ autoCalcAspect }
 {
+	if (autoCalcAspect) this->aspect = (float)game->GetWidth() / (float)game->GetHeight();
+	else this->aspect = aspect;
 	projection = ReturnProjection();
 }
 
@@ -42,6 +45,23 @@ won::Matrix4x4 won::cmp::Camera::CalculateLookAt()
 won::Matrix4x4 won::cmp::Camera::CalculateProjection()
 {
 	return projection;
+}
+
+void won::cmp::Camera::SetFOV(float fov)
+{
+	this->fov = fov;
+	projection = ReturnProjection();
+}
+
+void won::cmp::Camera::SetAspectRatio(float aspect)
+{
+	this->aspect = aspect;
+	projection = ReturnProjection();
+}
+
+bool won::cmp::Camera::WillAutoCalcAspect() const
+{
+	return autoCalcAspect;
 }
 
 void won::cmp::Camera::UsePost(bool v)

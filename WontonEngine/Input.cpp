@@ -6,10 +6,16 @@ std::unordered_map<won::MouseButton, std::pair<bool, bool>> won::Input::mousemap
 bool won::Input::hasQuit = false;
 won::Vector2 won::Input::mousePosition{ 0.0f, 0.0f };
 won::Vector2 won::Input::lastMousePosition{ 0.0f, 0.0f };
+won::priv::Window* won::Input::window = nullptr;
 
 void won::priv::InputUpd::InputPoll()
 {
 	Input::Poll();
+}
+
+void won::priv::InputUpd::SetWindow(priv::Window* window)
+{
+	Input::window = window;
 }
 
 bool won::Input::HasQuit()
@@ -105,6 +111,11 @@ void won::Input::Poll()
 			//bool before = mousemap[button].first;
 			mousemap[button].first = false;
 			//mousemap[button].second = before;
+			break;
+		}
+		case SDL_EVENT_WINDOW_RESIZED:
+		{
+			window->UpdateWindowSize();
 			break;
 		}
 		}

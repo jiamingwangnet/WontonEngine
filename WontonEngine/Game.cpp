@@ -14,6 +14,7 @@ won::Game::Game(int width, int height, const std::string& name, WinFlags flags, 
 	: window{width, height, name, flags, clear, vsync}, preload{preload}, scenes{scenes}, targetFramerate{targetFramerate}, targetUpdateRate{ targetUpdateRate }
 {
 	compManager.SetActiveGame(this);
+	priv::InputUpd::SetWindow(&window);
 }
 
 void won::Game::Start()
@@ -71,7 +72,7 @@ void won::Game::Start()
 			if (accumulator < 0) accumulator = 0;
 		}
 		Game::compManager.RUpdateComponents();
-		renderer.Render(*this);
+		renderer.Render(*this, &window);
 
 		window.SwapBuffer();
 

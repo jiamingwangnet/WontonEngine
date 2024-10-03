@@ -18,7 +18,7 @@ namespace won
 				Perspective
 			};
 		public:
-			Camera(Entity entity, Game* game, float near, float far, float fov, float aspect);
+			Camera(Entity entity, Game* game, float near, float far, float fov, bool autoCalcAspect = true, float aspect = 0.0);
 			Camera(Entity entity, Game* game, float near, float far, Rect viewRect);
 
 			Camera() = default;
@@ -31,6 +31,11 @@ namespace won
 
 			Matrix4x4 CalculateLookAt();
 			Matrix4x4 CalculateProjection();
+
+			void SetFOV(float fov);
+			void SetAspectRatio(float aspect);
+
+			bool WillAutoCalcAspect() const;
 
 			void UsePost(bool v);
 			bool IsUsingPost() const;
@@ -53,6 +58,7 @@ namespace won
 
 			bool usePost = false;
 			Material postMaterial = nullptr;
+			bool autoCalcAspect;
 		};
 	}
 }
