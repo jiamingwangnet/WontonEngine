@@ -21,8 +21,8 @@ void main()
 
 	vec4 colorOut_0 = won_Pixelate(won_PostProcTexture, won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)),pfac);
 	vec4 colorOut_1 = colorOut_0 + won_NoiseCL(pcoord * float(won_Time), -0.1, 0.1);
-	vec4 colorOut_2 = won_BayerDither8x8(colorOut_1, fcoord, 2.5) - 0.07;
-	vec4 colorOut_3 = won_ColorLimiter(colorOut_2, 0.12);
+	vec4 colorOut_2 = won_BayerDither8x8(colorOut_1, fcoord, 2.5) - 0.05;
+	vec4 colorOut_3 = won_ColorLimiterByParts(colorOut_2,5.0);
 
 	FragColor = colorOut_3;
 }

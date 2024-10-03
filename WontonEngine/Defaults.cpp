@@ -278,9 +278,14 @@ vec2 won_PixelateFragCoords(vec2 fragCoord, float pixelSize)
 )SHADER";
 
 const std::string won::Defaults::WON_POSTPROC_COLORLIMIT_FUNC_SRC = R"SHADER(
-vec4 won_ColorLimiter(vec4 cinput, float stepFactor)
+vec4 won_ColorLimiterByFactor(vec4 cinput, float stepFactor)
 {
 	return vec4(stepFactor * floor(cinput.rgb / stepFactor), 1.0);
+}
+
+vec4 won_ColorLimiterByParts(vec4 cinput, float parts)
+{
+	return vec4((parts/(parts*parts-parts)) * floor(cinput.rgb * parts), 1.0);
 }
 )SHADER";
 
