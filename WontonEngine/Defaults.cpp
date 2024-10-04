@@ -285,7 +285,7 @@ vec4 won_ColorLimiterByFactor(vec4 cinput, float stepFactor)
 
 vec4 won_ColorLimiterByParts(vec4 cinput, float parts)
 {
-	return vec4((parts/(parts*parts-parts)) * floor(cinput.rgb * parts), 1.0);
+	return vec4(floor(cinput.rgb * parts)/(parts - 1.0), 1.0);
 }
 )SHADER";
 
