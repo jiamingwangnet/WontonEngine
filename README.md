@@ -8,7 +8,7 @@ Documentation coming soon.
 
 ## Build Instructions (for Windows only)
 
-### Prerequisits
+### Prerequisites
 
 1. Clone and extract the files into your desired location.
 2. Clone and build SDL3 at [https://github.com/libsdl-org/SDL](https://github.com/libsdl-org/SDL)
