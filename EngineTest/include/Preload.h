@@ -7,16 +7,13 @@
 #include "Spin.h"
 #include "CameraController.h"
 
-// Define your paths to jiggly.vert and postproc.frag in this header as VSHADER_PATH and SHADER_PATH respectively:
-#include "LocalPaths.h"
-
 void preload(won::Game& game)
 {
 	game.RegisterComponent<Spin>();
 	game.RegisterComponent<CameraController>();
 
 	won::Defaults::Load(won::Defaults::AssetType::All);
-	won::ShaderManager::CreateShaderVF("jiggly", VSHADER_PATH, won::Defaults::WON_DEFAULT_FRAGMENT_SHADER);
+	won::ShaderManager::CreateShaderVF("jiggly", "shaders/jiggly.vert", won::Defaults::WON_DEFAULT_FRAGMENT_SHADER);
 
 	won::TextureManager::CreateTexture("km", "./Assets/km.jpg");
 
@@ -39,8 +36,8 @@ void preload(won::Game& game)
 	won::MaterialManager::CreateMaterial("Green", won::ShaderManager::GetShader(won::Defaults::DEFAULT_SHADER_NAME), std::move(datalist2));
 
 	won::UniformDataList datalist3;
-	won::MaterialManager::CreateMaterial("PostProcess", won::ShaderManager::CreateShaderFF("PostShader", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, SHADER_PATH), std::move(datalist3));
+	won::MaterialManager::CreateMaterial("PostProcess", won::ShaderManager::CreateShaderFF("PostShader", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, "shaders/postproc.frag"), std::move(datalist3));
 
 	won::UniformDataList datalist4;
-	won::MaterialManager::CreateMaterial("PostProcess1", won::ShaderManager::CreateShaderFF("PostShader1", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, SHADER1_PATH), std::move(datalist4));
+	won::MaterialManager::CreateMaterial("PostProcess1", won::ShaderManager::CreateShaderFF("PostShader1", won::Defaults::WON_POST_PROCESSING_VERTEX_SHADER, "shaders/bwpost.frag"), std::move(datalist4));
 }

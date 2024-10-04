@@ -37,4 +37,7 @@ if("${CMAKE_CXX_COMPILER}" STREQUAL "cl.exe")
     target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
 endif()
 
+file(COPY "Assets" DESTINATION "${CMAKE_BINARY_DIR}/EngineTest")
+file(COPY "shaders" DESTINATION "${CMAKE_BINARY_DIR}/EngineTest")
+
 # TODO: Add tests and install targets if needed.
