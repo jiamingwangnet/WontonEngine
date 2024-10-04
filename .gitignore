@@ -1,6 +1,6 @@
 .vs/
 out/
-CMakePresets.json
+CMakeUserPresets.json
 EngineTest/include/LocalPaths.h
 Profiling/
 CmakeFiles/

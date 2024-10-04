@@ -35,11 +35,11 @@
         },
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x64-debug/WontonEngine/WontonEngine.lib"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         },
         "displayName": "x64 Debug",
         "inherits": "windows-base",
@@ -52,11 +52,11 @@
 
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x64-release/WontonEngine/WontonEngine.lib"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         }
       },
 
@@ -67,11 +67,11 @@
         },
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Debug/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Debug/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x86-debug/WontonEngine/WontonEngine.lib"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         },
         "displayName": "x86 Debug",
         "inherits": "windows-base",
@@ -84,11 +84,11 @@
 
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Release/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Release/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build/x86-release/WontonEngine/WontonEngine.lib"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         }
       },
 
@@ -100,11 +100,11 @@
         },
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Debug/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x64-debug-mingw/WontonEngine/libWontonEngine.a"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         },
         "displayName": "x64 Debug MinGW",
         "inherits": "windows-mingw",
@@ -117,11 +117,11 @@
 
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/x64/Release/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x64-release-mingw/WontonEngine/libWontonEngine.a"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         }
       },
 
@@ -132,11 +132,11 @@
         },
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Debug/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Debug/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include/",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x86-debug-mingw/WontonEngine/libWontonEngine.a"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         },
         "displayName": "x86 Debug MinGW",
         "inherits": "windows-mingw",
@@ -149,11 +149,11 @@
 
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
-          "SDL_LIB_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Release/SDL3.lib",
-          "SDL_DLL_PATH": "D:/dev/dev/SDL/SDL/VisualC/Win32/Release/SDL3.dll",
-          "SDL_INCLUDE_PATH": "D:/dev/dev/SDL/SDL/include",
-          "GLM_INCLUDE_PATH": "D:/dev/dev/GLM/g-truc-glm-bf71a83",
-          "ENGINE_BIN_PATH": "D:/dev/dev/Side/WontonEngine/out/build-mingw/x86-release-mingw/WontonEngine/libWontonEngine.a"
+          "SDL_LIB_PATH": "",
+          "SDL_DLL_PATH": "",
+          "SDL_INCLUDE_PATH": "",
+          "GLM_INCLUDE_PATH": "",
+          "ENGINE_BIN_PATH": ""
         }
       }
   ]
