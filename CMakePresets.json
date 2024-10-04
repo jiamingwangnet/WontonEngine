@@ -38,8 +38,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         },
         "displayName": "x64 Debug",
         "inherits": "windows-base",
@@ -55,8 +54,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         }
       },
 
@@ -70,8 +68,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         },
         "displayName": "x86 Debug",
         "inherits": "windows-base",
@@ -87,8 +84,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         }
       },
 
@@ -103,8 +99,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         },
         "displayName": "x64 Debug MinGW",
         "inherits": "windows-mingw",
@@ -120,8 +115,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         }
       },
 
@@ -135,8 +129,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         },
         "displayName": "x86 Debug MinGW",
         "inherits": "windows-mingw",
@@ -152,8 +145,7 @@
           "SDL_LIB_PATH": "",
           "SDL_DLL_PATH": "",
           "SDL_INCLUDE_PATH": "",
-          "GLM_INCLUDE_PATH": "",
-          "ENGINE_BIN_PATH": ""
+          "GLM_INCLUDE_PATH": ""
         }
       }
   ]
