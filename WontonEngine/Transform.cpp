@@ -1,5 +1,6 @@
 #include "include/WontonEngine/Components/Transform.h"
 #include "include/WontonEngine/Game.h"
+#include "include/WontonEngine/Error.h"
 
 const won::Vector3 won::cmp::Transform::UP{ 0.0f, 1.0f, 0.0f };
 const won::Vector3 won::cmp::Transform::FORWARD{ 0.0f, 0.0f, -1.0f };
@@ -86,14 +87,60 @@ const won::Vector3 won::cmp::Transform::GetPosition() const
 {
 	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
 	if (renderable->parent.GetId() == INVALID_ENTITY) return renderable->position;
-	return renderable->position + renderable->parent.GetComponent<Transform>()->GetPosition();
+	Vector4 res = ((glm::mat4)renderable->parent.GetComponent<Transform>()->CalculateMatrix() * glm::vec4{ renderable->position.x(), renderable->position.y(), renderable->position.z(), 1.0f });
+	return Vector3{ res.x(), res.y(), res.z() };
+}
+
+const won::Vector3 won::cmp::Transform::GetScale() const
+{
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	if (renderable->parent.GetId() == INVALID_ENTITY) return renderable->scale;
+	Matrix4x4 model = renderable->parent.GetComponent<Transform>()->CalculateMatrix();
+	Vector3 pscale{ model[0][0], model[1][1], model[2][2] };
+	return pscale * renderable->scale;
+}
+
+const won::Vector3 won::cmp::Transform::GetRotation() const
+{
+	return glm::eulerAngles(GetRotationQuat());
+}
+
+won::cmp::Transform& won::cmp::Transform::SetPosition(Vector3 position)
+{
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	if (renderable->parent.GetId() == INVALID_ENTITY)
+	{
+		renderable->position = position;
+		renderable->tdirty = true;
+		return *this;
+	}
+	glm::mat4 model = (glm::mat4)renderable->parent.GetComponent<Transform>()->CalculateMatrix();
+	// transform [position] param into local space using the inverse matrix
+	//			[position] = parentmat * localposition
+	//			localposition = invparentmat * [position] = invparentmat * parentmat * localposition
+	glm::vec3 localposition = glm::inverse(model) * glm::vec4{ position.x(), position.y(), position.z(), 1.0f};
+	renderable->position = localposition;
+	renderable->tdirty = true;
+	return *this;
+}
+
+won::cmp::Transform& won::cmp::Transform::SetScale(Vector3 scale)
+{
+	Error::ThrowError("NOT IMPLEMENTED", std::cerr, __LINE__, __FILE__);
+	return *this;
+}
+
+won::cmp::Transform& won::cmp::Transform::SetRotation(Vector3 eulerAngles)
+{
+	Error::ThrowError("NOT IMPLEMENTED", std::cerr, __LINE__, __FILE__);
+	return *this;
 }
 
 const glm::quat won::cmp::Transform::GetRotationQuat() const
 {
 	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
 	if (renderable->parent.GetId() == INVALID_ENTITY) return renderable->rotation;
-	return renderable->parent.GetComponent<Transform>()->GetRotationQuat() * renderable->rotation;
+	return renderable->parent.GetComponent<Transform>()->GetRotationQuat() * renderable->rotation; // FIXME: might be wrong
 }
 
 const glm::quat won::cmp::Transform::GetLocalRotationQuat() const
@@ -131,18 +178,23 @@ won::Vector3 won::cmp::Transform::Right() const
 
 won::Matrix4x4 won::cmp::Transform::CalculateMatrix() const
 {
+	priv::Renderable* renderable = renderer->RetrieveRenderable(entity);
+	Vector3& scale = renderable->scale;
+	Vector3& position = renderable->position;
+	glm::quat& rotation = renderable->rotation;
+
 	Matrix4x4 model{ 1.0f };
 
-	model = glm::translate((glm::mat4)model, (glm::vec3)renderer->RetrieveRenderable(entity)->position);
-	model *= glm::mat4_cast(renderer->RetrieveRenderable(entity)->rotation);
-	model = glm::scale((glm::mat4)model, (glm::vec3)renderer->RetrieveRenderable(entity)->scale);
+	model[3][0] = position.x();
+	model[3][1] = position.y();
+	model[3][2] = position.z();
+	model *= glm::mat4_cast(rotation);
+	model[0] *= scale[0];
+	model[1] *= scale[1];
+	model[2] *= scale[2];
 
-	Entity parent = renderer->RetrieveRenderable(entity)->parent.GetId();
-
-	if (renderer->RetrieveRenderable(entity)->parent.GetId() != INVALID_ENTITY)
-		model = parent.GetComponent<Transform>()->CalculateMatrix() * model;
-
-	return model;
+	if(renderable->parent.GetId() == INVALID_ENTITY) return model;
+	return renderable->parent.GetComponent<Transform>()->CalculateMatrix() * model;
 }
 
 won::Matrix4x4 won::cmp::Transform::CalculateMatrix(const Vector3& scale, const Vector3& position, const glm::quat& rotation)

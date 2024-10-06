@@ -40,7 +40,11 @@ namespace won
 	template<class Cmp, class ...Args>
 	inline Cmp* Entity::AddComponent(Args&& ...args)
 	{
-		priv::ECManager::GetComponentManager().AddComponent<Cmp>(id, std::forward<Args>(args)...);
-		return &priv::ECManager::GetComponentManager().GetComponent<Cmp>(id);
+		priv::ComponentManager& cmpManager = priv::ECManager::GetComponentManager();
+		priv::EntityManager& entityManager = priv::ECManager::GetEntityManager();
+		cmpManager.AddComponent<Cmp>(id, std::forward<Args>(args)...);
+		entityManager.SetSignature(*this, entityManager.GetSignature(*this).set((std::size_t)cmpManager.GetComponentId<Cmp>()));
+		
+		return &cmpManager.GetComponent<Cmp>(id);
 	}
 }

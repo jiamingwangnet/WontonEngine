@@ -43,3 +43,13 @@ void won::priv::EntityManager::Clear()
 		DestroyEntity(*created.begin()); // TODO: optimise
 	}
 }
+
+void won::priv::EntityManager::SetSignature(Entity entity, Signature sig)
+{
+	signatures[entity.GetId()] = sig;
+}
+
+won::priv::Signature won::priv::EntityManager::GetSignature(Entity entity)
+{
+	return signatures[entity.GetId()];
+}

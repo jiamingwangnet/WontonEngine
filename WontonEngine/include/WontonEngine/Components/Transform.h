@@ -21,6 +21,7 @@ namespace won
 			static void Update(Transform& self) {};
 			static void RUpdate(Transform& self) {};
 
+			// set local
 			Transform& Translate(Vector3 translation);
 			Transform& Scale(Vector3 scale);
 			Transform& Rotate(Vector3 rotation); // degrees
@@ -37,6 +38,10 @@ namespace won
 			const Vector3 GetPosition() const;
 			const Vector3 GetScale() const;
 			const Vector3 GetRotation() const;
+
+			Transform& SetPosition(Vector3 position);
+			Transform& SetScale(Vector3 scale);
+			Transform& SetRotation(Vector3 eulerAngles);
 
 			const glm::quat GetRotationQuat() const;
 

@@ -56,8 +56,10 @@ public:
 
 		won::Entity testBox2 = game.CreateEntity<KMBox>();
 		won::cmp::Transform* testBoxTra2 = testBox2.GetComponent<won::cmp::Transform>();
-		testBoxTra2->SetLocalPosition(won::Vector3{ 3.0f, 0.0f, 0.0f });
+		testBoxTra->SetLocalScale(won::Vector3{ 5.0f, 5.0f, 5.0f });
+
 		testBoxTra2->SetParent(testBoxTra);
+		testBoxTra2->SetPosition(won::Vector3{ 230.0f, 10.0f, 0.0f });
 
 		for (int i = 0; i < 64; i++)
 		{
