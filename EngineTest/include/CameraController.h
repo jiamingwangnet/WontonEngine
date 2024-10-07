@@ -70,22 +70,21 @@ public:
 
 		if (won::Input::GetKeyDown(won::KeyCode::Key_L))
 		{
+			self.shader++;
+			if (self.shader > 2) self.shader = 0;
 			if (self.shader == 0)
 			{
 				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess"));
 				camera->UsePost(true);
-				self.shader++;
 			}
 			else if (self.shader == 1)
 			{
 				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess1"));
-				self.shader++;
 			}
 			else
 			{
 				camera->SetPostMaterial(nullptr);
 				camera->UsePost(false);
-				self.shader = 0;
 			}
 		}
 	}
