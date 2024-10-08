@@ -30,11 +30,16 @@ configure_file("${SDL_DLL_PATH}" "${CMAKE_CURRENT_BINARY_DIR}" COPYONLY)
 
 set_property(TARGET EngineTest PROPERTY CXX_STANDARD 17)
 
-if(CMAKE_CXX_COMPILER_ID  STREQUAL "MSVC")
+if(CMAKE_CXX_COMPILER_ID  MATCHES  "MSVC")
     target_compile_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/Zi>")
     target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
     target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
     target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES  "MSVC")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi" CACHE STRING "" FORCE)
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF" CACHE STRING "" FORCE)
 endif()
 
 file(COPY "Assets" DESTINATION "${CMAKE_BINARY_DIR}/EngineTest")

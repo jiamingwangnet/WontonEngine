@@ -2,8 +2,7 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 uv;
-layout (location = 2) in vec4 color;
-layout (location = 3) in vec3 normal;
+layout (location = 2) in vec3 normal;
 
 out vec2 texCoord;
 out vec3 fragNormal;
@@ -12,7 +11,6 @@ out vec3 fragPos;
 uniform mat4 won_ModelViewProjMatrix;
 uniform mat4 won_ModelMatrix;
 uniform mat3 won_NormalMatrix;
-uniform mat4 won_ModelViewMatrix;
 
 vec3 pixelate(vec3 pos, float pfac)
 {

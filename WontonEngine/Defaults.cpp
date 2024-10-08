@@ -10,40 +10,40 @@
 
 const std::vector<won::Vertex> won::Defaults::box_vertices
 {
-	//            positions               UV                Colors
+	//            positions               UV                Normals
 
 	// +/- z
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // top right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f,  1.0f}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {1.0f, 1.0f},     { 0.0f,  0.0f,  1.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},     { 0.0f,  0.0f,  1.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},     { 0.0f,  0.0f,  1.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},     { 0.0f,  0.0f,  1.0f}}, // top left 
 
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},   {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // top right
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f, -0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},   {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  0.0f, -1.0f}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},   {1.0f, 1.0f},     { 0.0f,  0.0f, -1.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},     { 0.0f,  0.0f, -1.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f, -0.5f},   {0.0f, 0.0f},     { 0.0f,  0.0f, -1.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},   {0.0f, 1.0f},     { 0.0f,  0.0f, -1.0f}}, // top left 
 
 	// +/- y FIXME
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top right
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom right
-	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},     { 0.0f,  1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},     { 0.0f,  1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},     { 0.0f,  1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},     { 0.0f,  1.0f,  0.0f}}, // top left 
 
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // top right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // bottom right
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // bottom left
-	won::Vertex{{-0.5f, -0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f, -1.0f,  0.0f}}, // top left 
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},	 {1.0f, 1.0f},     { 0.0f, -1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {1.0f, 0.0f},     { 0.0f, -1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},     { 0.0f, -1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f, -0.5f, -0.5f},	 {0.0f, 1.0f},     { 0.0f, -1.0f,  0.0f}}, // top left 
 
-	// +/- x FIXME
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // top right
-	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // bottom right
-	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // bottom left
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 1.0f,  0.0f,  0.0f}}, // top left 
+	// +/- x
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},     { 1.0f,  0.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},     { 1.0f,  0.0f,  0.0f}}, // bottom right
+	won::Vertex{{ 0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},     { 1.0f,  0.0f,  0.0f}}, // bottom left
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},     { 1.0f,  0.0f,  0.0f}}, // top left 
 
-	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // top right    0
-	won::Vertex{{-0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom right 1
-	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}, // bottom left  2
-	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     {-1.0f,  0.0f,  0.0f}}  // top left     3
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},     {-1.0f,  0.0f,  0.0f}}, // top right    0
+	won::Vertex{{-0.5f, -0.5f, -0.5f},   {1.0f, 0.0f},     {-1.0f,  0.0f,  0.0f}}, // bottom right 1
+	won::Vertex{{-0.5f, -0.5f,  0.5f},   {0.0f, 0.0f},     {-1.0f,  0.0f,  0.0f}}, // bottom left  2
+	won::Vertex{{-0.5f,  0.5f,  0.5f},	 {0.0f, 1.0f},     {-1.0f,  0.0f,  0.0f}}  // top left     3
 };
 
 const std::vector<unsigned int> won::Defaults::box_indices
@@ -69,10 +69,10 @@ const std::vector<unsigned int> won::Defaults::box_indices
 
 const std::vector<won::Vertex> won::Defaults::plane_vertices
 {
-	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top right
-	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom right
-	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // bottom left
-	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},      {0,0,0,0},     { 0.0f,  1.0f,  0.0f}}, // top left 
+	won::Vertex{{ 0.5f,  0.5f, -0.5f},	 {1.0f, 1.0f},     { 0.0f,  1.0f,  0.0f}}, // top right
+	won::Vertex{{ 0.5f,  0.5f,  0.5f},   {1.0f, 0.0f},     { 0.0f,  1.0f,  0.0f}}, // bottom right
+	won::Vertex{{-0.5f,  0.5f,  0.5f},   {0.0f, 0.0f},     { 0.0f,  1.0f,  0.0f}}, // bottom left
+	won::Vertex{{-0.5f,  0.5f, -0.5f},	 {0.0f, 1.0f},     { 0.0f,  1.0f,  0.0f}}, // top left 
 };
 
 const std::vector<unsigned int> won::Defaults::plane_indices
@@ -86,8 +86,7 @@ const std::string won::Defaults::WON_DEFAULT_VERTEX_SHADER = R"SHADER(
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 uv;
-layout (location = 2) in vec4 color;
-layout (location = 3) in vec3 normal;
+layout (location = 2) in vec3 normal;
 
 out vec2 texCoord;
 out vec3 fragNormal;
