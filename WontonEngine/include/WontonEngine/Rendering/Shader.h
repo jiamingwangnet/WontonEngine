@@ -10,6 +10,9 @@
 
 namespace won
 {
+	namespace priv { class UniformBufferBase; }
+	using UniformBuffer = priv::UniformBufferBase*;
+
 	namespace priv
 	{
 		class ShaderBase
@@ -73,6 +76,9 @@ namespace won
 			void SetfColorNoThrow(const std::string& name, const fColor& color) const noexcept;
 			void SetfColorNoThrow(const char* name, const fColor& color) const noexcept;
 
+			void SetUniformBuffer(UniformBuffer buffer);
+			void SetUniformBufferNoThrow(UniformBuffer buffer);
+
 		private:
 			void Activate() const;
 			void Deactivate() const;
@@ -92,6 +98,26 @@ namespace won
 
 	using Shader = priv::ShaderBase*;
 
+	namespace priv
+	{
+		class UniformBufferBase
+		{
+		public:
+			UniformBufferBase(unsigned int ubo, unsigned int binding, std::size_t size, const std::string& name);
+
+			void WriteToBuffer(std::size_t offset, std::size_t size, const void* value);
+			unsigned int GetBindingPoint() const;
+			std::string GetName() const;
+			std::size_t GetSize() const;
+
+		private:
+			unsigned int ubo;
+			unsigned int binding;
+			std::string name;
+			std::size_t size;
+		};
+	}
+
 	class ShaderManager
 	{
 	public:
@@ -104,11 +130,16 @@ namespace won
 
 		static Shader GetShader(const std::string& name);
 
+		static UniformBuffer CreateUniformBuffer(const std::string& name, std::size_t size);
+		static UniformBuffer GetUniformBuffer(const std::string& name);
+
 	private:
 		static std::string Preprocess(const std::string& source);
 		static std::string ExtractIncludeValue(const std::string& line);
 
 	private:
 		static priv::IAssetManager<priv::ShaderBase, Shader> assetManager;
+		static priv::IAssetManager<priv::UniformBufferBase, UniformBuffer> uniformbufferMan;
+		static unsigned int bindingPoint;
 	};
 }

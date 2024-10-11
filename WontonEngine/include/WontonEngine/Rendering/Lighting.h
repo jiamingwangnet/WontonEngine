@@ -2,6 +2,7 @@
 
 #include "../Math/Vector.h"
 #include "../Color.h"
+#include <cstdint>
 
 namespace won
 {
@@ -14,6 +15,24 @@ namespace won
 
 	namespace priv
 	{
+		// representation in shaders
+		// order matters for alignment
+		// size must be a multiple of 16
+		PACK(struct LightInternalBase
+		{
+			                         // incremental size         offset         +16
+			Vector4 position;        // 16                       0              16
+			Vector4 direction;       // 32                       16             32
+			fColor color;            // 48						 32             48
+			int type;                // 52						 48             64
+			float ambientStrength;   // 56						 52             68
+			float linear;            // 60						 56             72
+			float quadratic;         // 64						 60             76
+			float cutOff;            // 68						 64             80
+			float outerCutOff;       // 72						 68             84
+			char _padding00[8];      // 80                       72             88
+		});
+
 		struct LightInternal
 		{
 			LightType type;

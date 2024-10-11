@@ -4,9 +4,17 @@ out vec4 FragColor;
 in vec2 won_TexCoords;
 
 uniform sampler2D won_PostProcTexture;
-uniform int won_WindowWidth;
-uniform int won_WindowHeight;
-uniform int won_Time;
+
+layout(std140) uniform Won_StaticUniforms
+{                          
+	mat4 won_ProjectionMatrix;					
+	mat4 won_ViewMatrix;      
+	vec4 won_ViewPosition;	
+	int won_Frames;				
+	int won_Time;                  
+	int won_WindowWidth;           
+	int won_WindowHeight;          
+};
 
 #include <WON_POSTPROC_PIXELATE>
 #include <WON_UTILITY_RANDOM>

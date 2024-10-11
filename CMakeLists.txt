@@ -39,3 +39,16 @@ project ("WontonEngine")
 # Include sub-projects.
 add_subdirectory ("WontonEngine")
 add_subdirectory ("EngineTest")
+
+
+if(CMAKE_CXX_COMPILER_ID  MATCHES  "MSVC")
+    target_compile_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/Zi>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+
+	target_compile_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/Zi>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
+    target_link_options(EngineTest PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
+endif()

@@ -61,7 +61,7 @@ public:
 		testBoxTra2->SetParent(testBoxTra);
 		testBoxTra2->SetPosition(won::Vector3{ 230.0f, 10.0f, 0.0f });
 
-		for (int i = 0; i < 64; i++)
+		for (int i = 0; i < 128; i++)
 		{
 			won::Entity light = game.CreateEntity<won::Defaults::PointLight>();
 			light.GetComponent<won::cmp::Transform>()->SetLocalPosition(won::Vector3{ won::Random::RandomRange<float>(-80.0f, 80.0f), won::Random::RandomRange<float>(0.0f, 40.0f), won::Random::RandomRange<float>(-80.0f, 80.0f) });

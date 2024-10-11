@@ -64,6 +64,14 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) throw std::runtime_error{ "Framebuffer is not complete" };
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	// generate uniform buffers
+	staticUniformBuffer = ShaderManager::CreateUniformBuffer(WON_STATICUNIFORMS_NAME, sizeof(Won_StaticUniforms));
+	lightUniformBuffer = ShaderManager::CreateUniformBuffer(WON_LIGHTUNIFORMS_NAME, sizeof(Won_LightUniforms));
+
+	staticUniforms.won_WindowWidth = window.GetWidth();
+	staticUniforms.won_WindowHeight = window.GetHeight();
 }
 
 void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
@@ -85,14 +93,18 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 		{
 			camera->SetAspectRatio((float)window->GetWidth() / (float)window->GetHeight());
 		}
+
+		staticUniforms.won_WindowWidth = window->GetWidth();
+		staticUniforms.won_WindowHeight = window->GetHeight();
 		
 		window->rdr_hasResized = false;
 	}
 
 	if (camera->IsUsingPost()) glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
+	lightUniforms.won_NumLights = lsize;
+
 	// find dirty lights
-	dirtyLsize = 0;
 	for (int i = 0; i < lsize; i++)
 	{
 		if ((*lights)[i].dirty || IsTransformDirty((*renderables)[lIndexToEIndex[i]]))
@@ -102,15 +114,30 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 			glm::vec3 forward = (glm::vec3)cmp::Transform::FORWARD;
 			(*lights)[i].direction = (Vector3)(transform->GetRotationQuat() * glm::vec3{ forward.x, forward.y, forward.z });
 
-			dirtyLights[dirtyLsize] = i;
-			dirtyLsize++;
+			lightUniforms.won_Lights[i].ambientStrength = (*lights)[i].ambientStrength;
+			lightUniforms.won_Lights[i].color = (*lights)[i].color;
+			lightUniforms.won_Lights[i].cutOff = (*lights)[i].cutOff;
+			lightUniforms.won_Lights[i].direction = glm::vec4{ (glm::vec3)(*lights)[i].direction, 0.0 };
+			lightUniforms.won_Lights[i].linear = (*lights)[i].linear;
+			lightUniforms.won_Lights[i].outerCutOff = (*lights)[i].outerCutOff;
+			lightUniforms.won_Lights[i].position = glm::vec4{ (glm::vec3)(*lights)[i].position, 0.0 };
+			lightUniforms.won_Lights[i].quadratic = (*lights)[i].quadratic;
+			lightUniforms.won_Lights[i].type = (int)(*lights)[i].type;
 		}
 	}
+	
 
-	Matrix4x4 projection = camera->CalculateProjection();
-	Matrix4x4 lookat = camera->CalculateLookAt();
-	Vector3 camPos = camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition();
-	Matrix4x4 projview = projection * lookat;
+	staticUniforms.won_Frames = Time::GetRenderFrames();
+	staticUniforms.won_Time = Time::GetTime();
+	staticUniforms.won_ProjectionMatrix = camera->CalculateProjection();
+	staticUniforms.won_ViewMatrix = camera->CalculateLookAt();
+	staticUniforms.won_ViewPosition = glm::vec4{ (glm::vec3)camera->GetEntity().GetComponent<cmp::Transform>()->GetPosition(), 0.0f };
+
+	Matrix4x4 projview = staticUniforms.won_ProjectionMatrix * staticUniforms.won_ViewMatrix;
+	
+	staticUniformBuffer->WriteToBuffer(0, sizeof(Won_StaticUniforms), &staticUniforms);
+	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_NumLights), sizeof(lightUniforms.won_NumLights), &lightUniforms);
+	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_Lights), lightUniforms.won_NumLights * sizeof(LightInternalBase), &lightUniforms.won_Lights);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -122,16 +149,6 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 
 		renderable.material->Activate();
 		Shader shader = renderable.material->GetShader();
-
-		// could be set for each shader instead each entity
-		if (glGetUniformLocation(shader->progId, WON_PROJECTIONMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_PROJECTIONMATRIX, projection);
-		if (glGetUniformLocation(shader->progId, WON_VIEWMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_VIEWMATRIX, lookat);
-		if (glGetUniformLocation(shader->progId, WON_FRAMES) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_FRAMES, Time::GetRenderFrames());
-		if (glGetUniformLocation(shader->progId, WON_TIME) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_TIME, (int)Time::GetTime());
-		if (glGetUniformLocation(shader->progId, WON_WINDOWWIDTH) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWWIDTH, game.GetWidth());
-		if (glGetUniformLocation(shader->progId, WON_WINDOWHEIGHT) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWHEIGHT, game.GetHeight());
-		if (glGetUniformLocation(shader->progId, WON_VIEWPOSITION) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_VIEWPOSITION, camPos);
-		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, (int)lsize);
 
 		// have to set a different model matrix for each object
 		bool modelmat = glGetUniformLocation(shader->progId, WON_MODELMATRIX) != GL_INVALID_INDEX;
@@ -151,28 +168,9 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 			if(mvpmat)
 				shader->SetMat4NoThrow(WON_MODELVIEWPROJMAT, projview * renderable.modelMatCache);
 			if (mvmat)
-				shader->SetMat4NoThrow(WON_MODELVIEWMATRIX, lookat * renderable.modelMatCache);
+				shader->SetMat4NoThrow(WON_MODELVIEWMATRIX, staticUniforms.won_ViewMatrix * renderable.modelMatCache);
 			if (nmat)
 				shader->SetMat3NoThrow(WON_NORMALMATRIX, renderable.normalMatCache);
-		}
-
-		for (std::size_t i = 0; i < dirtyLsize; i++)
-		{
-			std::size_t li = dirtyLights[i];
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0], (int)(*lights)[li].type);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1], (*lights)[li].position);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2], (*lights)[li].direction);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3]) != GL_INVALID_INDEX) shader->SetfColorNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3], (*lights)[li].color);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4], (*lights)[li].ambientStrength);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5], (*lights)[li].linear);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6], (*lights)[li].quadratic);
-			
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7], (*lights)[li].cutOff);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8], (*lights)[li].outerCutOff);
 		}
 
 		// render mesh
@@ -199,35 +197,7 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 
 		material->Activate();
 
-		// TODO: extract to function
-		if (glGetUniformLocation(shader->progId, WON_PROJECTIONMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_PROJECTIONMATRIX, projection);
-		if (glGetUniformLocation(shader->progId, WON_VIEWMATRIX) != GL_INVALID_INDEX) shader->SetMat4NoThrow(WON_VIEWMATRIX, lookat);
-		if (glGetUniformLocation(shader->progId, WON_FRAMES) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_FRAMES, Time::GetRenderFrames());
-		if (glGetUniformLocation(shader->progId, WON_TIME) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_TIME, (int)Time::GetTime());
-		if (glGetUniformLocation(shader->progId, WON_WINDOWWIDTH) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWWIDTH, game.GetWidth());
-		if (glGetUniformLocation(shader->progId, WON_WINDOWHEIGHT) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_WINDOWHEIGHT, game.GetHeight());
-		if (glGetUniformLocation(shader->progId, WON_VIEWPOSITION) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_VIEWPOSITION, camPos);
-		if (glGetUniformLocation(shader->progId, WON_NUMLIGHTS) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_NUMLIGHTS, (int)lsize);
 		if (glGetUniformLocation(shader->progId, WON_POSTPROCTEXTURE) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_POSTPROCTEXTURE, 0);
-
-		for (std::size_t i = 0; i < dirtyLsize; i++)
-		{
-			std::size_t li = dirtyLights[i];
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0]) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 0], (int)(*lights)[li].type);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 1], (*lights)[li].position);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2]) != GL_INVALID_INDEX) shader->SetVec3NoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 2], (*lights)[li].direction);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3]) != GL_INVALID_INDEX) shader->SetfColorNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 3], (*lights)[li].color);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 4], (*lights)[li].ambientStrength);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 5], (*lights)[li].linear);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 6], (*lights)[li].quadratic);
-
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 7], (*lights)[li].cutOff);
-			if (glGetUniformLocation(shader->progId, WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8]) != GL_INVALID_INDEX) shader->SetFloatNoThrow(WON_LIGHT_UNIFORMS_ARRAY[WON_LIGHT_INTERNAL_NPROPERTIES * li + 8], (*lights)[li].outerCutOff);
-		}
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -324,7 +294,6 @@ void won::priv::ScreenRenderer::Clear()
 	lIndexToEntity.clear();
 	rdsize = 0;
 	lsize = 0;
-	dirtyLsize = 0;
 	for (Renderable& renderable : *renderables)
 	{
 		renderable = Renderable{};
@@ -338,11 +307,6 @@ void won::priv::ScreenRenderer::Clear()
 	for (std::size_t& index : lIndexToEIndex)
 	{
 		index = 0;
-	}
-
-	for (std::size_t& light : dirtyLights)
-	{
-		light = 0;
 	}
 }
 

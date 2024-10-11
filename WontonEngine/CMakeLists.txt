@@ -32,17 +32,4 @@ target_link_libraries(WontonEngine "${SDL_LIB_PATH}")
 
 set_property(TARGET WontonEngine PROPERTY CXX_STANDARD 17)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/Zi>")
-    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/DEBUG>")
-    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:REF>")
-    target_link_options(WontonEngine PRIVATE "$<$<CONFIG:Release>:/OPT:ICF>")
-endif()
-
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi" CACHE STRING "" FORCE)
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF" CACHE STRING "" FORCE)
-endif()
-
-
 # TODO: Add tests and install targets if needed.

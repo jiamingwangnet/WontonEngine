@@ -12,6 +12,8 @@
 #include <iostream>
 
 won::priv::IAssetManager<won::priv::ShaderBase, won::Shader> won::ShaderManager::assetManager;
+won::priv::IAssetManager<won::priv::UniformBufferBase, won::UniformBuffer> won::ShaderManager::uniformbufferMan;
+unsigned int won::ShaderManager::bindingPoint;
 
 won::priv::ShaderBase::ShaderBase(unsigned int programId)
 	: progId{programId}
@@ -243,6 +245,19 @@ void won::priv::ShaderBase::SetfColorNoThrow(const char* name, const fColor& col
 	glUniform4f(GetUniformLocNoThrow(name), color.r, color.g, color.b, color.a);
 }
 
+void won::priv::ShaderBase::SetUniformBuffer(UniformBuffer buffer)
+{
+	unsigned int idx = glGetUniformBlockIndex(progId, buffer->GetName().c_str());
+	if (idx == GL_INVALID_INDEX) Error::ThrowError("Buffer invalid", std::cerr, __LINE__, __FILE__);
+	glUniformBlockBinding(progId, idx, buffer->GetBindingPoint());
+}
+
+void won::priv::ShaderBase::SetUniformBufferNoThrow(UniformBuffer buffer)
+{
+	unsigned int idx = glGetUniformBlockIndex(progId, buffer->GetName().c_str());
+	glUniformBlockBinding(progId, idx, buffer->GetBindingPoint());
+}
+
 void won::priv::ShaderBase::Activate() const
 {
 	glUseProgram(progId);
@@ -331,8 +346,11 @@ won::Shader won::ShaderManager::CreateShader(const std::string& name, const std:
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
-
-	assetManager.CreateAsset(name, id);
+	
+	// set default uniform buffers
+	Shader shader = assetManager.CreateAsset(name, id);
+	if (glGetUniformBlockIndex(id, priv::WON_STATICUNIFORMS_NAME) != GL_INVALID_INDEX) shader->SetUniformBufferNoThrow(GetUniformBuffer(priv::WON_STATICUNIFORMS_NAME));
+	if (glGetUniformBlockIndex(id, priv::WON_LIGHTUNIFORMS_NAME) != GL_INVALID_INDEX)  shader->SetUniformBufferNoThrow(GetUniformBuffer(priv::WON_LIGHTUNIFORMS_NAME));
 
 	return assetManager.GetAsset(name);
 }
@@ -363,6 +381,22 @@ won::Shader won::ShaderManager::CreateShaderFF(const std::string& name, const st
 won::Shader won::ShaderManager::GetShader(const std::string& name)
 {
 	return assetManager.GetAsset(name);
+}
+
+won::UniformBuffer won::ShaderManager::CreateUniformBuffer(const std::string& name, std::size_t size)
+{
+	unsigned int ubo;
+	glGenBuffers(1, &ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, ubo);
+
+	return uniformbufferMan.CreateAsset(name, ubo, bindingPoint++, size, name);
+}
+
+won::UniformBuffer won::ShaderManager::GetUniformBuffer(const std::string& name)
+{
+	return uniformbufferMan.GetAsset(name);
 }
 
 std::string won::ShaderManager::Preprocess(const std::string& source) // TODO: add duplicate include detection
@@ -414,4 +448,30 @@ std::string won::ShaderManager::ExtractIncludeValue(const std::string& line)
 	unsigned int end = strMatch.find('>');
 
 	return strMatch.substr(++start, --end);
+}
+
+won::priv::UniformBufferBase::UniformBufferBase(unsigned int ubo, unsigned int binding, std::size_t size, const std::string& name)
+	: ubo{ubo}, binding{binding}, name{name}, size{size}
+{
+}
+
+void won::priv::UniformBufferBase::WriteToBuffer(std::size_t offset, std::size_t size, const void* value)
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, value);
+}
+
+unsigned int won::priv::UniformBufferBase::GetBindingPoint() const
+{
+	return binding;
+}
+
+std::string won::priv::UniformBufferBase::GetName() const
+{
+	return name;
+}
+
+std::size_t won::priv::UniformBufferBase::GetSize() const
+{
+	return size;
 }

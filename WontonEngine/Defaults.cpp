@@ -121,31 +121,27 @@ uniform vec4 specular;
 uniform vec4 ambient;
 uniform float smoothness;
 
-uniform vec3 won_ViewPosition;
+#include <WON_LIGHTING_FUNCTIONS>
 
-// TODO: extract into file later
-struct won_Light
-{
-	int type;
-
-	vec3 position;
-	vec3 direction;
-
-	vec4 color;
-	float ambientStrength;
-
-	float linear;
-	float quadratic;
-
-	float cutOff;
-	float outerCutOff;
+layout(std140) uniform Won_StaticUniforms
+{                          
+	mat4 won_ProjectionMatrix;					
+	mat4 won_ViewMatrix;      
+	vec4 won_ViewPosition;	
+	int won_Frames;				
+	int won_Time;                  
+	int won_WindowWidth;           
+	int won_WindowHeight;          
 };
+
 #define WON_MAX_LIGHTS )SHADER" S_WON_MAX_LIGHTS
 R"SHADER(
-uniform won_Light won_Lights[WON_MAX_LIGHTS];
-uniform int won_NumLights;
 
-#include <WON_LIGHTING_FUNCTIONS>
+layout(std140) uniform Won_LightUniforms
+{
+	int won_NumLights;
+	won_Light won_Lights[WON_MAX_LIGHTS];                                        
+};
 
 void main()
 {
@@ -154,7 +150,7 @@ void main()
 	vec4 tex = texture(diffuseTexture, texCoord);
 	vec3 tdiff = (tex * diffuse).rgb;
 	vec3 tambi = (tex * ambient).rgb;
-	vec3 viewDir = normalize(won_ViewPosition - fragPos);
+	vec3 viewDir = normalize(won_ViewPosition.xyz - fragPos);
 
 	for(int i = 0; i < won_NumLights; i++)
 	{
@@ -176,14 +172,27 @@ void main()
 )SHADER";
 
 const std::string won::Defaults::WON_LIGHTING_FUNC_SRC = R"SHADER(
+struct won_Light
+{
+	vec4 position;    
+	vec4 direction;   
+	vec4 color;        
+	int type;            
+	float ambientStrength;
+	float linear;        
+	float quadratic;     
+	float cutOff;        
+	float outerCutOff;   
+};
+
 vec4 won_CalcPointLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse, vec3 tambient)
 {
-	float distance = length(light.position - fragPos);
+	float distance = length(light.position.xyz - fragPos);
 	float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
 
 	float smoothm = smoothness * 128.0;
 
-	vec3 lightDir = normalize(light.position - fragPos);
+	vec3 lightDir = normalize(light.position.xyz - fragPos);
 	vec3 reflectLight = reflect(-lightDir, normal);
 
 	float diff = max(dot(normal,lightDir), 0.0);
@@ -204,7 +213,7 @@ vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 t
 {
 	float smoothm = smoothness * 128.0;
 
-	vec3 lightDir = normalize(-light.direction);
+	vec3 lightDir = normalize(-light.direction.xyz);
 	vec3 reflectLight = reflect(-lightDir, normal);
 
 	float diff = max(dot(normal,lightDir), 0.0);
@@ -219,8 +228,8 @@ vec4 won_CalcDirectionalLight(won_Light light, vec3 normal, vec3 viewDir, vec3 t
 
 vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 tdiffuse, vec3 tambient)
 {
-	vec3 lightDir = normalize(light.position - fragPos);
-	float theta = dot(lightDir, normalize(-light.direction));
+	vec3 lightDir = normalize(light.position.xyz - fragPos);
+	float theta = dot(lightDir, normalize(-light.direction.xyz));
 
 	if(theta > light.outerCutOff)
 	{
@@ -228,7 +237,7 @@ vec4 won_CalcSpotLight(won_Light light, vec3 normal, vec3 fragPos, vec3 viewDir,
 		float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0); 
 		float smoothm = smoothness * 128.0;
 
-		float distance = length(light.position - fragPos);
+		float distance = length(light.position.xyz - fragPos);
 		float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
 
 		vec3 reflectLight = reflect(-lightDir, normal);
