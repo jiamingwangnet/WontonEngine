@@ -132,7 +132,7 @@ namespace won
 			UniformBuffer staticUniformBuffer = nullptr;
 			UniformBuffer lightUniformBuffer = nullptr;
 
-			float downscaleFactor = 1.5f;
+			float downscaleFactor = 1.0f;
 		};
 	}
 }
