@@ -46,7 +46,7 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	glGenTextures(1, &rtex);
 	glBindTexture(GL_TEXTURE_2D, rtex);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window.GetWidth(), window.GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window.GetWidth()/ downscaleFactor, window.GetHeight()/ downscaleFactor, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -57,7 +57,7 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	// renderbuffer for stencil and depth
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window.GetWidth(), window.GetHeight());
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window.GetWidth()/ downscaleFactor, window.GetHeight()/ downscaleFactor);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
@@ -70,32 +70,35 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	staticUniformBuffer = ShaderManager::CreateUniformBuffer(WON_STATICUNIFORMS_NAME, sizeof(Won_StaticUniforms));
 	lightUniformBuffer = ShaderManager::CreateUniformBuffer(WON_LIGHTUNIFORMS_NAME, sizeof(Won_LightUniforms));
 
-	staticUniforms.won_WindowWidth = window.GetWidth();
-	staticUniforms.won_WindowHeight = window.GetHeight();
+	staticUniforms.won_WindowWidth = window.GetWidth() / downscaleFactor;
+	staticUniforms.won_WindowHeight = window.GetHeight() / downscaleFactor;
+	staticUniforms.won_DownscaleFactor = downscaleFactor;
 }
 
 void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 {
 	if (camera == nullptr) return;
 
+	glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+
 	if (window->rdr_hasResized)
 	{
 		// resize buffers
-		glViewport(0, 0, window->GetWidth(), window->GetHeight());
+		//glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
 
 		glBindTexture(GL_TEXTURE_2D, rtex);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window->GetWidth(), window->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window->GetWidth(), window->GetHeight());
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
 
 		if (camera->WillAutoCalcAspect())
 		{
 			camera->SetAspectRatio((float)window->GetWidth() / (float)window->GetHeight());
 		}
 
-		staticUniforms.won_WindowWidth = window->GetWidth();
-		staticUniforms.won_WindowHeight = window->GetHeight();
+		staticUniforms.won_WindowWidth = window->GetWidth() / downscaleFactor;
+		staticUniforms.won_WindowHeight = window->GetHeight() / downscaleFactor;
 		
 		window->rdr_hasResized = false;
 	}
@@ -186,6 +189,8 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 	// render to post quad
 	if (camera->IsUsingPost())
 	{
+		glViewport(0, 0, window->GetWidth(), window->GetHeight());
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_DEPTH_TEST);
 

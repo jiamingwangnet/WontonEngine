@@ -131,7 +131,8 @@ layout(std140) uniform Won_StaticUniforms
 	int won_Frames;				
 	int won_Time;                  
 	int won_WindowWidth;           
-	int won_WindowHeight;          
+	int won_WindowHeight;       
+	float won_DownscaleFactor;   
 };
 
 #define WON_MAX_LIGHTS )SHADER" S_WON_MAX_LIGHTS
@@ -376,6 +377,27 @@ float won_RandRange(float min, float max, float seed)
 	return clamp(floor(won_Random(seed) * (float(max) - float(min) + 1.0) + float(min)), min, max); // clamp incase random returns 1
 }
 
+
+float won_RandRangeF(float min, float max, vec2 seed)
+{
+	return clamp(won_Random(seed) * (float(max) - float(min)) + float(min), min, max); // clamp incase random returns 1
+}
+
+float won_RandRangeF(float min, float max, vec3 seed)
+{
+	return clamp(won_Random(seed) * (float(max) - float(min)) + float(min), min, max); // clamp incase random returns 1
+}
+
+float won_RandRangeF(float min, float max, vec4 seed)
+{
+	return clamp(won_Random(seed) * (float(max) - float(min)) + float(min), min, max); // clamp incase random returns 1
+}
+
+float won_RandRangeF(float min, float max, float seed)
+{
+	return clamp(won_Random(seed) * (float(max) - float(min)) + float(min), min, max); // clamp incase random returns 1
+}
+
 )SHADER";
 
 const std::string won::Defaults::WON_POSTPROC_NOISE_FUNC_SRC = R"SHADER(
@@ -383,7 +405,7 @@ const std::string won::Defaults::WON_POSTPROC_NOISE_FUNC_SRC = R"SHADER(
 
 vec4 won_NoiseBW(vec2 seed, float min, float max)
 {
-	return vec4(won_RandRange(min, max, seed) * vec3(1.0), 1.0);
+	return vec4(won_RandRangeF(min, max, seed) * vec3(1.0), 1.0);
 }
 
 vec4 won_NoiseCL(vec2 seed, float min, float max)
@@ -392,7 +414,7 @@ vec4 won_NoiseCL(vec2 seed, float min, float max)
 	float s1 = won_Random(seed * won_Random(seed));
 	float s2 = won_Random(seed * won_Random(seed * won_Random(seed)));
 
-	return vec4(won_RandRange(min, max, s0), won_RandRange(min, max, s1), won_RandRange(min, max, s2), 1.0);
+	return vec4(won_RandRangeF(min, max, s0), won_RandRange(min, max, s1), won_RandRange(min, max, s2), 1.0);
 }
 )SHADER";
 

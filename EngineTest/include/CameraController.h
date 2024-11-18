@@ -71,7 +71,7 @@ public:
 		if (won::Input::GetKeyDown(won::KeyCode::Key_L))
 		{
 			self.shader++;
-			if (self.shader > 2) self.shader = 0;
+			if (self.shader > 3) self.shader = 0;
 			if (self.shader == 0)
 			{
 				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess"));
@@ -80,6 +80,10 @@ public:
 			else if (self.shader == 1)
 			{
 				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess1"));
+			}
+			else if (self.shader == 2)
+			{
+				camera->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess2"));
 			}
 			else
 			{

@@ -69,6 +69,7 @@ namespace won
 				int won_Time;                          // 152					 148
 				int won_WindowWidth;                   // 156					 152
 				int won_WindowHeight;                  // 160					 156
+				float won_DownscaleFactor;
 			}) staticUniforms{};
 
 			PACK(struct Won_LightUniforms
@@ -130,6 +131,8 @@ namespace won
 
 			UniformBuffer staticUniformBuffer = nullptr;
 			UniformBuffer lightUniformBuffer = nullptr;
+
+			float downscaleFactor = 1.5f;
 		};
 	}
 }

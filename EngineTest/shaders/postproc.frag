@@ -13,7 +13,8 @@ layout(std140) uniform Won_StaticUniforms
 	int won_Frames;				
 	int won_Time;                  
 	int won_WindowWidth;           
-	int won_WindowHeight;          
+	int won_WindowHeight;
+	float won_DownscaleFactor;
 };
 
 #include <WON_POSTPROC_PIXELATE>
