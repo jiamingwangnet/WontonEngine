@@ -24,7 +24,8 @@ layout(std140) uniform Won_StaticUniforms
 
 void main()
 {
-	const float pfac = 2.0;
+	// with pixelate
+	/*const float pfac = 2.0;
 	vec2 pcoord = won_PixelateCoords(won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)), pfac );
 	vec2 fcoord = won_PixelateFragCoords(gl_FragCoord.xy, pfac );
 
@@ -33,5 +34,13 @@ void main()
 	vec4 colorOut_2 = won_BayerDither8x8(colorOut_1, fcoord, 2.5) - 0.05;
 	vec4 colorOut_3 = won_ColorLimiterByParts(colorOut_2,5.0);
 
-	FragColor = colorOut_3;
+	FragColor = colorOut_3;*/
+
+	// without
+
+	vec4 colorOut_0 = texture(won_PostProcTexture, won_TexCoords) + won_NoiseCL(won_TexCoords * float(won_Time), -0.1, 0.1);
+	vec4 colorOut_1 = won_BayerDither8x8(colorOut_0, gl_FragCoord.xy, 2.5) - 0.4;
+	vec4 colorOut_2 = won_ColorLimiterByParts(colorOut_1,5.0);
+
+	FragColor = colorOut_2;
 }

@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <stdexcept>
 
-void won::FrameBuffer::Generate(unsigned int width, unsigned int height, unsigned int texloc)
+void won::FrameBuffer::Generate(unsigned int width, unsigned int height, unsigned int texloc, bool nearest)
 {
 	this->width = width;
 	this->height = height;
@@ -18,8 +18,8 @@ void won::FrameBuffer::Generate(unsigned int width, unsigned int height, unsigne
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, nearest ? GL_NEAREST : GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, nearest ? GL_NEAREST : GL_LINEAR);
 
 	// attach texture
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rtex, 0);

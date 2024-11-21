@@ -39,17 +39,21 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	downscalebuffer.Generate(window.GetWidth() / downscaleFactor, window.GetHeight() / downscaleFactor, 0);
-	postprocbuffer.Generate(window.GetWidth() / downscaleFactor, window.GetHeight() / downscaleFactor, 0);
+	downscaleFactorX = (float)window.GetWidth() / targetWidth;
+	downscaleFactorY = (float)window.GetHeight() / targetHeight;
+
+	downscalebuffer.Generate(targetWidth, targetHeight, 0, false);
+	postprocbuffer.Generate(targetWidth, targetHeight, 0);
 
 
 	// generate uniform buffers
 	staticUniformBuffer = ShaderManager::CreateUniformBuffer(WON_STATICUNIFORMS_NAME, sizeof(Won_StaticUniforms));
 	lightUniformBuffer = ShaderManager::CreateUniformBuffer(WON_LIGHTUNIFORMS_NAME, sizeof(Won_LightUniforms));
 
-	staticUniforms.won_WindowWidth = window.GetWidth() / downscaleFactor;
-	staticUniforms.won_WindowHeight = window.GetHeight() / downscaleFactor;
-	staticUniforms.won_DownscaleFactor = downscaleFactor;
+	staticUniforms.won_WindowWidth = targetWidth;
+	staticUniforms.won_WindowHeight = targetHeight;
+	staticUniforms.won_DownscaleFactorX = downscaleFactorX;
+	staticUniforms.won_DownscaleFactorY = downscaleFactorY;
 
 	UniformDataList datalist;
 	passthroughMaterial = MaterialManager::CreateMaterial("WON_RENDERER_PASSTHROUGH_MAT", ShaderManager::CreateShader("WON_RENDERER_PASSTHROUGH_SHADER", Defaults::WON_POST_PROCESSING_VERTEX_SHADER, Defaults::WON_DEFAULT_PASSTHROUGH_FRAGMENT_SHADER), std::move(datalist));
@@ -59,23 +63,28 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 {
 	if (camera == nullptr) return;
 
-	glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+	glViewport(0, 0, targetWidth, targetHeight);
 
 	if (window->rdr_hasResized)
 	{
-		// resize buffers
-		glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+		downscaleFactorX = (float)window->GetWidth() / targetWidth;
+		downscaleFactorY = (float)window->GetHeight() / targetHeight;
 
-		postprocbuffer.Resize(window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
-		downscalebuffer.Resize(window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+		// resize buffers
+		//glViewport(0, 0, GetScaledWidth(*window), GetScaledHeight(*window));
+
+		//postprocbuffer.Resize(GetScaledWidth(*window), GetScaledHeight(*window));
+		//downscalebuffer.Resize(GetScaledWidth(*window), GetScaledHeight(*window));
 
 		if (camera->WillAutoCalcAspect())
 		{
 			camera->SetAspectRatio((float)window->GetWidth() / (float)window->GetHeight());
 		}
 
-		staticUniforms.won_WindowWidth = window->GetWidth() / downscaleFactor;
-		staticUniforms.won_WindowHeight = window->GetHeight() / downscaleFactor;
+		/*staticUniforms.won_WindowWidth = GetScaledWidth(*window);
+		staticUniforms.won_WindowHeight = GetScaledHeight(*window);*/
+		staticUniforms.won_DownscaleFactorX = downscaleFactorX;
+		staticUniforms.won_DownscaleFactorY = downscaleFactorY;
 		
 		window->rdr_hasResized = false;
 	}
@@ -321,4 +330,14 @@ won::Matrix4x4 won::priv::ScreenRenderer::CalculateMatrix(Renderable& renderable
 bool won::priv::ScreenRenderer::IsTransformDirty(Renderable& renderable)
 {
 	return renderable.tdirty || (renderable.parent.GetId() != INVALID_ENTITY ? IsTransformDirty((*renderables)[entityToIndex[renderable.parent.GetId()]]) : false);
+}
+
+unsigned int won::priv::ScreenRenderer::GetScaledWidth(const Window& window)
+{
+	return window.GetWidth() / downscaleFactorX;
+}
+
+unsigned int won::priv::ScreenRenderer::GetScaledHeight(const Window& window)
+{
+	return window.GetHeight() / downscaleFactorY;
 }

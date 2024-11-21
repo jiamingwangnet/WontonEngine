@@ -9,7 +9,7 @@ namespace won
 	public:
 		FrameBuffer() = default;
 
-		void Generate(unsigned int width, unsigned int height, unsigned int texloc);
+		void Generate(unsigned int width, unsigned int height, unsigned int texloc, bool nearest = true);
 
 		void SetAsTarget();
 		void ActivateTexture();

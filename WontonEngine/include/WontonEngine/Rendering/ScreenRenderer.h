@@ -16,12 +16,14 @@ namespace won
 {
 	namespace priv
 	{
+		// position is stretched to get rid of border artifacts
 		static constexpr float POST_QUAD_VERTS[] =
 		{
-			 1.0f,  1.0f, 	1.0f, 1.0f,// top right
-			 1.0f, -1.0f,	1.0f, 0.0f,// bottom right
-			-1.0f, -1.0f,	0.0f, 0.0f,// bottom left
-			-1.0f,  1.0f,	0.0f, 1.0f,// top left 
+			// pos          uv
+			 1.05f,  1.05f, 1.0f, 1.0f,// top right
+			 1.05f, -1.05f,	1.0f, 0.0f,// bottom right
+			-1.05f, -1.05f,	0.0f, 0.0f,// bottom left
+			-1.05f,  1.05f,	0.0f, 1.0f,// top left 
 		};
 
 		static constexpr int POST_QUAD_INDICES[] =
@@ -70,7 +72,8 @@ namespace won
 				int won_Time;                          // 152					 148
 				int won_WindowWidth;                   // 156					 152
 				int won_WindowHeight;                  // 160					 156
-				float won_DownscaleFactor;
+				float won_DownscaleFactorX;
+				float won_DownscaleFactorY;
 			}) staticUniforms{};
 
 			PACK(struct Won_LightUniforms
@@ -103,6 +106,8 @@ namespace won
 		private:
 			won::Matrix4x4 CalculateMatrix(Renderable& renderable);
 			bool IsTransformDirty(Renderable& renderable);
+			unsigned int GetScaledWidth(const Window& window);
+			unsigned int GetScaledHeight(const Window& window);
 
 		private:
 			cmp::Camera* camera = nullptr;
@@ -133,7 +138,11 @@ namespace won
 			UniformBuffer staticUniformBuffer = nullptr;
 			UniformBuffer lightUniformBuffer = nullptr;
 
-			float downscaleFactor = 4.0f;
+			unsigned int targetWidth = 256;
+			unsigned int targetHeight = 224;
+
+			float downscaleFactorX = 1.0f;
+			float downscaleFactorY = 1.0f;
 		};
 	}
 }

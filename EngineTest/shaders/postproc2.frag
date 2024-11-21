@@ -22,7 +22,7 @@ layout(std140) uniform Won_StaticUniforms
 
 void main()
 {
-	vec2 texCoords = won_PixelateCoords(won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)), won_DownscaleFactor );
-	vec2 ntexCoords = won_PixelateCoords(won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)), won_DownscaleFactor + 0.3 );
-	FragColor = texture(won_PostProcTexture, texCoords) + won_NoiseBW(ntexCoords * float(won_Time), -0.12, 0.0);
+	//vec2 texCoords = won_PixelateCoords(won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)), won_DownscaleFactor );
+	//vec2 ntexCoords = won_PixelateCoords(won_TexCoords, vec2(float(won_WindowWidth), float(won_WindowHeight)), won_DownscaleFactor + 0.3 );
+	FragColor = texture(won_PostProcTexture, won_TexCoords) + won_NoiseBW(won_TexCoords * float(won_Time), -0.12, 0.0);
 }
