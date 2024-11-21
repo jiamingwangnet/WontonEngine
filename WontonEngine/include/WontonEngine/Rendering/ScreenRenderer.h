@@ -10,6 +10,7 @@
 #include <utility>
 #include "../ThreadPool.h"
 #include "../Window.h"
+#include "FrameBuffer.h"
 
 namespace won
 {
@@ -125,14 +126,14 @@ namespace won
 			unsigned int pvbo;
 			unsigned int pebo;
 
-			unsigned int fbo;
-			unsigned int rtex; // render texture
-			unsigned int rbo; // render buffer for stencil and depth
+			FrameBuffer downscalebuffer;
+			FrameBuffer postprocbuffer;
+			Material passthroughMaterial = nullptr;
 
 			UniformBuffer staticUniformBuffer = nullptr;
 			UniformBuffer lightUniformBuffer = nullptr;
 
-			float downscaleFactor = 1.0f;
+			float downscaleFactor = 4.0f;
 		};
 	}
 }

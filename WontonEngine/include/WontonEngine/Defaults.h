@@ -44,6 +44,7 @@ namespace won
 
 
 		static const std::string WON_POST_PROCESSING_VERTEX_SHADER;
+		static const std::string WON_DEFAULT_PASSTHROUGH_FRAGMENT_SHADER;
 
 		static const std::string WON_DEFAULT_VERTEX_SHADER;
 		static const std::string WON_DEFAULT_FRAGMENT_SHADER;

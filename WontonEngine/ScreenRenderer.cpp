@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include "include/WontonEngine/Time.h"
 #include <cassert>
+#include "include/WontonEngine/Defaults.h"
 
 won::priv::ScreenRenderer::ScreenRenderer()
 {
@@ -38,32 +39,8 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	// generate buffers
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-	// generate texture
-	glGenTextures(1, &rtex);
-	glBindTexture(GL_TEXTURE_2D, rtex);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window.GetWidth()/ downscaleFactor, window.GetHeight()/ downscaleFactor, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	// attach texture
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rtex, 0);
-
-	// renderbuffer for stencil and depth
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window.GetWidth()/ downscaleFactor, window.GetHeight()/ downscaleFactor);
-
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) throw std::runtime_error{ "Framebuffer is not complete" };
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	downscalebuffer.Generate(window.GetWidth() / downscaleFactor, window.GetHeight() / downscaleFactor, 0);
+	postprocbuffer.Generate(window.GetWidth() / downscaleFactor, window.GetHeight() / downscaleFactor, 0);
 
 
 	// generate uniform buffers
@@ -73,6 +50,9 @@ void won::priv::ScreenRenderer::Init(const Window& window)
 	staticUniforms.won_WindowWidth = window.GetWidth() / downscaleFactor;
 	staticUniforms.won_WindowHeight = window.GetHeight() / downscaleFactor;
 	staticUniforms.won_DownscaleFactor = downscaleFactor;
+
+	UniformDataList datalist;
+	passthroughMaterial = MaterialManager::CreateMaterial("WON_RENDERER_PASSTHROUGH_MAT", ShaderManager::CreateShader("WON_RENDERER_PASSTHROUGH_SHADER", Defaults::WON_POST_PROCESSING_VERTEX_SHADER, Defaults::WON_DEFAULT_PASSTHROUGH_FRAGMENT_SHADER), std::move(datalist));
 }
 
 void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
@@ -84,13 +64,10 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 	if (window->rdr_hasResized)
 	{
 		// resize buffers
-		//glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+		glViewport(0, 0, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
 
-		glBindTexture(GL_TEXTURE_2D, rtex);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+		postprocbuffer.Resize(window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
+		downscalebuffer.Resize(window->GetWidth() / downscaleFactor, window->GetHeight() / downscaleFactor);
 
 		if (camera->WillAutoCalcAspect())
 		{
@@ -103,7 +80,8 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 		window->rdr_hasResized = false;
 	}
 
-	if (camera->IsUsingPost()) glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	if (camera->IsUsingPost()) postprocbuffer.SetAsTarget();
+	else downscalebuffer.SetAsTarget();
 
 	lightUniforms.won_NumLights = lsize;
 
@@ -186,15 +164,14 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 		glActiveTexture(GL_TEXTURE0);
 	}
 
+	glDisable(GL_DEPTH_TEST);
+
 	// render to post quad
 	if (camera->IsUsingPost())
 	{
-		glViewport(0, 0, window->GetWidth(), window->GetHeight());
+		downscalebuffer.SetAsTarget();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDisable(GL_DEPTH_TEST);
-
-		glBindTexture(GL_TEXTURE_2D, rtex);
+		postprocbuffer.ActivateTexture();
 		glBindVertexArray(pvao);
 
 		Material material = camera->GetPostMaterial();
@@ -202,12 +179,31 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 
 		material->Activate();
 
-		if (glGetUniformLocation(shader->progId, WON_POSTPROCTEXTURE) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_POSTPROCTEXTURE, 0);
+		if (glGetUniformLocation(shader->progId, WON_POSTPROCTEXTURE) != GL_INVALID_INDEX) shader->SetIntNoThrow(WON_POSTPROCTEXTURE, postprocbuffer.GetTextureLocation());
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		material->Deactivate();
 	}
+
+
+	glViewport(0, 0, window->GetWidth(), window->GetHeight());
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	downscalebuffer.ActivateTexture();
+	glBindVertexArray(pvao);
+
+	Shader shader = passthroughMaterial->GetShader();
+
+	passthroughMaterial->Activate();
+
+	if (glGetUniformLocation(shader->progId, "won_DownscaleBufferTexture") != GL_INVALID_INDEX) shader->SetIntNoThrow("won_DownscaleBufferTexture", downscalebuffer.GetTextureLocation());
+	
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	passthroughMaterial->Deactivate();
+
+
 
 	for (std::size_t i = 0; i < rdsize; i++)
 	{
