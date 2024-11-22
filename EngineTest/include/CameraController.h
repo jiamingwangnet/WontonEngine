@@ -23,6 +23,7 @@ public:
 	}
 
 	static void RUpdate(CameraController& self) {}
+	static void OnDestroy(CameraController& self) {}
 
 	static void Update(CameraController& self)
 	{

@@ -26,6 +26,7 @@ namespace won
 			static void Init(Camera& self) {};
 			static void Update(Camera& self);
 			static void RUpdate(Camera& self) {};
+			static void OnDestroy(Camera& self) {};
 
 			ProjectionType GetProjectionType() const;
 

@@ -28,6 +28,7 @@ namespace won
 			static void Init(Light& self) {};
 			static void Update(Light& self) {}; // transform parent updates should be done after everything updates
 			static void RUpdate(Light& self) {};
+			static void OnDestroy(Light& self) {};
 
 		private:
 			priv::ScreenRenderer* renderer;

@@ -24,6 +24,11 @@ public:
 		transf->Rotate(won::Vector3{ 1.0f, 1.0f, 1.0f } *self.amount * won::Time::RDeltaTime());
 	};
 
+	static void OnDestroy(Spin& self)
+	{
+		std::cout << "Entity [" << self.entity.GetId() << "]'s component [Spin] has been destroyed!\n";
+	}
+
 	static void Update(Spin& self)
 	{
 		if (won::Input::GetMouseDown(won::MouseButton::Button_Middle))

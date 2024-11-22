@@ -20,6 +20,7 @@ namespace won
 			static void Init(Transform& self) {};
 			static void Update(Transform& self) {};
 			static void RUpdate(Transform& self) {};
+			static void OnDestroy(Transform& self) {};
 
 			// set local
 			Transform& Translate(Vector3 translation);

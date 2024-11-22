@@ -61,6 +61,7 @@ namespace won
 			void (*finit)(T&) = &T::Init;
 			void (*fupdate)(T&) = &T::Update;
 			void (*frupdate)(T&) = &T::RUpdate;
+			void (*fondestroy)(T&) = &T::OnDestroy;
 
 			// map from entity id to array index
 			std::array<std::size_t, MAX_ENTITIES> entityToIndexMap{};
@@ -100,6 +101,10 @@ namespace won
 			// copy last components to the removed components	
 			// change the mapping
 			std::size_t index = entityToIndexMap[entity];
+
+			// call onDestroy
+			fondestroy(components[index]);
+
 			components[index] = components[size - 1];
 			entityToIndexMap[indexToEntityMap[size - 1]] = index;
 			indexToEntityMap[index] = indexToEntityMap[size - 1];
