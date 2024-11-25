@@ -6,6 +6,8 @@ See [EngineTest](https://github.com/jiamingwangnet/WontonEngine/tree/master/Engi
 
 Documentation coming soon.
 
+Prebuilt binaries for Windows at the [latest release](https://github.com/jiamingwangnet/WontonEngine/releases/tag/v0.2.1)
+
 ## Build Instructions (for Windows only)
 
 ### Prerequisites
