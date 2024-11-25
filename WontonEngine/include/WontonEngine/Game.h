@@ -16,7 +16,8 @@ namespace won
 	public:
 		using preload_func = std::function<void(Game&)>;
 	public:
-		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true, float targetFramerate = 60.0f, float targetUpdateRate = 60.0f);
+		// negative cwidth and cheight means to match window size
+		Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync = true, float targetFramerate = 60.0f, float targetUpdateRate = 60.0f, int cwidth = -1, int cheight = -1);
 		Game() = delete;
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
@@ -29,8 +30,13 @@ namespace won
 		void LoadScene(int index);  // sets the next scene to load
 		int GetCurrentScene() const;
 
-		int GetWidth() const;
+		// returns window dimensions
+		int GetWidth() const; 
 		int GetHeight() const;
+
+		// returns context dimensions
+		int GetContextWidth() const;
+		int GetContextHeight() const;
 
 		template<class T>
 		void RegisterComponent();

@@ -2,7 +2,7 @@
 #include "include/WontonEngine/Entity.h"
 
 won::priv::EntityManager::EntityManager(ComponentManager& componentManager)
-	: componentManager{ componentManager }
+	: componentManager{ componentManager }, signatures( MAX_ENTITIES )
 {
 	// initialise queue with incrementing IDs (0 to MAX_ENTITIES)
 	for (EntId i = 0; i < MAX_ENTITIES; i++)

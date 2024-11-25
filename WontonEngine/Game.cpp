@@ -10,8 +10,8 @@
 won::priv::ComponentManager won::Game::compManager;
 won::priv::EntityManager won::Game::entityManager{ won::Game::compManager };
 
-won::Game::Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync, float targetFramerate, float targetUpdateRate)
-	: window{width, height, name, flags, clear, vsync}, preload{preload}, scenes{scenes}, targetFramerate{targetFramerate}, targetUpdateRate{ targetUpdateRate }
+won::Game::Game(int width, int height, const std::string& name, WinFlags flags, Color clear, preload_func preload, const std::vector<Scene*> scenes, bool vsync, float targetFramerate, float targetUpdateRate, int cwidth, int cheight)
+	: window{width, height, name, flags, clear, vsync, cwidth, cheight}, preload{preload}, scenes{scenes}, targetFramerate{targetFramerate}, targetUpdateRate{ targetUpdateRate }
 {
 	compManager.SetActiveGame(this);
 	priv::InputUpd::SetWindow(&window);
@@ -113,6 +113,16 @@ int won::Game::GetWidth() const
 int won::Game::GetHeight() const
 {
 	return window.GetHeight();
+}
+
+int won::Game::GetContextWidth() const
+{
+	return window.GetContextWidth();
+}
+
+int won::Game::GetContextHeight() const
+{
+	return window.GetContextHeight();
 }
 
 void won::Game::DestroyEntity(Entity entity)

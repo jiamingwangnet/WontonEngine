@@ -6,8 +6,8 @@
 #include <thread>
 #include "include/WontonEngine/Game.h"
 
-won::priv::Window::Window(int width, int height, const std::string& name, WinFlags flags, Color clear, bool vsync)
-	: width{width}, height{height}, name{name}, clear{clear}, vsync{vsync}, window{nullptr}, flags{flags}
+won::priv::Window::Window(int width, int height, const std::string& name, WinFlags flags, Color clear, bool vsync, int cwidth, int cheight)
+	: width{width}, height{height}, name{name}, clear{clear}, vsync{vsync}, window{nullptr}, flags{flags}, cwidth{cwidth}, cheight{cheight}
 {}
 
 int won::priv::Window::GetWidth() const
@@ -18,6 +18,18 @@ int won::priv::Window::GetWidth() const
 int won::priv::Window::GetHeight() const
 {
 	return height;
+}
+
+int won::priv::Window::GetContextWidth() const
+{
+	if (cwidth == -1) return width;
+	else return cwidth;
+}
+
+int won::priv::Window::GetContextHeight() const
+{
+	if (cheight == -1) return height;
+	else return cheight;
 }
 
 std::string won::priv::Window::GetName() const

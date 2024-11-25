@@ -11,6 +11,7 @@
 #include "../ThreadPool.h"
 #include "../Window.h"
 #include "FrameBuffer.h"
+#include <memory>
 
 namespace won
 {
@@ -82,7 +83,8 @@ namespace won
 				char _padding00[12];
 
 				LightInternalBase won_Lights[MAX_LIGHTS];
-			}) lightUniforms{};
+			});
+			std::unique_ptr<Won_LightUniforms> lightUniforms = nullptr;
 
 		public:
 			ScreenRenderer();
@@ -122,7 +124,7 @@ namespace won
 			std::unordered_map<std::size_t, EntId> lIndexToEntity{};
 			std::size_t lsize = 0;
 
-			std::array<std::size_t, MAX_LIGHTS> lIndexToEIndex; // gives the index to the renderable not entity ID
+			std::vector<std::size_t> lIndexToEIndex; // gives the index to the renderable not entity ID
 
 			// post processing
 
@@ -138,8 +140,8 @@ namespace won
 			UniformBuffer staticUniformBuffer = nullptr;
 			UniformBuffer lightUniformBuffer = nullptr;
 
-			unsigned int targetWidth = 256;
-			unsigned int targetHeight = 224;
+			unsigned int targetWidth;
+			unsigned int targetHeight;
 
 			float downscaleFactorX = 1.0f;
 			float downscaleFactorY = 1.0f;

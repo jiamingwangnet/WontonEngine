@@ -27,7 +27,7 @@ namespace won
 
 		private:
 			std::queue<Entity> availableIds;
-			std::array<Signature, MAX_ENTITIES> signatures; // use array for less overhead
+			std::vector<Signature> signatures;
 			unsigned int entities = 0;
 			ComponentManager& componentManager;
 			std::unordered_set<EntId> created{};

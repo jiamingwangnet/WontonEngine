@@ -10,10 +10,15 @@ won::priv::ScreenRenderer::ScreenRenderer()
 {
 	renderables = std::make_unique<std::array<Renderable, MAX_ENTITIES>>();
 	lights = std::make_unique<std::array<LightInternal, MAX_LIGHTS>>();
+	lIndexToEIndex.resize(MAX_LIGHTS);
+	lightUniforms = std::make_unique<Won_LightUniforms>();
 }
 
 void won::priv::ScreenRenderer::Init(const Window& window)
 {
+	targetWidth = window.GetContextWidth();
+	targetHeight = window.GetContextHeight();
+
 	// generate render quad data
 	glGenBuffers(1, &pvbo);
 	glGenBuffers(1, &pebo);
@@ -67,6 +72,9 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 
 	if (window->rdr_hasResized)
 	{
+		targetWidth = window->GetContextWidth();
+		targetHeight = window->GetContextHeight();
+
 		downscaleFactorX = (float)window->GetWidth() / targetWidth;
 		downscaleFactorY = (float)window->GetHeight() / targetHeight;
 
@@ -92,7 +100,7 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 	if (camera->IsUsingPost()) postprocbuffer.SetAsTarget();
 	else downscalebuffer.SetAsTarget();
 
-	lightUniforms.won_NumLights = lsize;
+	lightUniforms->won_NumLights = lsize;
 
 	// find dirty lights
 	for (int i = 0; i < lsize; i++)
@@ -104,15 +112,15 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 			glm::vec3 forward = (glm::vec3)cmp::Transform::FORWARD;
 			(*lights)[i].direction = (Vector3)(transform->GetRotationQuat() * glm::vec3{ forward.x, forward.y, forward.z });
 
-			lightUniforms.won_Lights[i].ambientStrength = (*lights)[i].ambientStrength;
-			lightUniforms.won_Lights[i].color = (*lights)[i].color;
-			lightUniforms.won_Lights[i].cutOff = (*lights)[i].cutOff;
-			lightUniforms.won_Lights[i].direction = glm::vec4{ (glm::vec3)(*lights)[i].direction, 0.0 };
-			lightUniforms.won_Lights[i].linear = (*lights)[i].linear;
-			lightUniforms.won_Lights[i].outerCutOff = (*lights)[i].outerCutOff;
-			lightUniforms.won_Lights[i].position = glm::vec4{ (glm::vec3)(*lights)[i].position, 0.0 };
-			lightUniforms.won_Lights[i].quadratic = (*lights)[i].quadratic;
-			lightUniforms.won_Lights[i].type = (int)(*lights)[i].type;
+			lightUniforms->won_Lights[i].ambientStrength = (*lights)[i].ambientStrength;
+			lightUniforms->won_Lights[i].color = (*lights)[i].color;
+			lightUniforms->won_Lights[i].cutOff = (*lights)[i].cutOff;
+			lightUniforms->won_Lights[i].direction = glm::vec4{ (glm::vec3)(*lights)[i].direction, 0.0 };
+			lightUniforms->won_Lights[i].linear = (*lights)[i].linear;
+			lightUniforms->won_Lights[i].outerCutOff = (*lights)[i].outerCutOff;
+			lightUniforms->won_Lights[i].position = glm::vec4{ (glm::vec3)(*lights)[i].position, 0.0 };
+			lightUniforms->won_Lights[i].quadratic = (*lights)[i].quadratic;
+			lightUniforms->won_Lights[i].type = (int)(*lights)[i].type;
 		}
 	}
 	
@@ -126,8 +134,8 @@ void won::priv::ScreenRenderer::Render(const Game& game, Window* window)
 	Matrix4x4 projview = staticUniforms.won_ProjectionMatrix * staticUniforms.won_ViewMatrix;
 	
 	staticUniformBuffer->WriteToBuffer(0, sizeof(Won_StaticUniforms), &staticUniforms);
-	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_NumLights), sizeof(lightUniforms.won_NumLights), &lightUniforms);
-	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_Lights), lightUniforms.won_NumLights * sizeof(LightInternalBase), &lightUniforms.won_Lights);
+	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_NumLights), sizeof(lightUniforms->won_NumLights), lightUniforms.get());
+	lightUniformBuffer->WriteToBuffer(offsetof(Won_LightUniforms, won_Lights), lightUniforms->won_NumLights * sizeof(LightInternalBase), &(lightUniforms->won_Lights));
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);

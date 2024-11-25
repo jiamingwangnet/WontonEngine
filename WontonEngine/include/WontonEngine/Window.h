@@ -19,10 +19,13 @@ namespace won
 		class Window
 		{
 		public:
-			Window(int width, int height, const std::string& name, WinFlags flags, Color clear, bool vsync = true);
+			Window(int width, int height, const std::string& name, WinFlags flags, Color clear, bool vsync = true, int cwidth = -1, int cheight = -1);
 
 			int GetWidth() const;
 			int GetHeight() const;
+			int GetContextWidth() const;
+			int GetContextHeight() const;
+
 			std::string GetName() const;
 			bool IsVsync() const;
 
@@ -38,6 +41,8 @@ namespace won
 		private:
 			int width;
 			int height;
+			int cwidth;
+			int cheight;
 			std::string name;
 			Color clear;
 			bool vsync;
