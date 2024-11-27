@@ -5,6 +5,7 @@
 #include <WontonEngine/Components/Renderer.h>
 #include <WontonEngine/Rendering/Mesh.h>
 
+// The EntityCreator class is extended to create entity "presets"
 class Floor : public won::EntityCreator
 {
 private:

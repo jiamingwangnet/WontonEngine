@@ -13,6 +13,7 @@ int main()
 
 	std::vector<won::Scene*> scenes{&mainScene, &kmScene};
 
+	// creates a 800x600 window with an OpenGL context resolution of 256x224
 	won::Game game{ 800, 600, "Engine Test", (won::WinFlags)won::WinFlags::Resizable, won::Color{30, 30, 30, 255}, preload, scenes, false, 0.0f, 60.0f, 256, 224 };
 	
 	game.Start();

@@ -7,6 +7,7 @@
 #include <WontonEngine/Rendering/Mesh.h>
 #include "Spin.h"
 
+// The EntityCreator class is extended to create entity "presets"
 class KMBox : public won::EntityCreator
 {
 private:

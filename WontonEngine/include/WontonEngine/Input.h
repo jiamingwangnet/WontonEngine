@@ -125,9 +125,9 @@ namespace won
 	class Input
 	{
 	public:
-		static bool GetKey(KeyCode key);
-		static bool GetKeyDown(KeyCode key);
-		static bool GetKeyUp(KeyCode key);
+		static bool GetKey(KeyCode key); // returns true if the key currently down
+		static bool GetKeyDown(KeyCode key); // returns true only on the frame the key is down. Returns false afterwards.
+		static bool GetKeyUp(KeyCode key); // returns true only on the frame the key is let go after being down. Returns false afterwards.
 
 		static Vector2 GetMousePosition();
 		static bool GetMouse(MouseButton button);

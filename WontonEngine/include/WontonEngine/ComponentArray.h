@@ -75,6 +75,9 @@ namespace won
 		template<class ...Args>
 		inline void ComponentArray<T>::Insert(EntId entity, Game* activeGame, Args && ...args)
 		{
+			// check if entity has component
+			if (ECManager::GetEntityManager().GetSignature(entity).test(ECManager::GetComponentManager().GetComponentId<T>())) return;
+
 			components[size] = T{ entity, activeGame, std::forward<Args>(args)... };
 			entityToIndexMap[entity] = size;
 			indexToEntityMap[size] = entity;
@@ -96,6 +99,9 @@ namespace won
 		template<class T>
 		inline void ComponentArray<T>::Remove(EntId entity)
 		{
+			// check if the entity has the component
+			if (!(ECManager::GetEntityManager().GetSignature(entity).test(ECManager::GetComponentManager().GetComponentId<T>()))) return;
+
 			// remove the component for the specified entity
 			// ensure components are stored contiguously 
 			// copy last components to the removed components	

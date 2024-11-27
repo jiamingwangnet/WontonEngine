@@ -15,5 +15,6 @@ public:
 		cam->UsePost(true);
 		cam->SetPostMaterial(won::MaterialManager::GetMaterial("PostProcess"));
 		entity.AddComponent<CameraController>();
+		entity.AddComponent<DeleteComponent>();
 	}
 };

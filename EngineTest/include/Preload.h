@@ -6,11 +6,13 @@
 #include <WontonEngine/Rendering/Material.h>
 #include "Spin.h"
 #include "CameraController.h"
+#include "DeleteComponent.h"
 
 void preload(won::Game& game)
 {
 	game.RegisterComponent<Spin>();
 	game.RegisterComponent<CameraController>();
+	game.RegisterComponent<DeleteComponent>();
 
 	won::Defaults::Load(won::Defaults::AssetType::All);
 	won::ShaderManager::CreateShaderVF("jiggly", "shaders/jiggly.vert", won::Defaults::WON_DEFAULT_FRAGMENT_SHADER);

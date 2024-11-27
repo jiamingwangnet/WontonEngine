@@ -21,6 +21,9 @@ namespace won
 		template<class Cmp>
 		Cmp* GetComponent() const;
 
+		template<class Cmp>
+		void RemoveComponent() const;
+
 		template<class Cmp, class... Args>
 		Cmp* AddComponent(Args&&... args);
 
@@ -35,6 +38,15 @@ namespace won
 	inline Cmp* Entity::GetComponent() const
 	{
 		return &priv::ECManager::GetComponentManager().GetComponent<Cmp>(id);
+	}
+
+	template<class Cmp>
+	inline void Entity::RemoveComponent() const
+	{
+		priv::ComponentManager& cmpManager = priv::ECManager::GetComponentManager();
+		priv::EntityManager& entityManager = priv::ECManager::GetEntityManager();
+		cmpManager.RemoveComponent<Cmp>(id);
+		entityManager.SetSignature(*this, entityManager.GetSignature(*this).reset((std::size_t)cmpManager.GetComponentId<Cmp>()));
 	}
 
 	template<class Cmp, class ...Args>

@@ -13,7 +13,9 @@ won::Entity::Entity(const EntId& id)
 
 std::vector<won::Component*> won::Entity::GetComponents() const
 {
-	return std::vector<won::Component*>{};
+	std::vector<won::Component*> res{};
+	
+	return res;
 }
 
 won::EntId won::Entity::GetId() const
