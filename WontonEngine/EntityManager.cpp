@@ -24,15 +24,18 @@ won::Entity won::priv::EntityManager::CreateEntity()
 
 void won::priv::EntityManager::DestroyEntity(Entity entity)
 {
+	// call componentManager's EntityDestroyed !!IMPORTANT TO DO THIS FIRST!! always destroy components first
+
 	// reset signature
 	// reduce entity count
 	// push the id to the back of the queue
-	// call componentManager's EntityDestroyed
+	
+	componentManager.EntityDestroyed(entity.GetId());
+
 	signatures[entity.GetId()].reset();
 	entities--;
 	availableIds.push(entity.GetId());
 	created.erase(entity.GetId());
-	componentManager.EntityDestroyed(entity.GetId());
 }
 
 void won::priv::EntityManager::Clear()

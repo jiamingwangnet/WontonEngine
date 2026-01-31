@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+//#include <cassert>
 #include "ECManager.h"
 #include "ComponentManager.h"
 #include "Constants.h"
@@ -57,6 +58,8 @@ namespace won
 		cmpManager.AddComponent<Cmp>(id, std::forward<Args>(args)...);
 		entityManager.SetSignature(*this, entityManager.GetSignature(*this).set((std::size_t)cmpManager.GetComponentId<Cmp>()));
 		
+		//assert(entityManager.GetSignature(*this)[(cmpManager.GetComponentId<Cmp>())]);
+
 		return &cmpManager.GetComponent<Cmp>(id);
 	}
 }
